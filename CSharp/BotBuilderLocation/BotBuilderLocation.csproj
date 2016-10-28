@@ -86,7 +86,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddressCard.cs" />
-    <Compile Include="FacebookLocationDialog.cs" />
+    <Compile Include="Channels\ChannelHandlerFactory.cs" />
+    <Compile Include="Channels\FacebookChannelHandler.cs" />
+    <Compile Include="Channels\DefaultChannelHandler.cs" />
+    <Compile Include="Channels\IChannelHandler.cs" />
+    <Compile Include="Channels\FacebookLocationDialog.cs" />
     <Compile Include="Bing\IBingGeoSpatialService.cs" />
     <Compile Include="LocationRequiredFields.cs" />
     <Compile Include="LocationResourceManager.cs" />

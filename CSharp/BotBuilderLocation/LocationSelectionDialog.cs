@@ -1,5 +1,4 @@
-﻿
-namespace Microsoft.Bot.Builder.Location
+﻿namespace Microsoft.Bot.Builder.Location
 {
     using System;
     using System.Collections.Generic;
@@ -8,6 +7,7 @@ namespace Microsoft.Bot.Builder.Location
     using System.Threading;
     using System.Threading.Tasks;
     using Bing;
+    using Channels;
     using Connector;
     using Dialogs;
     using Internals.Scorables;
@@ -20,21 +20,11 @@ namespace Microsoft.Bot.Builder.Location
     [Serializable]
     public sealed class LocationSelectionDialog : IDialog<Place>
     {
-        private readonly string channelId;
         private readonly string prompt;
         private readonly LocationOptions options;
         private readonly LocationResourceManager resourceManager;
-        private readonly List<Bing.Location> locations;
-
-        private readonly IDictionary<string, Func<string, bool, IDialog<Place>>> richDialogs =
-            new Dictionary<string, Func<string, bool, IDialog<Place>>>(StringComparer.OrdinalIgnoreCase)
-            {
-                {"facebook", (prompt, reverseGeocode) => new FacebookLocationDialog(prompt, reverseGeocode)},
-                {"emulator", (prompt, reverseGeocode) => new FacebookLocationDialog(prompt, reverseGeocode)}
-            };
-
-        private static readonly HashSet<string> SupportKeyboardChannels =
-            new HashSet<string>(StringComparer.InvariantCultureIgnoreCase) { "facebook" };
+        private readonly IChannelHandler channelHandler;
+        private readonly List<Location> locations;
 
         public LocationSelectionDialog(
             string channelId,
@@ -43,21 +33,21 @@ namespace Microsoft.Bot.Builder.Location
             Assembly resourceAssembly = null,
             string resourceName = null)
         {
-            this.channelId = channelId;
             this.prompt = prompt;
             this.options = options;
             this.locations = new List<Location>();
             this.resourceManager = new LocationResourceManager(resourceAssembly, resourceName);
+            this.channelHandler = ChannelHandlerFactory.CreateChannelHandler(channelId);
         }
 
         public async Task StartAsync(IDialogContext context)
         {
             this.locations.Clear();
 
-            if (this.options.HasFlag(LocationOptions.UseNativeControl) && this.richDialogs.ContainsKey(this.channelId))
+            if (this.options.HasFlag(LocationOptions.UseNativeControl) && this.channelHandler.HasNativeLocationControl)
             {
                 context.Call(
-                    this.richDialogs[this.channelId](this.prompt, this.options.HasFlag(LocationOptions.ReverseGeocode)),
+                    this.channelHandler.CreateNativeLocationDialog(this.prompt),
                     async (dialogContext, result) =>
                     {
                         var place = await result;
@@ -126,53 +116,61 @@ namespace Microsoft.Bot.Builder.Location
                 var locationsCardReply = context.MakeMessage();
                 locationsCardReply.Attachments = AddressCard.CreateLocationsCard(this.locations);
                 locationsCardReply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-
                 await context.PostAsync(locationsCardReply);
 
                 if (this.locations.Count == 1)
                 {
-                    PromptStyle style = SupportKeyboardChannels.Contains(item.ChannelId)
-                        ? PromptStyle.Keyboard
-                        : PromptStyle.None;
-
-                    PromptDialog.Confirm(
-                            context,
-                            async (dialogContext, answer) =>
-                            {
-                                if (await answer)
-                                {
-                                    dialogContext.Done(PlaceExtensions.FromLocation(this.locations.First()));
-                                }
-                                else
-                                {
-                                    await this.StartAsync(dialogContext);
-                                }
-                            },
-                            prompt: this.resourceManager.GetResource(nameof(Strings.SingleResultFound)),
-                            retry: null,
-                            attempts: 3,
-                            promptStyle: style);
-
-                    return;
-                }
-
-                var selectText = this.resourceManager.GetResource(nameof(Strings.MultipleResultsFound));
-
-                if (SupportKeyboardChannels.Contains(item.ChannelId))
-                {
-                    var keyboardCardReply = context.MakeMessage();
-                    keyboardCardReply.Attachments = AddressCard.CreateLocationsKeyboardCard(this.locations, selectText);
-                    keyboardCardReply.AttachmentLayout = AttachmentLayoutTypes.List;
-                    await context.PostAsync(keyboardCardReply);
+                    this.PromptForSingleAddressSelection(context, item.ChannelId);
                 }
                 else
                 {
-                    await context.PostAsync(selectText);
+                    await this.PromptForMultipleAddressSelection(context, item.ChannelId);
                 }
+            }
+        }
 
-                context.Wait(this.MessageReceivedAsync);
+        private void PromptForSingleAddressSelection(IDialogContext context, string channeId)
+        {
+            PromptStyle style = this.channelHandler.SupportsKeyboard
+                        ? PromptStyle.Keyboard
+                        : PromptStyle.None;
+
+            PromptDialog.Confirm(
+                    context,
+                    async (dialogContext, answer) =>
+                    {
+                        if (await answer)
+                        {
+                            dialogContext.Done(PlaceExtensions.FromLocation(this.locations.First()));
+                        }
+                        else
+                        {
+                            await this.StartAsync(dialogContext);
+                        }
+                    },
+                    prompt: this.resourceManager.GetResource(nameof(Strings.SingleResultFound)),
+                    retry: null,
+                    attempts: 3,
+                    promptStyle: style);
+        }
+
+        private async Task PromptForMultipleAddressSelection(IDialogContext context, string channeId)
+        {
+            var selectText = this.resourceManager.GetResource(nameof(Strings.MultipleResultsFound));
+
+            if (this.channelHandler.SupportsKeyboard)
+            {
+                var keyboardCardReply = context.MakeMessage();
+                keyboardCardReply.Attachments = AddressCard.CreateLocationsKeyboardCard(this.locations, selectText);
+                keyboardCardReply.AttachmentLayout = AttachmentLayoutTypes.List;
+                await context.PostAsync(keyboardCardReply);
+            }
+            else
+            {
+                await context.PostAsync(selectText);
             }
 
+            context.Wait(this.MessageReceivedAsync);
         }
     }
 }
