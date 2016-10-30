@@ -1,22 +1,26 @@
 ﻿namespace Microsoft.Bot.Builder.Location.SpecialCommands
 {
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Connector;
-    using Dialogs.Internals;
+    using Dialogs;
     using Internals.Scorables;
     using Resources;
 
-    internal static class SpecialCommandsScorables
+    internal static class SpecialCommands
     {
-        public static IScorable<IMessageActivity, double> GetCommand(IDialogStack stack, IBotToUser botToUser, LocationResourceManager resourceManager)
+        public static async Task<bool> TryPostAsync(IDialogContext context, IMessageActivity message, LocationResourceManager resourceManager)
         {
             var commands = new List<IScorable<IMessageActivity, double>>
             {
-                new CancelSpecialCommandScorable(stack, botToUser, resourceManager.GetResource(nameof(Strings.Cancel))),
-                new HelpSpecialCommandScorable(stack, botToUser, resourceManager.GetResource(nameof(Strings.Help)), resourceManager.GetResource(nameof(Strings.HelpMessage)))
+                new CancelSpecialCommandScorable(context, context, resourceManager.GetResource(nameof(Strings.Cancel))),
+                new HelpSpecialCommandScorable(context, context, resourceManager.GetResource(nameof(Strings.Help)), resourceManager.GetResource(nameof(Strings.HelpMessage)))
             };
 
-            return new FoldScorable<IMessageActivity, double>(DoubleComparer.Instance, commands);
+            var fold = new FoldScorable<IMessageActivity, double>(DoubleComparer.Instance, commands);
+
+            return await fold.TryPostAsync(message, CancellationToken.None);
         }
 
         private sealed class DoubleComparer : IComparer<double>

@@ -42,9 +42,9 @@
 
         private async Task LocationReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
-            var msg = await argument;
+            var message = await argument;
 
-            var place = msg.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
+            var place = message.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
 
             if (place != null)
             {

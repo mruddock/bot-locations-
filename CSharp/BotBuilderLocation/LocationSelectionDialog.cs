@@ -4,15 +4,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Threading;
     using System.Threading.Tasks;
     using Bing;
     using Channels;
     using Connector;
     using Dialogs;
-    using Internals.Scorables;
     using Resources;
-    using SpecialCommands;
 
     /// <summary>
     /// Responsible for receiving an address from the user and resolving it.
@@ -67,15 +64,9 @@
         {
             var message = await result;
 
-            var scorables = new List<IScorable<IMessageActivity, double>>
-            {
-                SpecialCommandsScorables.GetCommand(context, context, this.resourceManager)
-            };
-
-            var scorable = Scorables.First(scorables);
             int initialFramesCount = context.Frames.Count;
 
-            if (scorable != null && await Scorables.TryPostAsync(scorable, message, CancellationToken.None))
+            if (await SpecialCommands.SpecialCommands.TryPostAsync(context, message, this.resourceManager))
             {
                 // TODO: this is a bit of a hack to only call context.Wait if the scorable
                 // didn't manipulate the stack. Is there a cleaner way to achieve this?
