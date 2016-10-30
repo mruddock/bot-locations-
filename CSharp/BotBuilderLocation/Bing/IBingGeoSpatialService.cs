@@ -22,9 +22,9 @@
         /// <summary>
         /// Gets the map image URL.
         /// </summary>
-        /// <param name="point">The geocode point.</param>
+        /// <param name="location">The location.</param>
         /// <param name="index">The pin point index.</param>
         /// <returns></returns>
-        string GetLocationMapImageUrl(GeocodePoint point, int? index = null);
+        string GetLocationMapImageUrl(Location location, int? index = null);
     }
 }

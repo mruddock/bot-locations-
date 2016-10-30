@@ -4,6 +4,7 @@
     using Connector;
     using Dialogs;
 
+    [Serializable]
     internal class DefaultChannelHandler : IChannelHandler
     {
         public bool HasNativeLocationControl => false;

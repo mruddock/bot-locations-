@@ -1,8 +1,10 @@
 ﻿namespace Microsoft.Bot.Builder.Location.Channels
 {
+    using System;
     using Connector;
     using Dialogs;
 
+    [Serializable]
     internal class FacebookChannelHandler : IChannelHandler
     {
         public bool HasNativeLocationControl => true;

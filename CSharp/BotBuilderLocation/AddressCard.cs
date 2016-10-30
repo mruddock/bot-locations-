@@ -28,7 +28,7 @@ namespace Microsoft.Bot.Builder.Location
                 {
                     var image =
                         new CardImage(
-                            url: new BingGeoSpatialService().GetLocationMapImageUrl(location.Point, i));
+                            url: new BingGeoSpatialService().GetLocationMapImageUrl(location, i));
 
                     heroCard.Images = new[] { image };
                 }

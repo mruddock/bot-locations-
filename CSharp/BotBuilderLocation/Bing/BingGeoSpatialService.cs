@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Bot.Builder.Location.Bing
+﻿using Microsoft.Bot.Builder.Internals.Fibers;
+
+namespace Microsoft.Bot.Builder.Location.Bing
 {
     using System;
     using System.Configuration;
@@ -14,7 +16,8 @@
         private readonly static string ApiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
         private readonly static string FindByQueryApiUrl = $"https://dev.virtualearth.net/REST/v1/Locations?key={ApiKey}&q=";
         private readonly static string FindByPointUrl = $"https://dev.virtualearth.net/REST/v1/Locations/{{0}},{{1}}?key={ApiKey}&q=";
-        private readonly static string ImageUrl = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?mapSize=500,500&pp={{0}},{{1}};1;{{2}}&key={ApiKey}";
+        private readonly static string ImageUrlByPoint = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?mapSize=500,500&pp={{0}},{{1}};1;{{2}}&dpi=1&key={ApiKey}";
+        private readonly static string ImageUrlByBBox = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea={{0}},{{1}},{{2}},{{3}}&mapSize=500,500&pp={{4}},{{5}};1;{{6}}&dpi=1&key={ApiKey}";
 
         public async Task<LocationSet> GetLocationsByQueryAsync(string address)
         {
@@ -32,9 +35,15 @@
                 string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude));
         }
 
-        public string GetLocationMapImageUrl(GeocodePoint point, int? index = null)
+        public string GetLocationMapImageUrl(Location location, int? index = null)
         {
-            if (point == null || !point.HasCoordinates)
+            if (location == null)
+            {
+                throw new ArgumentNullException(nameof(location));
+            }
+
+            var point = location.Point;
+            if (point == null)
             {
                 throw new ArgumentNullException(nameof(point));
             }
@@ -44,7 +53,14 @@
                 throw new ConfigurationErrorsException("BingMapsApiKey is missing in Web.config");
             }
 
-            return string.Format(ImageUrl, point.Coordinates[0], point.Coordinates[1], index);
+            if (location.BoundaryBox != null && location.BoundaryBox.Count >= 4)
+            {
+                return string.Format(ImageUrlByBBox, location.BoundaryBox[0], location.BoundaryBox[1], location.BoundaryBox[2], location.BoundaryBox[3], point.Coordinates[0], point.Coordinates[1], index);
+            }
+            else
+            {
+                return string.Format(ImageUrlByPoint, point.Coordinates[0], point.Coordinates[1], index);
+            }
         }
 
         private async Task<LocationSet> GetLocationsAsync(string url)
