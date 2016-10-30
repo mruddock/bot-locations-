@@ -50,7 +50,7 @@
                 context.Call(new LocationSelectionDialog(
                     this.channelId,
                     "Hi, where would you like me to ship to your widget?",
-                    LocationOptions.UseNativeControl,
+                    options: LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode,
                     requiredFields: LocationRequiredFields.StreetAddress | LocationRequiredFields.Locality | LocationRequiredFields.Region | LocationRequiredFields.Country | LocationRequiredFields.PostalCode),
                     async (dialogContext, result) =>
                     {
@@ -58,7 +58,7 @@
                         if (place != null)
                         {
                             var address = place.GetPostalAddress();
-                            var geo = place.GetGeoCoordinates();
+
                             string name = address != null ?
                                 $"{address.StreetAddress}, {address.Locality}, {address.Region}, {address.Country} ({address.PostalCode})" :
                                 "the pinned location";

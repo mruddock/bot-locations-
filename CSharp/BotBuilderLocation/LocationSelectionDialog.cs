@@ -50,6 +50,28 @@
                     this.channelHandler.CreateNativeLocationDialog(this.prompt),
                     async (dialogContext, result) =>
                     {
+                        var location = await result;
+
+                        if (this.options.HasFlag(LocationOptions.ReverseGeocode) && location?.Point != null)
+                        {
+                            var results = await new BingGeoSpatialService().GetLocationsByPointAsync(location.Point.Coordinates[0], location.Point.Coordinates[1]);
+                            var geocodedLocation = results?.Locations?.FirstOrDefault();
+                            if (geocodedLocation?.Address != null)
+                            {
+                                // We don't trust reverse geocoder on the street address level,
+                                // so copy all fields except it.
+                                // TODO: do we need to check the returned confidence level?
+                                location.Address = new Bing.Address
+                                {
+                                    CountryRegion = geocodedLocation.Address.CountryRegion,
+                                    AdminDistrict = geocodedLocation.Address.AdminDistrict,
+                                    AdminDistrict2 = geocodedLocation.Address.AdminDistrict2,
+                                    Locality = geocodedLocation.Address.Locality,
+                                    PostalCode = geocodedLocation.Address.PostalCode
+                                };
+                            }
+                        }
+
                         this.CompleteAndReturnPlace(dialogContext, await result);
                     });
             }
@@ -77,7 +99,7 @@
             }
             else if (this.locations.Count == 0)
             {
-                await TryResolveAddressAsync(context, message);
+                await this.TryResolveAddressAsync(context, message);
             }
             else if (!this.TryResolveAddressSelectionAsync(context, message))
             {
@@ -98,6 +120,8 @@
             {
                 await context.PostAsync(
                     this.resourceManager.GetResource(nameof(Strings.LocationNotFound)));
+
+                context.Wait(this.MessageReceivedAsync);
             }
             else
             {
