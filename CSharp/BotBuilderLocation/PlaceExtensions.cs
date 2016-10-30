@@ -39,7 +39,6 @@
                     FormattedAddress = location.Address.FormattedAddress,
                     Country = location.Address.CountryRegion,
                     Locality = location.Address.Locality,
-                    PostOfficeBoxNumber = location.Address.PostalCode,
                     PostalCode = location.Address.PostalCode,
                     Region = location.Address.AdminDistrict,
                     StreetAddress = location.Address.AddressLine

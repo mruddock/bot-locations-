@@ -22,6 +22,7 @@
     {
         private readonly string prompt;
         private readonly LocationOptions options;
+        private readonly LocationRequiredFields requiredFields;
         private readonly LocationResourceManager resourceManager;
         private readonly IChannelHandler channelHandler;
         private readonly List<Location> locations;
@@ -30,11 +31,13 @@
             string channelId,
             string prompt,
             LocationOptions options = LocationOptions.None,
+            LocationRequiredFields requiredFields = LocationRequiredFields.None,
             Assembly resourceAssembly = null,
             string resourceName = null)
         {
             this.prompt = prompt;
             this.options = options;
+            this.requiredFields = requiredFields;
             this.locations = new List<Location>();
             this.resourceManager = new LocationResourceManager(resourceAssembly, resourceName);
             this.channelHandler = ChannelHandlerFactory.CreateChannelHandler(channelId);
@@ -50,8 +53,7 @@
                     this.channelHandler.CreateNativeLocationDialog(this.prompt),
                     async (dialogContext, result) =>
                     {
-                        var place = await result;
-                        dialogContext.Done(place);
+                        this.CompleteAndReturnPlace(dialogContext, await result);
                     });
             }
             else
@@ -67,8 +69,7 @@
 
             var scorables = new List<IScorable<IMessageActivity, double>>
             {
-                SpecialCommandsScorables.GetCommand(context, context, this.resourceManager),
-                new SelectAddressScorable(context, this.locations)
+                SpecialCommandsScorables.GetCommand(context, context, this.resourceManager)
             };
 
             var scorable = Scorables.First(scorables);
@@ -85,9 +86,9 @@
             }
             else if (this.locations.Count == 0)
             {
-                await TryResolveAddressAsync(context, result);
+                await TryResolveAddressAsync(context, message);
             }
-            else
+            else if (!this.TryResolveAddressSelectionAsync(context, message))
             {
                 await context.PostAsync(
                     this.resourceManager.GetResource(nameof(Strings.InvalidLocationResponse)));
@@ -96,12 +97,10 @@
             }
         }
 
-        private async Task TryResolveAddressAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        private async Task TryResolveAddressAsync(IDialogContext context, IMessageActivity message)
         {
-            var item = await result;
-
             // TODO: handle exception
-            var locationSet = await new BingGeoSpatialService().GetLocationsByQueryAsync(item.Text);
+            var locationSet = await new BingGeoSpatialService().GetLocationsByQueryAsync(message.Text);
             var foundLocations = locationSet?.Locations;
 
             if (foundLocations == null || foundLocations.Count == 0)
@@ -120,16 +119,28 @@
 
                 if (this.locations.Count == 1)
                 {
-                    this.PromptForSingleAddressSelection(context, item.ChannelId);
+                    this.PromptForSingleAddressSelection(context);
                 }
                 else
                 {
-                    await this.PromptForMultipleAddressSelection(context, item.ChannelId);
+                    await this.PromptForMultipleAddressSelection(context);
                 }
             }
         }
 
-        private void PromptForSingleAddressSelection(IDialogContext context, string channeId)
+        private bool TryResolveAddressSelectionAsync(IDialogContext context, IMessageActivity message)
+        {
+            int value;
+            if (int.TryParse(message.Text, out value) && value > 0 && value <= this.locations.Count)
+            {
+                this.CompleteAndReturnPlace(context, this.locations[value - 1]);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void PromptForSingleAddressSelection(IDialogContext context)
         {
             PromptStyle style = this.channelHandler.SupportsKeyboard
                         ? PromptStyle.Keyboard
@@ -141,7 +152,7 @@
                     {
                         if (await answer)
                         {
-                            dialogContext.Done(PlaceExtensions.FromLocation(this.locations.First()));
+                            this.CompleteAndReturnPlace(dialogContext, this.locations.First());
                         }
                         else
                         {
@@ -154,7 +165,7 @@
                     promptStyle: style);
         }
 
-        private async Task PromptForMultipleAddressSelection(IDialogContext context, string channeId)
+        private async Task PromptForMultipleAddressSelection(IDialogContext context)
         {
             var selectText = this.resourceManager.GetResource(nameof(Strings.MultipleResultsFound));
 
@@ -171,6 +182,28 @@
             }
 
             context.Wait(this.MessageReceivedAsync);
+        }
+
+        private void CompleteAndReturnPlace(IDialogContext context, Location location)
+        {
+            if (location == null)
+            {
+                context.Done<Place>(null);
+            }
+            else if (this.requiredFields != LocationRequiredFields.None)
+            {
+                context.Call(
+                    new LocationRequiredFieldsDialog(location, this.requiredFields, this.resourceManager), 
+                    async (dialogContext, result) =>
+                    {
+                        var completedLocation = await result;
+                        dialogContext.Done(PlaceExtensions.FromLocation(completedLocation));
+                    });
+            }
+            else
+            {
+                context.Done(PlaceExtensions.FromLocation(location));
+            }
         }
     }
 }

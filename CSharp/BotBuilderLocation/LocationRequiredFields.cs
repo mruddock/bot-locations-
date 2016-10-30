@@ -5,16 +5,16 @@
     [Flags]
     public enum LocationRequiredFields
     {
-        AddressLine = 0,
+        None = 0,
 
-        AdminDistrict = 1,
+        StreetAddress = 1,
 
-        AdminDistrict2 = 2,
+        Locality = 2,
 
-        CountryRegion = 4,
+        Region = 4,
 
-        GeoCoordinates = 8,
+        Country = 8,
 
-        AddressLineOrGeoCoordinates = 16
+        PostalCode = 16
     }
 }

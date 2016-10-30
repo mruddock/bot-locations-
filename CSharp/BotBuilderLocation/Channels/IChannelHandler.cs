@@ -9,6 +9,6 @@
 
         bool SupportsKeyboard { get; }
 
-        IDialog<Place> CreateNativeLocationDialog(string prompt);
+        IDialog<Bing.Location> CreateNativeLocationDialog(string prompt);
     }
 }

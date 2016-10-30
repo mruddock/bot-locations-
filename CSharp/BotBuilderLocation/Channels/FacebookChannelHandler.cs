@@ -1,7 +1,6 @@
 ﻿namespace Microsoft.Bot.Builder.Location.Channels
 {
     using System;
-    using Connector;
     using Dialogs;
 
     [Serializable]
@@ -11,7 +10,7 @@
 
         public bool SupportsKeyboard => true;
 
-        public IDialog<Place> CreateNativeLocationDialog(string prompt)
+        public IDialog<Bing.Location> CreateNativeLocationDialog(string prompt)
         {
             return new FacebookLocationDialog(prompt);
         }

@@ -61,6 +61,51 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I need the country:.
+        /// </summary>
+        internal static string AskForCountry {
+            get {
+                return ResourceManager.GetString("AskForCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I need the locality:.
+        /// </summary>
+        internal static string AskForLocality {
+            get {
+                return ResourceManager.GetString("AskForLocality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I need the postal code:.
+        /// </summary>
+        internal static string AskForPostalCode {
+            get {
+                return ResourceManager.GetString("AskForPostalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I need the region:.
+        /// </summary>
+        internal static string AskForRegion {
+            get {
+                return ResourceManager.GetString("AskForRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I need the address line:.
+        /// </summary>
+        internal static string AskForStreetAddress {
+            get {
+                return ResourceManager.GetString("AskForStreetAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
         internal static string Cancel {
