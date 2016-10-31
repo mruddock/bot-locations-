@@ -1,6 +1,4 @@
-﻿using Microsoft.Bot.Builder.Internals.Fibers;
-
-namespace Microsoft.Bot.Builder.Location.Bing
+﻿namespace Microsoft.Bot.Builder.Location.Bing
 {
     using System;
     using System.Configuration;

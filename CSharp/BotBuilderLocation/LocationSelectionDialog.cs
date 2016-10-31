@@ -90,7 +90,6 @@
             else if (!this.TryResolveAddressSelectionAsync(context, message))
             {
                 await context.PostAsync(this.ResourceManager.InvalidLocationResponse);
-
                 context.Wait(this.MessageReceivedAsync);
             }
         }

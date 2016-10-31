@@ -47,28 +47,28 @@
 
             var place = message.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
 
-            if (place != null)
+            if (place != null && place.Geo != null && place.Geo.latitude != null && place.Geo.longitude != null)
             {
-                if (place.Geo != null && place.Geo.latitude != null && place.Geo.longitude != null)
+                var location = new Location
                 {
-                    var location = new Location
+                    Point = new GeocodePoint
                     {
-                        Point = new GeocodePoint
-                        {
-                            Coordinates = new List<double>
+                        Coordinates = new List<double>
                                 {
                                     (double)place.Geo.latitude,
                                     (double)place.Geo.longitude
                                 }
-                        }
-                    };
+                    }
+                };
 
-                    context.Done(location);
-                    return;
-                }
+                context.Done(location);
             }
-
-            context.Done<Location>(null);
+            else
+            {
+                // If we didn't receive a valid place, post error message and restart dialog.
+                await context.PostAsync(this.ResourceManager.InvalidLocationResponse);
+                await this.StartAsync(context);
+            }
         }
     }
 }
