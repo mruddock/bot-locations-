@@ -10,16 +10,17 @@
     using Dialogs;
 
     [Serializable]
-    internal class FacebookLocationDialog : IDialog<Location>
+    internal class FacebookLocationDialog : LocationDialogBase<Location>
     {
         private readonly string prompt;
 
-        public FacebookLocationDialog(string prompt)
+        public FacebookLocationDialog(string prompt, LocationResourceManager resourceManager)
+            : base(resourceManager)
         {
             this.prompt = prompt;
         }
 
-        public async Task StartAsync(IDialogContext context)
+        public override async Task StartAsync(IDialogContext context)
         {
             var reply = context.MakeMessage();
             reply.ChannelData = new FacebookMessage
@@ -37,10 +38,10 @@
 
             await context.PostAsync(reply);
 
-            context.Wait(this.LocationReceivedAsync);
+            context.Wait(this.MessageReceivedAsync);
         }
 
-        private async Task LocationReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        protected override async Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
 

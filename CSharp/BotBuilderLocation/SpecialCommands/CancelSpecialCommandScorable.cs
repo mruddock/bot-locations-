@@ -1,11 +1,13 @@
-﻿namespace Microsoft.Bot.Builder.Location.SpecialCommands
+﻿using System;
+
+namespace Microsoft.Bot.Builder.Location.SpecialCommands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Connector;
     using Dialogs.Internals;
 
-    internal class CancelSpecialCommandScorable : SpecialCommandScorable
+    internal class CancelSpecialCommandScorable<T> : SpecialCommandScorable<T> where T : class
     {
         public CancelSpecialCommandScorable(IDialogStack stack, IBotToUser botToUser, string command)
             : base(stack, botToUser, command)
@@ -14,7 +16,7 @@
 
         public override Task PostAsync(IMessageActivity item, object state, CancellationToken token)
         {
-            this.Stack.Done<Place>(null);
+            this.Stack.Done<T>(null);
             return Task.FromResult(0);
         }
     }

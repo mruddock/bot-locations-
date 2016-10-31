@@ -9,7 +9,7 @@
     using Internals.Scorables;
 
     [Serializable]
-    internal abstract class SpecialCommandScorable : IScorable<IMessageActivity, double>
+    internal abstract class SpecialCommandScorable<T> : IScorable<IMessageActivity, double> where T : class
     {
         private readonly string command;
         private readonly IDialogStack stack;

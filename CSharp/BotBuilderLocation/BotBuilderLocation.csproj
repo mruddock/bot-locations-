@@ -92,6 +92,7 @@
     <Compile Include="Channels\IChannelHandler.cs" />
     <Compile Include="Channels\FacebookLocationDialog.cs" />
     <Compile Include="Bing\IBingGeoSpatialService.cs" />
+    <Compile Include="LocationDialogBase.cs" />
     <Compile Include="LocationRequiredFields.cs" />
     <Compile Include="LocationRequiredFieldsDialog.cs" />
     <Compile Include="LocationResourceManager.cs" />
@@ -114,7 +115,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
-    <Compile Include="SpecialCommands\SpecialCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

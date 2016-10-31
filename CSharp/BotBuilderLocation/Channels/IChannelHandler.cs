@@ -1,6 +1,5 @@
 ﻿namespace Microsoft.Bot.Builder.Location.Channels
 {
-    using Connector;
     using Dialogs;
 
     internal interface IChannelHandler
@@ -9,6 +8,6 @@
 
         bool SupportsKeyboard { get; }
 
-        IDialog<Bing.Location> CreateNativeLocationDialog(string prompt);
+        IDialog<Bing.Location> CreateNativeLocationDialog(string prompt, LocationResourceManager resourceManager);
     }
 }

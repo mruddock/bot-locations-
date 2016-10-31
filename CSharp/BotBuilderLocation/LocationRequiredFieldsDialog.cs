@@ -2,28 +2,34 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Connector;
     using Dialogs;
     using Internals.Fibers;
     using Resources;
 
     [Serializable]
-    internal class LocationRequiredFieldsDialog : IDialog<Bing.Location>
+    internal class LocationRequiredFieldsDialog : LocationDialogBase<Bing.Location>
     {
         private readonly Bing.Location location;
         private readonly LocationRequiredFields requiredFields;
-        private readonly LocationResourceManager resourceManager;
         private string currentFieldName;
 
         public LocationRequiredFieldsDialog(Bing.Location location, LocationRequiredFields requiredFields, LocationResourceManager resourceManager)
+            : base(resourceManager)
         {
             SetField.NotNull(out this.location, nameof(location), location);
-            SetField.NotNull(out this.resourceManager, nameof(resourceManager), resourceManager);
             this.requiredFields = requiredFields;
             this.location.Address = this.location.Address ?? new Bing.Address();
         }
 
-        public async Task StartAsync(IDialogContext context)
+        public override async Task StartAsync(IDialogContext context)
         {
+            await this.CompleteMissingFields(context);
+        }
+
+        protected override async Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            this.location.Address.GetType().GetProperty(this.currentFieldName).SetValue(this.location.Address, (await result).Text);
             await this.CompleteMissingFields(context);
         }
 
@@ -44,21 +50,16 @@
 
         private async Task<bool> CompleteFieldIfMissing(IDialogContext context, string stringName, LocationRequiredFields field, string name, string value)
         {
-            if (this.requiredFields.HasFlag(field) && string.IsNullOrEmpty(value))
+            if (!this.requiredFields.HasFlag(field) || !string.IsNullOrEmpty(value))
             {
-                this.currentFieldName = name;
-                await context.PostAsync(this.resourceManager.GetResource(stringName));
-                context.Wait(async (dialogContext, result) =>
-                {
-
-                    this.location.Address.GetType().GetProperty(this.currentFieldName).SetValue(this.location.Address, (await result).Text);
-                    await this.CompleteMissingFields(dialogContext);
-                });
-
-                return true;
+                return false;
             }
 
-            return false;
+            this.currentFieldName = name;
+            await context.PostAsync(this.ResourceManager.GetResource(stringName));
+            context.Wait(this.MessageReceivedAsync);
+
+            return true;
         }
     }
 }

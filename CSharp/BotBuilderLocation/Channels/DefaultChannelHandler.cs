@@ -10,7 +10,7 @@
 
         public bool SupportsKeyboard => false;
 
-        public IDialog<Bing.Location> CreateNativeLocationDialog(string prompt)
+        public IDialog<Bing.Location> CreateNativeLocationDialog(string prompt, LocationResourceManager resourceManager)
         {
             throw new NotSupportedException("Default channel handler doesn't support native location control.");
         }

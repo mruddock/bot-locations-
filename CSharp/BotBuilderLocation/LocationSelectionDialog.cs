@@ -15,12 +15,11 @@
     /// Responsible for receiving an address from the user and resolving it.
     /// </summary>
     [Serializable]
-    public sealed class LocationSelectionDialog : IDialog<Place>
+    public sealed class LocationSelectionDialog : LocationDialogBase<Place>
     {
         private readonly string prompt;
         private readonly LocationOptions options;
         private readonly LocationRequiredFields requiredFields;
-        private readonly LocationResourceManager resourceManager;
         private readonly IChannelHandler channelHandler;
         private readonly List<Location> locations;
 
@@ -30,24 +29,23 @@
             LocationOptions options = LocationOptions.None,
             LocationRequiredFields requiredFields = LocationRequiredFields.None,
             Assembly resourceAssembly = null,
-            string resourceName = null)
+            string resourceName = null) : base(resourceAssembly, resourceName)
         {
             this.prompt = prompt;
             this.options = options;
             this.requiredFields = requiredFields;
             this.locations = new List<Location>();
-            this.resourceManager = new LocationResourceManager(resourceAssembly, resourceName);
             this.channelHandler = ChannelHandlerFactory.CreateChannelHandler(channelId);
         }
 
-        public async Task StartAsync(IDialogContext context)
+        public override async Task StartAsync(IDialogContext context)
         {
             this.locations.Clear();
 
             if (this.options.HasFlag(LocationOptions.UseNativeControl) && this.channelHandler.HasNativeLocationControl)
             {
                 context.Call(
-                    this.channelHandler.CreateNativeLocationDialog(this.prompt),
+                    this.channelHandler.CreateNativeLocationDialog(this.prompt, this.ResourceManager),
                     async (dialogContext, result) =>
                     {
                         var location = await result;
@@ -82,29 +80,18 @@
             }
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        protected override async Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var message = await result;
 
-            int initialFramesCount = context.Frames.Count;
-
-            if (await SpecialCommands.SpecialCommands.TryPostAsync(context, message, this.resourceManager))
-            {
-                // TODO: this is a bit of a hack to only call context.Wait if the scorable
-                // didn't manipulate the stack. Is there a cleaner way to achieve this?
-                if (initialFramesCount == context.Frames.Count)
-                {
-                    context.Wait(this.MessageReceivedAsync);
-                }
-            }
-            else if (this.locations.Count == 0)
+            if (this.locations.Count == 0)
             {
                 await this.TryResolveAddressAsync(context, message);
             }
             else if (!this.TryResolveAddressSelectionAsync(context, message))
             {
                 await context.PostAsync(
-                    this.resourceManager.GetResource(nameof(Strings.InvalidLocationResponse)));
+                    this.ResourceManager.GetResource(nameof(Strings.InvalidLocationResponse)));
 
                 context.Wait(this.MessageReceivedAsync);
             }
@@ -119,7 +106,7 @@
             if (foundLocations == null || foundLocations.Count == 0)
             {
                 await context.PostAsync(
-                    this.resourceManager.GetResource(nameof(Strings.LocationNotFound)));
+                    this.ResourceManager.GetResource(nameof(Strings.LocationNotFound)));
 
                 context.Wait(this.MessageReceivedAsync);
             }
@@ -174,7 +161,7 @@
                             await this.StartAsync(dialogContext);
                         }
                     },
-                    prompt: this.resourceManager.GetResource(nameof(Strings.SingleResultFound)),
+                    prompt: this.ResourceManager.GetResource(nameof(Strings.SingleResultFound)),
                     retry: null,
                     attempts: 3,
                     promptStyle: style);
@@ -182,7 +169,7 @@
 
         private async Task PromptForMultipleAddressSelection(IDialogContext context)
         {
-            var selectText = this.resourceManager.GetResource(nameof(Strings.MultipleResultsFound));
+            var selectText = this.ResourceManager.GetResource(nameof(Strings.MultipleResultsFound));
 
             if (this.channelHandler.SupportsKeyboard)
             {
@@ -208,11 +195,18 @@
             else if (this.requiredFields != LocationRequiredFields.None)
             {
                 context.Call(
-                    new LocationRequiredFieldsDialog(location, this.requiredFields, this.resourceManager), 
+                    new LocationRequiredFieldsDialog(location, this.requiredFields, this.ResourceManager),
                     async (dialogContext, result) =>
                     {
                         var completedLocation = await result;
-                        dialogContext.Done(PlaceExtensions.FromLocation(completedLocation));
+                        if (completedLocation == null)
+                        {
+                            dialogContext.Done<Place>(null);
+                        }
+                        else
+                        {
+                            dialogContext.Done(PlaceExtensions.FromLocation(completedLocation));
+                        }
                     });
             }
             else
