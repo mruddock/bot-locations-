@@ -5,7 +5,6 @@
     using Connector;
     using Dialogs;
     using Internals.Fibers;
-    using Resources;
 
     [Serializable]
     internal class LocationRequiredFieldsDialog : LocationDialogBase<Bing.Location>

@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace Microsoft.Bot.Builder.Location.SpecialCommands
+﻿namespace Microsoft.Bot.Builder.Location.SpecialCommands
 {
     using System.Threading;
     using System.Threading.Tasks;
     using Connector;
     using Dialogs.Internals;
 
-    internal class CancelSpecialCommandScorable<T> : SpecialCommandScorable<T> where T : class
+    internal class CancelSpecialCommandScorable<T> : SpecialCommandScorable where T : class
     {
         public CancelSpecialCommandScorable(IDialogStack stack, IBotToUser botToUser, string command)
             : base(stack, botToUser, command)

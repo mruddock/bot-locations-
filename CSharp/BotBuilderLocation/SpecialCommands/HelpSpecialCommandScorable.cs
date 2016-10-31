@@ -7,7 +7,7 @@
     using Connector;
     using Internals.Fibers;
 
-    internal class HelpSpecialCommandScorable<T> : SpecialCommandScorable<T> where T : class
+    internal class HelpSpecialCommandScorable : SpecialCommandScorable
     {
         private readonly string helpText;
 

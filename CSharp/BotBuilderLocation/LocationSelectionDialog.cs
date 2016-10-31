@@ -9,7 +9,6 @@
     using Channels;
     using Connector;
     using Dialogs;
-    using Resources;
 
     /// <summary>
     /// Responsible for receiving an address from the user and resolving it.
