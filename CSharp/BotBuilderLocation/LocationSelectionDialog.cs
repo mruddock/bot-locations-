@@ -90,8 +90,7 @@
             }
             else if (!this.TryResolveAddressSelectionAsync(context, message))
             {
-                await context.PostAsync(
-                    this.ResourceManager.GetResource(nameof(Strings.InvalidLocationResponse)));
+                await context.PostAsync(this.ResourceManager.InvalidLocationResponse);
 
                 context.Wait(this.MessageReceivedAsync);
             }
@@ -105,8 +104,7 @@
 
             if (foundLocations == null || foundLocations.Count == 0)
             {
-                await context.PostAsync(
-                    this.ResourceManager.GetResource(nameof(Strings.LocationNotFound)));
+                await context.PostAsync(this.ResourceManager.LocationNotFound);
 
                 context.Wait(this.MessageReceivedAsync);
             }
@@ -161,7 +159,7 @@
                             await this.StartAsync(dialogContext);
                         }
                     },
-                    prompt: this.ResourceManager.GetResource(nameof(Strings.SingleResultFound)),
+                    prompt: this.ResourceManager.SingleResultFound,
                     retry: null,
                     attempts: 3,
                     promptStyle: style);
@@ -169,18 +167,16 @@
 
         private async Task PromptForMultipleAddressSelection(IDialogContext context)
         {
-            var selectText = this.ResourceManager.GetResource(nameof(Strings.MultipleResultsFound));
-
             if (this.channelHandler.SupportsKeyboard)
             {
                 var keyboardCardReply = context.MakeMessage();
-                keyboardCardReply.Attachments = AddressCard.CreateLocationsKeyboardCard(this.locations, selectText);
+                keyboardCardReply.Attachments = AddressCard.CreateLocationsKeyboardCard(this.locations, this.ResourceManager.MultipleResultsFound);
                 keyboardCardReply.AttachmentLayout = AttachmentLayoutTypes.List;
                 await context.PostAsync(keyboardCardReply);
             }
             else
             {
-                await context.PostAsync(selectText);
+                await context.PostAsync(this.ResourceManager.MultipleResultsFound);
             }
 
             context.Wait(this.MessageReceivedAsync);

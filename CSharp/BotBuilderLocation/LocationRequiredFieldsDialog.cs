@@ -36,11 +36,11 @@
         private async Task CompleteMissingFields(IDialogContext context)
         {
             bool notComplete =
-                await this.CompleteFieldIfMissing(context, nameof(Strings.AskForStreetAddress), LocationRequiredFields.StreetAddress, "AddressLine", this.location.Address.AddressLine)
-                || await this.CompleteFieldIfMissing(context, nameof(Strings.AskForLocality), LocationRequiredFields.Locality, "Locality", this.location.Address.Locality)
-                || await this.CompleteFieldIfMissing(context, nameof(Strings.AskForRegion), LocationRequiredFields.Region, "AdminDistrict", this.location.Address.AdminDistrict)
-                || await this.CompleteFieldIfMissing(context, nameof(Strings.AskForCountry), LocationRequiredFields.Country, "CountryRegion", this.location.Address.CountryRegion)
-                || await this.CompleteFieldIfMissing(context, nameof(Strings.AskForPostalCode), LocationRequiredFields.PostalCode, "PostalCode", this.location.Address.PostalCode);
+                await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForStreetAddress, LocationRequiredFields.StreetAddress, "AddressLine", this.location.Address.AddressLine)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForLocality, LocationRequiredFields.Locality, "Locality", this.location.Address.Locality)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForRegion, LocationRequiredFields.Region, "AdminDistrict", this.location.Address.AdminDistrict)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForCountry, LocationRequiredFields.Country, "CountryRegion", this.location.Address.CountryRegion)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForPostalCode, LocationRequiredFields.PostalCode, "PostalCode", this.location.Address.PostalCode);
 
             if (!notComplete)
             {
@@ -48,7 +48,7 @@
             }
         }
 
-        private async Task<bool> CompleteFieldIfMissing(IDialogContext context, string stringName, LocationRequiredFields field, string name, string value)
+        private async Task<bool> CompleteFieldIfMissing(IDialogContext context, string prompt, LocationRequiredFields field, string name, string value)
         {
             if (!this.requiredFields.HasFlag(field) || !string.IsNullOrEmpty(value))
             {
@@ -56,7 +56,7 @@
             }
 
             this.currentFieldName = name;
-            await context.PostAsync(this.ResourceManager.GetResource(stringName));
+            await context.PostAsync(prompt);
             context.Wait(this.MessageReceivedAsync);
 
             return true;

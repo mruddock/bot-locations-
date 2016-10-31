@@ -35,8 +35,8 @@
         {
             var commands = new List<IScorable<IMessageActivity, double>>
             {
-                new CancelSpecialCommandScorable<T>(context, context, resourceManager.GetResource(nameof(Strings.Cancel))),
-                new HelpSpecialCommandScorable<T>(context, context, resourceManager.GetResource(nameof(Strings.Help)), resourceManager.GetResource(nameof(Strings.HelpMessage)))
+                new CancelSpecialCommandScorable<T>(context, context, this.resourceManager.Cancel),
+                new HelpSpecialCommandScorable<T>(context, context, this.resourceManager.Help, this.resourceManager.HelpMessage)
             };
 
             var commandsFold = new FoldScorable<IMessageActivity, double>(new DoubleComparer(), commands);
