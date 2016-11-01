@@ -14,8 +14,8 @@
         private readonly static string ApiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
         private readonly static string FindByQueryApiUrl = $"https://dev.virtualearth.net/REST/v1/Locations?key={ApiKey}&q=";
         private readonly static string FindByPointUrl = $"https://dev.virtualearth.net/REST/v1/Locations/{{0}},{{1}}?key={ApiKey}&q=";
-        private readonly static string ImageUrlByPoint = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?mapSize=500,500&pp={{0}},{{1}};1;{{2}}&dpi=1&key={ApiKey}";
-        private readonly static string ImageUrlByBBox = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea={{0}},{{1}},{{2}},{{3}}&mapSize=500,500&pp={{4}},{{5}};1;{{6}}&dpi=1&key={ApiKey}";
+        private readonly static string ImageUrlByPoint = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?mapSize=500,500&pp={{0}},{{1}};1;{{2}}&dpi=1&logo=always&key={ApiKey}";
+        private readonly static string ImageUrlByBBox = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea={{0}},{{1}},{{2}},{{3}}&mapSize=500,500&pp={{4}},{{5}};1;{{6}}&dpi=1&logo=always&key={ApiKey}";
 
         public async Task<LocationSet> GetLocationsByQueryAsync(string address)
         {

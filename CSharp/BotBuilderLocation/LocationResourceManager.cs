@@ -42,7 +42,7 @@
         {
             if (resourceAssembly == null || resourceName == null)
             {
-                resourceAssembly = typeof(LocationSelectionDialog).Assembly;
+                resourceAssembly = typeof(LocationDialog).Assembly;
                 resourceName = typeof(Strings).FullName;
             }
 

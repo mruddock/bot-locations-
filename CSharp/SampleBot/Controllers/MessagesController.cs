@@ -29,6 +29,9 @@
             return response;
         }
 
+        /// <summary>
+        /// Represents a sample dialog that shows how to trigger the <see cref="LocationDialog"/> and handle its response.
+        /// </summary>
         [Serializable]
         private class MainDialog : IDialog<string>
         {
@@ -42,39 +45,47 @@
             public Task StartAsync(IDialogContext context)
             {
                 context.Wait(this.MessageReceivedAsync);
+
                 return Task.FromResult(0);
             }
 
             private Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
             {
-                context.Call(new LocationSelectionDialog(
-                    this.channelId,
-                    "Hi, where would you like me to ship to your widget?",
-                    options: LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode,
-                    requiredFields: LocationRequiredFields.StreetAddress | LocationRequiredFields.Locality | LocationRequiredFields.Region | LocationRequiredFields.Country | LocationRequiredFields.PostalCode),
-                    async (dialogContext, result) =>
-                    {
-                        var place = await result;
-                        if (place != null)
-                        {
-                            var address = place.GetPostalAddress();
+                var options = LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode;
 
-                            string name = address != null ?
-                                $"{address.StreetAddress}, {address.Locality}, {address.Region}, {address.Country} ({address.PostalCode})" :
-                                "the pinned location";
-                            await dialogContext.PostAsync($"OK, I will ship it to {name}");
-                        }
-                        else
-                        {
-                            await dialogContext.PostAsync("OK, I won't be shipping it");
-                        }
+                var requiredFields = LocationRequiredFields.StreetAddress | LocationRequiredFields.Locality |
+                                     LocationRequiredFields.Region | LocationRequiredFields.Country |
+                                     LocationRequiredFields.PostalCode;
 
-                        dialogContext.Done<string>(null);
-                    });
+                var prompt = "Hi, where would you like me to ship to your widget?";
+
+                var locationDialog = new LocationDialog(this.channelId, prompt, options, requiredFields);
+
+                context.Call(locationDialog, this.ResumeAfterLocationDialogAsync);
 
                 return Task.FromResult(0);
             }
 
+            private async Task ResumeAfterLocationDialogAsync(IDialogContext context, IAwaitable<Place> result)
+            {
+                var place = await result;
+                if (place != null)
+                {
+                    var address = place.GetPostalAddress();
+
+                    string name = address != null ?
+                        $"{address.StreetAddress}, {address.Locality}, {address.Region}, {address.Country} ({address.PostalCode})" :
+                        "the pinned location";
+
+                    await context.PostAsync($"OK, I will ship it to {name}");
+                }
+                else
+                {
+                    await context.PostAsync("OK, I won't be shipping it");
+                }
+
+                context.Done<string>(null);
+            }
         }
     }
 }

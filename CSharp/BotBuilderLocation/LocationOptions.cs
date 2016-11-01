@@ -3,7 +3,7 @@
     using System;
 
     /// <summary>
-    /// Options for customizing <see cref="LocationSelectionDialog"/>
+    /// Options for customizing <see cref="LocationDialog"/>
     /// </summary>
     [Flags]
     public enum LocationOptions
@@ -26,6 +26,11 @@
         /// on the channel location service or native control to get user location
         /// but still want the control to return to you a full address.
         /// </summary>
+        /// <remarks>
+        /// Due to the accuracy of reverse geo-coders, we only use it to capture
+        /// <see cref="PostalAddress.Locality"/>, <see cref="PostalAddress.Region"/>,
+        /// <see cref="PostalAddress.Country"/>, and <see cref="PostalAddress.PostalCode"/>
+        /// </remarks>
         ReverseGeocode = 2
     }
 }

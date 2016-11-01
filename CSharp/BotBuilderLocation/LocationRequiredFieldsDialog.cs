@@ -6,6 +6,9 @@
     using Dialogs;
     using Internals.Fibers;
 
+    /// <summary>
+    /// Represents a dialog that prompts the user for any missing location fields.
+    /// </summary>
     [Serializable]
     internal class LocationRequiredFieldsDialog : LocationDialogBase<Bing.Location>
     {

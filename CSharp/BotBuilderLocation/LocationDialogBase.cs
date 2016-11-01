@@ -9,9 +9,13 @@
     using Dialogs;
     using Internals.Fibers;
     using Internals.Scorables;
-    using Resources;
     using SpecialCommands;
 
+    /// <summary>
+    /// Represents base dialog that handles all the base functionalities such as
+    /// running special commands scorables on all received messages.
+    /// </summary>
+    /// <typeparam name="T">The dialog type</typeparam>
     [Serializable]
     public abstract class LocationDialogBase<T> : IDialog<T> where T : class 
     {
