@@ -27,7 +27,7 @@
     /// Calling <see cref="LocationDialog"/> with default parameters
     /// <code>
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChanneId, prompt);
+    /// var locationDialog = new LocationDialog(message.ChannelId, prompt);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -37,7 +37,7 @@
     /// Using channel's native location widget if available (e.g. Facebook) 
     /// <code>
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChanneId, prompt, LocationOptions.UseNativeControl);
+    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.UseNativeControl);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -50,7 +50,7 @@
     /// For more info see <see cref="LocationOptions.ReverseGeocode"/>
     /// <code>
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChanneId, prompt, LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode);
+    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -61,7 +61,7 @@
     /// For more info see <see cref="LocationRequiredFields"/>
     /// <code>
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChanneId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
+    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -71,7 +71,7 @@
     /// Example on how to handle the returned place
     /// <code>
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChanneId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
+    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
     /// context.Call(locationDialog, (context, result) => {
     ///     Place place = await result;
     ///     if (place != null)
