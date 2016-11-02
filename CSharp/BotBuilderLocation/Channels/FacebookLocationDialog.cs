@@ -10,7 +10,7 @@
     using Dialogs;
 
     [Serializable]
-    internal class FacebookLocationDialog : LocationDialogBase<Location>
+    internal class FacebookLocationDialog : LocationDialogBase<LocationDialogResponse>
     {
         private readonly string prompt;
 
@@ -61,7 +61,7 @@
                     }
                 };
 
-                context.Done(location);
+                context.Done(new LocationDialogResponse { Value = location });
             }
             else
             {

@@ -1,15 +1,11 @@
 ﻿namespace Microsoft.Bot.Builder.Location
 {
     using System;
-    using System.Collections.Generic;
     using System.Reflection;
-    using System.Threading;
     using System.Threading.Tasks;
     using Connector;
     using Dialogs;
     using Internals.Fibers;
-    using Internals.Scorables;
-    using SpecialCommands;
 
     /// <summary>
     /// Represents base dialog that handles all the base functionalities such as
@@ -21,39 +17,81 @@
     {
         private readonly LocationResourceManager resourceManager;
 
+        /// <summary>
+        /// Determines whether this is the root dialog or not.
+        /// </summary>
+        /// <remarks>
+        /// This is used to determine how the dialog should handle special commands
+        /// such as reset.
+        /// </remarks>
+        protected virtual bool IsRootDialog => false;
+
+        /// <summary>
+        /// Gets the resource manager.
+        /// </summary>
+        /// <value>
+        /// The resource manager.
+        /// </value>
         internal LocationResourceManager ResourceManager => this.resourceManager;
 
-        protected LocationDialogBase(Assembly resourceAssembly, string resourceName)    
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationDialogBase{T}" /> class.
+        /// </summary>
+        /// <param name="resourceAssembly">The resource assembly.</param>
+        /// <param name="resourceName">Name of the resource.</param>
+        internal LocationDialogBase(Assembly resourceAssembly, string resourceName)
         {
             this.resourceManager = new LocationResourceManager(resourceAssembly, resourceName);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationDialogBase{T}" /> class.
+        /// </summary>
+        /// <param name="resourceManager">The resource manager.</param>
         internal LocationDialogBase(LocationResourceManager resourceManager)
         {
             SetField.NotNull(out this.resourceManager, nameof(resourceManager), resourceManager);
         }
 
+        /// <summary>
+        /// Starts the dialog.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns>The asynchronous task.</returns>
         public abstract Task StartAsync(IDialogContext context);
 
+        /// <summary>
+        /// Invoked when a new message is received.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="result">The result.</param>
+        /// <returns>The asynchronous task.</returns>
         protected async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            var commands = new List<IScorable<IMessageActivity, double>>
+            var text = (await result)?.Text?.Trim();
+            
+            if (StringComparer.OrdinalIgnoreCase.Equals(text, this.resourceManager.Help))
             {
-                new CancelSpecialCommandScorable<T>(context, context, this.resourceManager.Cancel),
-                new HelpSpecialCommandScorable(context, context, this.resourceManager.Help, this.resourceManager.HelpMessage)
-            };
-
-            var commandsFold = new FoldScorable<IMessageActivity, double>(new DoubleComparer(), commands);
-
-            int initialFramesCount = context.Frames.Count;
-            if (await commandsFold.TryPostAsync(await result, CancellationToken.None))
+                await context.PostAsync(this.resourceManager.HelpMessage);
+                context.Wait(this.MessageReceivedAsync);
+            }
+            else if (StringComparer.OrdinalIgnoreCase.Equals(text, this.resourceManager.Reset))
             {
-                // TODO: this is a bit of a hack to only call context.Wait if the scorable
-                // didn't manipulate the stack. Is there a cleaner way to achieve this?
-                if (initialFramesCount == context.Frames.Count)
+                // If this is the root dialog handle reset by resending the start prompt
+                // else create a reset response and pass it to the parent dialog.
+                if (this.IsRootDialog)
                 {
-                    context.Wait(this.MessageReceivedAsync);
+                    await this.StartAsync(context);
                 }
+                else
+                {
+                    var response = new LocationDialogResponse { SpecialCommand = SpecialCommand.Reset };
+                    context.Done(response);
+                }
+            }
+            else if (StringComparer.OrdinalIgnoreCase.Equals(text, this.resourceManager.Cancel))
+            {
+                context.Done<T>(null);
             }
             else
             {
@@ -61,14 +99,49 @@
             }
         }
 
+        /// <summary>
+        /// Implements the dialog specific logic that needs to run on new messages.
+        /// If the message is special command, it gets handled by <see cref="MessageReceivedAsync"/>
+        /// and this method doesn't get called.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="result">The result.</param>
+        /// <returns></returns>
         protected abstract Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result);
 
-        private sealed class DoubleComparer : IComparer<double>
+        /// <summary>
+        /// Handles the response by checking if it is special command.
+        /// Returns true if response is a special command, false otherwise.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="response">The response.</param>
+        /// <returns>The asynchronous task.</returns>
+        internal async Task<bool> HandleSpecialCommandResponse(IDialogContext context, LocationDialogResponse response)
         {
-            int IComparer<double>.Compare(double one, double two)
+            // If response is null or cancel, pass it up to parent dialog.
+            if (response == null || response.SpecialCommand == SpecialCommand.Cancel)
             {
-                return one.CompareTo(two);
+                context.Done<T>(null);
+                return true;
             }
+            // If response is a reset, check whether this is the root dialog or not
+            // if yes, claim it and rerun the start method, otherwise pass it up
+            // to parent dialog to handle it.
+            if (response.SpecialCommand == SpecialCommand.Reset)
+            {
+                if (!this.IsRootDialog)
+                {
+                    context.Done(response);
+                }
+                else
+                {
+                    await this.StartAsync(context);
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

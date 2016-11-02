@@ -10,7 +10,7 @@
 
         public bool SupportsKeyboard => true;
 
-        public IDialog<Bing.Location> CreateNativeLocationDialog(string prompt, LocationResourceManager resourceManager)
+        public IDialog<LocationDialogResponse> CreateNativeLocationDialog(string prompt, LocationResourceManager resourceManager)
         {
             return new FacebookLocationDialog(prompt, resourceManager);
         }

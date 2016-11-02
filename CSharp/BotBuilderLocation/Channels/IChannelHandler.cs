@@ -8,6 +8,6 @@
 
         bool SupportsKeyboard { get; }
 
-        IDialog<Bing.Location> CreateNativeLocationDialog(string prompt, LocationResourceManager resourceManager);
+        IDialog<LocationDialogResponse> CreateNativeLocationDialog(string prompt, LocationResourceManager resourceManager);
     }
 }

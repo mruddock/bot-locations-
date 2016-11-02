@@ -94,14 +94,13 @@
     <Compile Include="Channels\FacebookLocationDialog.cs" />
     <Compile Include="Bing\IBingGeoSpatialService.cs" />
     <Compile Include="LocationDialogBase.cs" />
+    <Compile Include="LocationDialogResponse.cs" />
     <Compile Include="LocationRequiredFields.cs" />
     <Compile Include="LocationRequiredFieldsDialog.cs" />
     <Compile Include="LocationResourceManager.cs" />
     <Compile Include="PlaceExtensions.cs" />
     <Compile Include="PostalAddress.cs" />
-    <Compile Include="SpecialCommands\HelpSpecialCommandScorable.cs" />
-    <Compile Include="SpecialCommands\CancelSpecialCommandScorable.cs" />
-    <Compile Include="SpecialCommands\SpecialCommandScorable.cs" />
+    <Compile Include="SpecialCommand.cs" />
     <Compile Include="Bing\Address.cs" />
     <Compile Include="Bing\BingGeoSpatialService.cs" />
     <Compile Include="Bing\GeocodePoint.cs" />

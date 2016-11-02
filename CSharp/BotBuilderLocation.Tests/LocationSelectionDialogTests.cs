@@ -22,7 +22,7 @@ namespace Microsoft.Bot.Builder.Location.Tests
             await dialog.StartAsync(context.Object);
 
             // Assert
-            context.Verify(c => c.Call(It.IsAny<FacebookLocationDialog>(), It.IsAny<ResumeAfter<Bing.Location>>()), Times.Once());
+            context.Verify(c => c.Call(It.IsAny<FacebookLocationDialog>(), It.IsAny<ResumeAfter<LocationDialogResponse>>()), Times.Once());
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace Microsoft.Bot.Builder.Location.Tests
             await dialog.StartAsync(context.Object);
 
             // Assert
-            context.Verify(c => c.Call(It.IsAny<FacebookLocationDialog>(), It.IsAny<ResumeAfter<Bing.Location>>()), Times.Never);
+            context.Verify(c => c.Call(It.IsAny<FacebookLocationDialog>(), It.IsAny<ResumeAfter<LocationDialogResponse>>()), Times.Never);
         }
 
         [TestMethod]

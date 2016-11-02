@@ -102,6 +102,15 @@
         private readonly List<Location> locations;
 
         /// <summary>
+        /// Determines whether this is the root dialog or not.
+        /// </summary>
+        /// <remarks>
+        /// This is used to determine how the dialog should handle special commands
+        /// such as reset.
+        /// </remarks>
+        protected override bool IsRootDialog => true;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LocationDialog"/> class.
         /// </summary>
         /// <param name="channelId">The channel identifier.</param>
@@ -167,9 +176,14 @@
             }
         }
 
-        private async Task ResumeAfterNativeLocationDialogAsync(IDialogContext context, IAwaitable<Location> result)
+        private async Task ResumeAfterNativeLocationDialogAsync(IDialogContext context, IAwaitable<LocationDialogResponse> result)
         {
-            var location = await result;
+            var response = await result;
+
+            // If special command do nothing as base class already handled it.
+            if (await this.HandleSpecialCommandResponse(context, response)) return;
+
+            var location = response.Value;
 
             // If user passed ReverseGeocode flag and dialog returned a geo point,
             // then try to reverse geocode it using BingGeoSpatialService
@@ -193,7 +207,7 @@
                 }
             }
 
-            this.CompleteAndReturnPlace(context, await result);
+            this.CompleteAndReturnPlace(context, location);
         }
 
         private async Task TryResolveAddressAsync(IDialogContext context, IMessageActivity message)
@@ -294,14 +308,11 @@
                     new LocationRequiredFieldsDialog(location, this.requiredFields, this.ResourceManager),
                     async (dialogContext, result) =>
                     {
-                        var completedLocation = await result;
-                        if (completedLocation == null)
+                        var response = await result;
+                        var specialCommand = await this.HandleSpecialCommandResponse(dialogContext, response);
+                        if (!specialCommand)
                         {
-                            dialogContext.Done<Place>(null);
-                        }
-                        else
-                        {
-                            dialogContext.Done(PlaceExtensions.FromLocation(completedLocation));
+                            dialogContext.Done(PlaceExtensions.FromLocation(response.Value));
                         }
                     });
             }
