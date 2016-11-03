@@ -66,7 +66,7 @@
         /// <param name="context">The context.</param>
         /// <param name="result">The result.</param>
         /// <returns>The asynchronous task.</returns>
-        protected async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        internal async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var text = (await result)?.Text?.Trim();
             

@@ -1,13 +1,13 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Location.Channels;
-using Microsoft.Bot.Connector;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-
-namespace Microsoft.Bot.Builder.Location.Tests
+﻿namespace Microsoft.Bot.Builder.Location.Tests
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Connector;
+    using Channels;
+    using Dialogs;
+    using Moq;
+    using VisualStudio.TestTools.UnitTesting;
+
     [TestClass]
     public class LocationSelectionDialogTests
     {
