@@ -4,6 +4,121 @@
         <name>Microsoft.Bot.Builder.Location</name>
     </assembly>
     <members>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.#ctor(Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService,System.String,System.Boolean,Microsoft.Bot.Builder.Location.LocationResourceManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationDialog"/> class.
+            </summary>
+            <param name="geoSpatialService">The Geo-Special Service</param>
+            <param name="prompt">The prompt posted to the user when dialog starts.</param>
+            <param name="supportsKeyboard">Indicates whether channel supports keyboard buttons or not.</param>
+            <param name="resourceManager">The resource manager.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.TryResolveAddressAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Connector.IMessageActivity)">
+            <summary>
+            Tries to resolve address by passing the test to the Bing Geo-Spatial API
+            and looking for returned locations.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="message">The message.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.TryResolveAddressSelectionAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Connector.IMessageActivity)">
+            <summary>
+            Tries to resolve address selection by parsing text and checking if it is within locations range.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="message">The message.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.PromptForSingleAddressSelection(Microsoft.Bot.Builder.Dialogs.IDialogContext)">
+            <summary>
+            Prompts the user to confirm single address selection.
+            </summary>
+            <param name="context">The context.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.PromptForMultipleAddressSelection(Microsoft.Bot.Builder.Dialogs.IDialogContext)">
+            <summary>
+            Prompts the user for multiple address selection.
+            </summary>
+            <param name="context">The context.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1">
+            <summary>
+            Represents base dialog that handles all the base functionalities such as
+            running special commands scorables on all received messages.
+            </summary>
+            <typeparam name="T">The dialog type</typeparam>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.IsRootDialog">
+            <summary>
+            Determines whether this is the root dialog or not.
+            </summary>
+            <remarks>
+            This is used to determine how the dialog should handle special commands
+            such as reset.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.ResourceManager">
+            <summary>
+            Gets the resource manager.
+            </summary>
+            <value>
+            The resource manager.
+            </value>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.#ctor(System.Reflection.Assembly,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1" /> class.
+            </summary>
+            <param name="resourceAssembly">The resource assembly.</param>
+            <param name="resourceName">Name of the resource.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.#ctor(Microsoft.Bot.Builder.Location.LocationResourceManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1" /> class.
+            </summary>
+            <param name="resourceManager">The resource manager.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.StartAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext)">
+            <summary>
+            Starts the dialog.
+            </summary>
+            <param name="context">The context.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.MessageReceivedAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})">
+            <summary>
+            Invoked when a new message is received.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="result">The result.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.MessageReceivedInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})">
+            <summary>
+            Implements the dialog specific logic that needs to run on new messages.
+            If the message is special command, it gets handled by <see cref="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.MessageReceivedAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})"/>
+            and this method doesn't get called.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="result">The result.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.HandleSpecialCommandResponse(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse)">
+            <summary>
+            Handles the response by checking if it is special command.
+            Returns true if response is a special command, false otherwise.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="response">The response.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.Location.Dialogs.LocationRequiredFieldsDialog">
+            <summary>
+            Represents a dialog that prompts the user for any missing location fields.
+            </summary>
+        </member>
         <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationsByQueryAsync(System.String)">
             <summary>
             Gets the locations asynchronously.
@@ -26,77 +141,6 @@
             <param name="location">The location.</param>
             <param name="index">The pin point index.</param>
             <returns></returns>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.Location.LocationDialogBase`1">
-            <summary>
-            Represents base dialog that handles all the base functionalities such as
-            running special commands scorables on all received messages.
-            </summary>
-            <typeparam name="T">The dialog type</typeparam>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationDialogBase`1.IsRootDialog">
-            <summary>
-            Determines whether this is the root dialog or not.
-            </summary>
-            <remarks>
-            This is used to determine how the dialog should handle special commands
-            such as reset.
-            </remarks>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationDialogBase`1.ResourceManager">
-            <summary>
-            Gets the resource manager.
-            </summary>
-            <value>
-            The resource manager.
-            </value>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.#ctor(System.Reflection.Assembly,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationDialogBase`1" /> class.
-            </summary>
-            <param name="resourceAssembly">The resource assembly.</param>
-            <param name="resourceName">Name of the resource.</param>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.#ctor(Microsoft.Bot.Builder.Location.LocationResourceManager)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationDialogBase`1" /> class.
-            </summary>
-            <param name="resourceManager">The resource manager.</param>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.StartAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext)">
-            <summary>
-            Starts the dialog.
-            </summary>
-            <param name="context">The context.</param>
-            <returns>The asynchronous task.</returns>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.MessageReceivedAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})">
-            <summary>
-            Invoked when a new message is received.
-            </summary>
-            <param name="context">The context.</param>
-            <param name="result">The result.</param>
-            <returns>The asynchronous task.</returns>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.MessageReceivedInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})">
-            <summary>
-            Implements the dialog specific logic that needs to run on new messages.
-            If the message is special command, it gets handled by <see cref="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.MessageReceivedAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})"/>
-            and this method doesn't get called.
-            </summary>
-            <param name="context">The context.</param>
-            <param name="result">The result.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialogBase`1.HandleSpecialCommandResponse(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Location.LocationDialogResponse)">
-            <summary>
-            Handles the response by checking if it is special command.
-            Returns true if response is a special command, false otherwise.
-            </summary>
-            <param name="context">The context.</param>
-            <param name="response">The response.</param>
-            <returns>The asynchronous task.</returns>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.LocationRequiredFields">
             <summary>
@@ -137,11 +181,6 @@
             The postal code
             </summary>
             <example>98052</example>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.Location.LocationRequiredFieldsDialog">
-            <summary>
-            Represents a dialog that prompts the user for any missing location fields.
-            </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.PlaceExtensions">
             <summary>
@@ -351,6 +390,21 @@
             <param name="context">The context.</param>
             <param name="result">The result.</param>
             <returns>The asynchronous task</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.ResumeAfterLocationRetrieverDialogAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse})">
+            <summary>
+            Resumes after native location dialog returns.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="result">The result.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.CompleteAndReturnPlace(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Location.Bing.Location)">
+            <summary>
+            Completes any missing required address fields and pass the place back to the calling dialog.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="location">The location.</param>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.Resources.Strings">
             <summary>

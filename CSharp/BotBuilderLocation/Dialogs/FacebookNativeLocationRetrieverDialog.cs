@@ -1,20 +1,20 @@
-﻿namespace Microsoft.Bot.Builder.Location.Channels
+﻿namespace Microsoft.Bot.Builder.Location.Dialogs
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Bing;
+    using Builder.Dialogs;
     using Connector;
     using ConnectorEx;
-    using Dialogs;
 
     [Serializable]
-    internal class FacebookLocationDialog : LocationDialogBase<LocationDialogResponse>
+    internal class FacebookNativeLocationRetrieverDialog : LocationDialogBase<LocationDialogResponse>
     {
         private readonly string prompt;
 
-        public FacebookLocationDialog(string prompt, LocationResourceManager resourceManager)
+        public FacebookNativeLocationRetrieverDialog(string prompt, LocationResourceManager resourceManager)
             : base(resourceManager)
         {
             this.prompt = prompt;
@@ -49,7 +49,7 @@
 
             if (place != null && place.Geo != null && place.Geo.latitude != null && place.Geo.longitude != null)
             {
-                var location = new Location
+                var location = new Bing.Location
                 {
                     Point = new GeocodePoint
                     {

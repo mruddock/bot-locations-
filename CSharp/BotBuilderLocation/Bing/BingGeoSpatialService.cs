@@ -9,6 +9,7 @@
     using System.Web.Configuration;
     using Newtonsoft.Json;
 
+    [Serializable]
     internal sealed class BingGeoSpatialService : IGeoSpatialService
     {
         private readonly static string ApiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];

@@ -1,11 +1,11 @@
-﻿namespace Microsoft.Bot.Builder.Location
+﻿namespace Microsoft.Bot.Builder.Location.Dialogs
 {
     using System;
     using System.Threading.Tasks;
+    using Builder.Dialogs;
     using Connector;
-    using Dialogs;
     using Internals.Fibers;
-
+    
     /// <summary>
     /// Represents a dialog that prompts the user for any missing location fields.
     /// </summary>

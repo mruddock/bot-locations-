@@ -3,7 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Connector;
-    using Dialogs;
+    using Builder.Dialogs;
     using Moq;
     using VisualStudio.TestTools.UnitTesting;
 

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Bot.Builder.Location
+﻿namespace Microsoft.Bot.Builder.Location.Dialogs
 {
     internal class LocationDialogResponse
     {

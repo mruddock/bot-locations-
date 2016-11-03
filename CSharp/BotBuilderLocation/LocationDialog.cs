@@ -1,12 +1,11 @@
 ﻿namespace Microsoft.Bot.Builder.Location
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
     using Bing;
-    using Channels;
+    using Builder.Dialogs;
     using Connector;
     using Dialogs;
 
@@ -96,10 +95,9 @@
     public sealed class LocationDialog : LocationDialogBase<Place>
     {
         private readonly string prompt;
+        private readonly string channelId;
         private readonly LocationOptions options;
         private readonly LocationRequiredFields requiredFields;
-        private readonly IChannelHandler channelHandler;
-        private readonly List<Location> locations;
 
         /// <summary>
         /// Determines whether this is the root dialog or not.
@@ -128,10 +126,9 @@
             string resourceName = null) : base(resourceAssembly, resourceName)
         {
             this.prompt = prompt;
+            this.channelId = channelId;
             this.options = options;
             this.requiredFields = requiredFields;
-            this.locations = new List<Location>();
-            this.channelHandler = ChannelHandlerFactory.CreateChannelHandler(channelId);
         }
 
         /// <summary>
@@ -139,20 +136,17 @@
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The asynchronous task</returns>
-        public override async Task StartAsync(IDialogContext context)
+        public override Task StartAsync(IDialogContext context)
         {
-            this.locations.Clear();
+            var dialog = LocationDialogFactory.CreateLocationRetrieverDialog(
+                this.channelId,
+                this.prompt,
+                this.options.HasFlag(LocationOptions.UseNativeControl),
+                this.ResourceManager);
 
-            if (this.options.HasFlag(LocationOptions.UseNativeControl) && this.channelHandler.HasNativeLocationControl)
-            {
-                var nativeDialog = this.channelHandler.CreateNativeLocationDialog(this.prompt, this.ResourceManager);
-                context.Call(nativeDialog, this.ResumeAfterNativeLocationDialogAsync);
-            }
-            else
-            {
-                await context.PostAsync(this.prompt);
-                context.Wait(this.MessageReceivedAsync);
-            }
+            context.Call(dialog, this.ResumeAfterLocationRetrieverDialogAsync);
+
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -161,22 +155,18 @@
         /// <param name="context">The context.</param>
         /// <param name="result">The result.</param>
         /// <returns>The asynchronous task</returns>
-        protected override async Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        protected override Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            var message = await result;
-
-            if (this.locations.Count == 0)
-            {
-                await this.TryResolveAddressAsync(context, message);
-            }
-            else if (!this.TryResolveAddressSelectionAsync(context, message))
-            {
-                await context.PostAsync(this.ResourceManager.InvalidLocationResponse);
-                context.Wait(this.MessageReceivedAsync);
-            }
+            return Task.FromResult(0);
         }
 
-        private async Task ResumeAfterNativeLocationDialogAsync(IDialogContext context, IAwaitable<LocationDialogResponse> result)
+        /// <summary>
+        /// Resumes after native location dialog returns.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="result">The result.</param>
+        /// <returns>The asynchronous task.</returns>
+        private async Task ResumeAfterLocationRetrieverDialogAsync(IDialogContext context, IAwaitable<LocationDialogResponse> result)
         {
             var response = await result;
 
@@ -186,8 +176,8 @@
             var location = response.Value;
 
             // If user passed ReverseGeocode flag and dialog returned a geo point,
-            // then try to reverse geocode it using BingGeoSpatialService
-            if (this.options.HasFlag(LocationOptions.ReverseGeocode) && location?.Point != null)
+            // then try to reverse geocode it using BingGeoSpatialService.
+            if (this.options.HasFlag(LocationOptions.ReverseGeocode) && location != null && location.Address == null && location.Point != null)
             {
                 var results = await new BingGeoSpatialService().GetLocationsByPointAsync(location.Point.Coordinates[0], location.Point.Coordinates[1]);
                 var geocodedLocation = results?.Locations?.FirstOrDefault();
@@ -209,93 +199,12 @@
 
             this.CompleteAndReturnPlace(context, location);
         }
-
-        private async Task TryResolveAddressAsync(IDialogContext context, IMessageActivity message)
-        {
-            // TODO: handle exception
-            var locationSet = await new BingGeoSpatialService().GetLocationsByQueryAsync(message.Text);
-            var foundLocations = locationSet?.Locations;
-
-            if (foundLocations == null || foundLocations.Count == 0)
-            {
-                await context.PostAsync(this.ResourceManager.LocationNotFound);
-
-                context.Wait(this.MessageReceivedAsync);
-            }
-            else
-            {
-                this.locations.AddRange(foundLocations);
-
-                var locationsCardReply = context.MakeMessage();
-                locationsCardReply.Attachments = AddressCard.CreateLocationsCard(this.locations);
-                locationsCardReply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                await context.PostAsync(locationsCardReply);
-
-                if (this.locations.Count == 1)
-                {
-                    this.PromptForSingleAddressSelection(context);
-                }
-                else
-                {
-                    await this.PromptForMultipleAddressSelection(context);
-                }
-            }
-        }
-
-        private bool TryResolveAddressSelectionAsync(IDialogContext context, IMessageActivity message)
-        {
-            int value;
-            if (int.TryParse(message.Text, out value) && value > 0 && value <= this.locations.Count)
-            {
-                this.CompleteAndReturnPlace(context, this.locations[value - 1]);
-                return true;
-            }
-
-            return false;
-        }
-
-        private void PromptForSingleAddressSelection(IDialogContext context)
-        {
-            PromptStyle style = this.channelHandler.SupportsKeyboard
-                        ? PromptStyle.Keyboard
-                        : PromptStyle.None;
-
-            PromptDialog.Confirm(
-                    context,
-                    async (dialogContext, answer) =>
-                    {
-                        if (await answer)
-                        {
-                            this.CompleteAndReturnPlace(dialogContext, this.locations.First());
-                        }
-                        else
-                        {
-                            await this.StartAsync(dialogContext);
-                        }
-                    },
-                    prompt: this.ResourceManager.SingleResultFound,
-                    retry: null,
-                    attempts: 3,
-                    promptStyle: style);
-        }
-
-        private async Task PromptForMultipleAddressSelection(IDialogContext context)
-        {
-            if (this.channelHandler.SupportsKeyboard)
-            {
-                var keyboardCardReply = context.MakeMessage();
-                keyboardCardReply.Attachments = AddressCard.CreateLocationsKeyboardCard(this.locations, this.ResourceManager.MultipleResultsFound);
-                keyboardCardReply.AttachmentLayout = AttachmentLayoutTypes.List;
-                await context.PostAsync(keyboardCardReply);
-            }
-            else
-            {
-                await context.PostAsync(this.ResourceManager.MultipleResultsFound);
-            }
-
-            context.Wait(this.MessageReceivedAsync);
-        }
-
+      
+        /// <summary>
+        /// Completes any missing required address fields and pass the place back to the calling dialog.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="location">The location.</param>
         private void CompleteAndReturnPlace(IDialogContext context, Location location)
         {
             if (location == null)

@@ -1,15 +1,14 @@
-﻿using Microsoft.Bot.Builder.Location.Bing;
-
-namespace Microsoft.Bot.Builder.Location
+﻿namespace Microsoft.Bot.Builder.Location
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Bing;
     using Connector;
     using ConnectorEx;
 
     internal static class AddressCard
     {
-        internal static List<Attachment> CreateLocationsCard(IList<Bing.Location> locations)
+        internal static List<Attachment> CreateLocationsCard(IList<Location> locations)
         {
             var attachments = new List<Attachment>();
 
@@ -41,11 +40,11 @@ namespace Microsoft.Bot.Builder.Location
             return attachments;
         }
 
-        internal static List<Attachment> CreateLocationsKeyboardCard(IEnumerable<Bing.Location> resources, string selectText)
+        internal static List<Attachment> CreateLocationsKeyboardCard(IEnumerable<Location> resources, string selectText)
         {
             int i = 1;
             var keyboardCard = new KeyboardCard(
-                "Please select one",
+                selectText,
                 resources.Select(a => new CardAction
                 {
                     Type = "imBack",

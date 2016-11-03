@@ -87,20 +87,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddressCard.cs" />
-    <Compile Include="Channels\ChannelHandlerFactory.cs" />
-    <Compile Include="Channels\FacebookChannelHandler.cs" />
-    <Compile Include="Channels\DefaultChannelHandler.cs" />
-    <Compile Include="Channels\IChannelHandler.cs" />
-    <Compile Include="Channels\FacebookLocationDialog.cs" />
+    <Compile Include="Dialogs\LocationDialogFactory.cs" />
+    <Compile Include="Dialogs\RichLocationRetrieverDialog.cs" />
+    <Compile Include="Dialogs\FacebookNativeLocationRetrieverDialog.cs" />
     <Compile Include="Bing\IBingGeoSpatialService.cs" />
-    <Compile Include="LocationDialogBase.cs" />
-    <Compile Include="LocationDialogResponse.cs" />
+    <Compile Include="Dialogs\LocationDialogBase.cs" />
+    <Compile Include="Dialogs\LocationDialogResponse.cs" />
     <Compile Include="LocationRequiredFields.cs" />
-    <Compile Include="LocationRequiredFieldsDialog.cs" />
+    <Compile Include="Dialogs\LocationRequiredFieldsDialog.cs" />
     <Compile Include="LocationResourceManager.cs" />
     <Compile Include="PlaceExtensions.cs" />
     <Compile Include="PostalAddress.cs" />
-    <Compile Include="SpecialCommand.cs" />
+    <Compile Include="Dialogs\SpecialCommand.cs" />
     <Compile Include="Bing\Address.cs" />
     <Compile Include="Bing\BingGeoSpatialService.cs" />
     <Compile Include="Bing\GeocodePoint.cs" />

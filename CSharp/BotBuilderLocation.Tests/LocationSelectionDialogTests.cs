@@ -2,8 +2,8 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Builder.Dialogs;
     using Connector;
-    using Channels;
     using Dialogs;
     using Moq;
     using VisualStudio.TestTools.UnitTesting;
@@ -22,7 +22,7 @@
             await dialog.StartAsync(context.Object);
 
             // Assert
-            context.Verify(c => c.Call(It.IsAny<FacebookLocationDialog>(), It.IsAny<ResumeAfter<LocationDialogResponse>>()), Times.Once());
+            context.Verify(c => c.Call(It.IsAny<FacebookNativeLocationRetrieverDialog>(), It.IsAny<ResumeAfter<LocationDialogResponse>>()), Times.Once());
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@
             await dialog.StartAsync(context.Object);
 
             // Assert
-            context.Verify(c => c.Call(It.IsAny<FacebookLocationDialog>(), It.IsAny<ResumeAfter<LocationDialogResponse>>()), Times.Never);
+            context.Verify(c => c.Call(It.IsAny<FacebookNativeLocationRetrieverDialog>(), It.IsAny<ResumeAfter<LocationDialogResponse>>()), Times.Never);
         }
 
         [TestMethod]
