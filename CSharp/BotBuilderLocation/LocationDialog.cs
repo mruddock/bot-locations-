@@ -98,6 +98,7 @@
         private readonly string channelId;
         private readonly LocationOptions options;
         private readonly LocationRequiredFields requiredFields;
+        private bool requiredDialogCalled = false;
 
         /// <summary>
         /// Determines whether this is the root dialog or not.
@@ -138,25 +139,16 @@
         /// <returns>The asynchronous task</returns>
         public override Task StartAsync(IDialogContext context)
         {
+            this.requiredDialogCalled = false;
+
             var dialog = LocationDialogFactory.CreateLocationRetrieverDialog(
                 this.channelId,
                 this.prompt,
                 this.options.HasFlag(LocationOptions.UseNativeControl),
                 this.ResourceManager);
 
-            context.Call(dialog, this.ResumeAfterLocationRetrieverDialogAsync);
+            context.Call(dialog, this.ResumeAfterChildDialogAsync);
 
-            return Task.FromResult(0);
-        }
-
-        /// <summary>
-        /// Invoked by base class when a new message is received.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="result">The result.</param>
-        /// <returns>The asynchronous task</returns>
-        protected override Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
-        {
             return Task.FromResult(0);
         }
 
@@ -166,15 +158,31 @@
         /// <param name="context">The context.</param>
         /// <param name="result">The result.</param>
         /// <returns>The asynchronous task.</returns>
-        private async Task ResumeAfterLocationRetrieverDialogAsync(IDialogContext context, IAwaitable<LocationDialogResponse> result)
+        internal override async Task ResumeAfterChildDialogInternalAsync(IDialogContext context, IAwaitable<LocationDialogResponse> result)
         {
             var response = await result;
 
-            // If special command do nothing as base class already handled it.
-            if (await this.HandleSpecialCommandResponse(context, response)) return;
+            await this.TryReverseGeocodeAddress(response.Location);
 
-            var location = response.Value;
+            if (!this.requiredDialogCalled && this.requiredFields != LocationRequiredFields.None)
+            {
+                this.requiredDialogCalled = true;
+                var requiredDialog = new LocationRequiredFieldsDialog(response.Location, this.requiredFields, this.ResourceManager);
+                context.Call(requiredDialog, this.ResumeAfterChildDialogAsync);
+            }
+            else
+            {
+                context.Done(CreatePlace(response.Location));
+            }
+        }
 
+        /// <summary>
+        /// Tries to complete missing fields using Bing reverse geo-coder.
+        /// </summary>
+        /// <param name="location">The location.</param>
+        /// <returns>The asynchronous task.</returns>
+        private async Task TryReverseGeocodeAddress(Location location)
+        {
             // If user passed ReverseGeocode flag and dialog returned a geo point,
             // then try to reverse geocode it using BingGeoSpatialService.
             if (this.options.HasFlag(LocationOptions.ReverseGeocode) && location != null && location.Address == null && location.Point != null)
@@ -196,39 +204,44 @@
                     };
                 }
             }
-
-            this.CompleteAndReturnPlace(context, location);
         }
-      
+
         /// <summary>
-        /// Completes any missing required address fields and pass the place back to the calling dialog.
+        /// Creates the place object from location object.
         /// </summary>
-        /// <param name="context">The context.</param>
         /// <param name="location">The location.</param>
-        private void CompleteAndReturnPlace(IDialogContext context, Location location)
+        /// <returns>The created place object.</returns>
+        private static Place CreatePlace(Location location)
         {
-            if (location == null)
+            var place = new Place
             {
-                context.Done<Place>(null);
-            }
-            else if (this.requiredFields != LocationRequiredFields.None)
+                Type = location.EntityType,
+                Name = location.Name
+            };
+
+            if (location.Address != null)
             {
-                context.Call(
-                    new LocationRequiredFieldsDialog(location, this.requiredFields, this.ResourceManager),
-                    async (dialogContext, result) =>
-                    {
-                        var response = await result;
-                        var specialCommand = await this.HandleSpecialCommandResponse(dialogContext, response);
-                        if (!specialCommand)
-                        {
-                            dialogContext.Done(PlaceExtensions.FromLocation(response.Value));
-                        }
-                    });
+                place.Address = new PostalAddress
+                {
+                    FormattedAddress = location.Address.FormattedAddress,
+                    Country = location.Address.CountryRegion,
+                    Locality = location.Address.Locality,
+                    PostalCode = location.Address.PostalCode,
+                    Region = location.Address.AdminDistrict,
+                    StreetAddress = location.Address.AddressLine
+                };
             }
-            else
+
+            if (location.Point != null && location.Point.HasCoordinates)
             {
-                context.Done(PlaceExtensions.FromLocation(location));
+                place.Geo = new GeoCoordinates
+                {
+                    Latitude = location.Point.Coordinates[0],
+                    Longitude = location.Point.Coordinates[1]
+                };
             }
+
+            return place;
         }
     }
 }

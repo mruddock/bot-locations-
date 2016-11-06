@@ -105,7 +105,23 @@
             <param name="result">The result.</param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.HandleSpecialCommandResponse(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse)">
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.ResumeAfterChildDialogAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse})">
+            <summary>
+            Invoked after a child dialog returns context.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="response">The response.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.ResumeAfterChildDialogInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse})">
+            <summary>
+            Implements child class specific logic when a child dialog returns context.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="response">The response.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationDialogBase`1.TryHandleSpecialCommandResponse(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse)">
             <summary>
             Handles the response by checking if it is special command.
             Returns true if response is a special command, false otherwise.
@@ -383,15 +399,7 @@
             <param name="context">The context.</param>
             <returns>The asynchronous task</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.MessageReceivedInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})">
-            <summary>
-            Invoked by base class when a new message is received.
-            </summary>
-            <param name="context">The context.</param>
-            <param name="result">The result.</param>
-            <returns>The asynchronous task</returns>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.ResumeAfterLocationRetrieverDialogAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse})">
+        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.ResumeAfterChildDialogInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse})">
             <summary>
             Resumes after native location dialog returns.
             </summary>
@@ -399,12 +407,19 @@
             <param name="result">The result.</param>
             <returns>The asynchronous task.</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.CompleteAndReturnPlace(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Location.Bing.Location)">
+        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.TryReverseGeocodeAddress(Microsoft.Bot.Builder.Location.Bing.Location)">
             <summary>
-            Completes any missing required address fields and pass the place back to the calling dialog.
+            Tries to complete missing fields using Bing reverse geo-coder.
             </summary>
-            <param name="context">The context.</param>
             <param name="location">The location.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.CreatePlace(Microsoft.Bot.Builder.Location.Bing.Location)">
+            <summary>
+            Creates the place object from location object.
+            </summary>
+            <param name="location">The location.</param>
+            <returns>The created place object.</returns>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.Resources.Strings">
             <summary>
@@ -424,27 +439,27 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForCountry">
             <summary>
-              Looks up a localized string similar to I need the country:.
+              Looks up a localized string similar to I also need the country:.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForLocality">
             <summary>
-              Looks up a localized string similar to I need the locality:.
+              Looks up a localized string similar to I also need the locality:.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForPostalCode">
             <summary>
-              Looks up a localized string similar to I need the postal code:.
+              Looks up a localized string similar to I also need the postal code:.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForRegion">
             <summary>
-              Looks up a localized string similar to I need the region:.
+              Looks up a localized string similar to I also need the region:.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForStreetAddress">
             <summary>
-              Looks up a localized string similar to I need the address line:.
+              Looks up a localized string similar to I also need the address line:.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Cancel">

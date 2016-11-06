@@ -36,38 +36,5 @@
 
             return null;
         }
-
-        internal static Place FromLocation(Bing.Location location)
-        {
-            var place = new Place
-            {
-                Type = location.EntityType,
-                Name = location.Name
-            };
-
-            if (location.Address != null)
-            {
-                place.Address = new PostalAddress
-                {
-                    FormattedAddress = location.Address.FormattedAddress,
-                    Country = location.Address.CountryRegion,
-                    Locality = location.Address.Locality,
-                    PostalCode = location.Address.PostalCode,
-                    Region = location.Address.AdminDistrict,
-                    StreetAddress = location.Address.AddressLine
-                };
-            }
-
-            if (location.Point != null && location.Point.HasCoordinates)
-            {
-                place.Geo = new GeoCoordinates
-                {
-                    Latitude = location.Point.Coordinates[0],
-                    Longitude = location.Point.Coordinates[1]
-                };
-            }
-
-            return place;
-        }
     }
 }

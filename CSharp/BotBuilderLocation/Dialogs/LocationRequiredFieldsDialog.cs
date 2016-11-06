@@ -46,7 +46,7 @@
 
             if (!notComplete)
             {
-                var result = new LocationDialogResponse {  Value = this.location };
+                var result = new LocationDialogResponse(this.location);
                 context.Done(result);
             }
         }

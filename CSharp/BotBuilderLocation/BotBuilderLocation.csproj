@@ -98,7 +98,6 @@
     <Compile Include="LocationResourceManager.cs" />
     <Compile Include="PlaceExtensions.cs" />
     <Compile Include="PostalAddress.cs" />
-    <Compile Include="Dialogs\SpecialCommand.cs" />
     <Compile Include="Bing\Address.cs" />
     <Compile Include="Bing\BingGeoSpatialService.cs" />
     <Compile Include="Bing\GeocodePoint.cs" />

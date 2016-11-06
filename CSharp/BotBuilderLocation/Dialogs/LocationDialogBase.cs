@@ -13,7 +13,7 @@
     /// </summary>
     /// <typeparam name="T">The dialog type</typeparam>
     [Serializable]
-    public abstract class LocationDialogBase<T> : IDialog<T> where T : class 
+    public abstract class LocationDialogBase<T> : IDialog<T> where T : class
     {
         private readonly LocationResourceManager resourceManager;
 
@@ -69,31 +69,7 @@
         internal async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var text = (await result)?.Text?.Trim();
-            
-            if (StringComparer.OrdinalIgnoreCase.Equals(text, this.resourceManager.Help))
-            {
-                await context.PostAsync(this.resourceManager.HelpMessage);
-                context.Wait(this.MessageReceivedAsync);
-            }
-            else if (StringComparer.OrdinalIgnoreCase.Equals(text, this.resourceManager.Reset))
-            {
-                // If this is the root dialog handle reset by resending the start prompt
-                // else create a reset response and pass it to the parent dialog.
-                if (this.IsRootDialog)
-                {
-                    await this.StartAsync(context);
-                }
-                else
-                {
-                    var response = new LocationDialogResponse { SpecialCommand = SpecialCommand.Reset };
-                    context.Done(response);
-                }
-            }
-            else if (StringComparer.OrdinalIgnoreCase.Equals(text, this.resourceManager.Cancel))
-            {
-                context.Done<T>(null);
-            }
-            else
+            if (!await this.TryHandleSpecialCommandResponse(context, new LocationDialogResponse(message: text)))
             {
                 await this.MessageReceivedInternalAsync(context, result);
             }
@@ -107,7 +83,35 @@
         /// <param name="context">The context.</param>
         /// <param name="result">The result.</param>
         /// <returns></returns>
-        protected abstract Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result);
+        protected virtual Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Invoked after a child dialog returns context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="response">The response.</param>
+        /// <returns>The asynchronous task.</returns>
+        internal async Task ResumeAfterChildDialogAsync(IDialogContext context, IAwaitable<LocationDialogResponse> response)
+        {
+            if (!await this.TryHandleSpecialCommandResponse(context, await response))
+            {
+                await this.ResumeAfterChildDialogInternalAsync(context, response);
+            }
+        }
+
+        /// <summary>
+        /// Implements child class specific logic when a child dialog returns context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="response">The response.</param>
+        /// <returns>The asynchronous task.</returns>
+        internal virtual Task ResumeAfterChildDialogInternalAsync(IDialogContext context, IAwaitable<LocationDialogResponse> response)
+        {
+            return Task.FromResult(0);
+        }
 
         /// <summary>
         /// Handles the response by checking if it is special command.
@@ -116,31 +120,40 @@
         /// <param name="context">The context.</param>
         /// <param name="response">The response.</param>
         /// <returns>The asynchronous task.</returns>
-        internal async Task<bool> HandleSpecialCommandResponse(IDialogContext context, LocationDialogResponse response)
+        private async Task<bool> TryHandleSpecialCommandResponse(IDialogContext context, LocationDialogResponse response)
         {
-            // If response is null or cancel, pass it up to parent dialog.
-            if (response == null || response.SpecialCommand == SpecialCommand.Cancel)
+            // If special command cancel, pass up a null to parent dialog.
+            if (response == null || StringComparer.OrdinalIgnoreCase.Equals(response.Message, this.resourceManager.Cancel))
             {
                 context.Done<T>(null);
                 return true;
             }
+
+            if (StringComparer.OrdinalIgnoreCase.Equals(response.Message, this.resourceManager.Help))
+            {
+                await context.PostAsync(this.ResourceManager.HelpMessage);
+                context.Wait(this.MessageReceivedAsync);
+                return true;
+            }
+
             // If response is a reset, check whether this is the root dialog or not
             // if yes, claim it and rerun the start method, otherwise pass it up
             // to parent dialog to handle it.
-            if (response.SpecialCommand == SpecialCommand.Reset)
+            if (StringComparer.OrdinalIgnoreCase.Equals(response.Message, this.resourceManager.Reset))
             {
-                if (!this.IsRootDialog)
+                if (this.IsRootDialog)
                 {
-                    context.Done(response);
+                    await this.StartAsync(context);
                 }
                 else
                 {
-                    await this.StartAsync(context);
+                    context.Done(response);
                 }
 
                 return true;
             }
 
+            // This is not a special command, return false.
             return false;
         }
     }

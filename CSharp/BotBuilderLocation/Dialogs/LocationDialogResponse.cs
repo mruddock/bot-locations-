@@ -2,8 +2,14 @@
 {
     internal class LocationDialogResponse
     {
-        public Bing.Location Value { get; set; }
+        public Bing.Location Location { get; }
 
-        public SpecialCommand SpecialCommand { get; set; }
+        public string Message { get; }
+
+        public LocationDialogResponse(Bing.Location location = null, string message = null)
+        {
+            this.Location = location;
+            this.Message = message;
+        }
     }
 }

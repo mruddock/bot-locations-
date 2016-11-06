@@ -61,7 +61,7 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I need the country:.
+        ///   Looks up a localized string similar to I also need the country:.
         /// </summary>
         internal static string AskForCountry {
             get {
@@ -70,7 +70,7 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I need the locality:.
+        ///   Looks up a localized string similar to I also need the locality:.
         /// </summary>
         internal static string AskForLocality {
             get {
@@ -79,7 +79,7 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I need the postal code:.
+        ///   Looks up a localized string similar to I also need the postal code:.
         /// </summary>
         internal static string AskForPostalCode {
             get {
@@ -88,7 +88,7 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I need the region:.
+        ///   Looks up a localized string similar to I also need the region:.
         /// </summary>
         internal static string AskForRegion {
             get {
@@ -97,7 +97,7 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I need the address line:.
+        ///   Looks up a localized string similar to I also need the address line:.
         /// </summary>
         internal static string AskForStreetAddress {
             get {

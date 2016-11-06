@@ -61,7 +61,7 @@
                     }
                 };
 
-                context.Done(new LocationDialogResponse { Value = location });
+                context.Done(new LocationDialogResponse(location));
             }
             else
             {

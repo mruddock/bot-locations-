@@ -105,7 +105,7 @@
             int value;
             if (int.TryParse(message.Text, out value) && value > 0 && value <= this.locations.Count)
             {
-                context.Done(new LocationDialogResponse { Value = this.locations[value - 1] });
+                context.Done(new LocationDialogResponse(this.locations[value - 1]));
                 return true;
             }
 
@@ -128,7 +128,7 @@
                     {
                         if (await answer)
                         {
-                            dialogContext.Done(new LocationDialogResponse { Value = this.locations.First() });
+                            dialogContext.Done(new LocationDialogResponse(this.locations.First()));
                         }
                         else
                         {
