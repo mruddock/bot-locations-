@@ -98,7 +98,7 @@
         private readonly string channelId;
         private readonly LocationOptions options;
         private readonly LocationRequiredFields requiredFields;
-        private bool requiredDialogCalled = false;
+        private bool requiredDialogCalled;
 
         /// <summary>
         /// Determines whether this is the root dialog or not.
