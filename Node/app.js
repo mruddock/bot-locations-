@@ -4,7 +4,7 @@ require('dotenv-extended').load();
 
 var builder = require('botbuilder');
 var restify = require('restify');
-var ld = require('./lib/location-dialog');
+var locationDialog = require('./lib/location-dialog');
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -19,27 +19,28 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
-ld.create(bot);
+locationDialog.create(bot);
 
 bot.dialog("/", [
     function (session) {
-        ld.getLocation(session, {
+        var options = {
             prompt: "Hi, where would you like me to ship to your widget?",
-            requiredFields: 
-                ld.LocationRequiredFields.streetAddress |
-                ld.LocationRequiredFields.locality |
-                ld.LocationRequiredFields.region |
-                ld.LocationRequiredFields.country |
-                ld.LocationRequiredFields.postalCode
-        });
+            requiredFields:
+            locationDialog.LocationRequiredFields.streetAddress |
+            locationDialog.LocationRequiredFields.locality |
+            locationDialog.LocationRequiredFields.region |
+            locationDialog.LocationRequiredFields.country |
+            locationDialog.LocationRequiredFields.postalCode
+        };
+
+        locationDialog.getLocation(session, options);
     },
     function (session, results) {
         if (results.response) {
-            console.log(results.response);
-            session.send(JSON.stringify(results.response));
+            var place = results.response;
+            session.send(place.streetAddress + ", " + place.locality + ", " + place.region + ", " + place.country + " (" + place.postalCode + ")");
         }
         else {
-            console.log("OK, I won't be shipping it");
             session.send("OK, I won't be shipping it");
         }
     }

@@ -7,17 +7,12 @@ import * as requiredFieldsDialog from './dialogs/required-fields-dialog';
 
 export interface ILocationPromptOptions {
     prompt: string;
-    locationOptions?: LocationOptions;
     requiredFields?: requiredFieldsDialog.LocationRequiredFields;
+    useNativeControl?: boolean,
+    reverseGeocode?: boolean
 }
 
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields
-
-export enum LocationOptions {
-    none = 0,
-    useNativeControl = 1 << 0,
-    reverseGeocode = 1 << 1
-}
 
 //=========================================================
 // Library creation
