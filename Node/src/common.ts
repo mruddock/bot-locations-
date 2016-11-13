@@ -16,7 +16,7 @@ export function createBaseDialog(options?: any): IntentDialog {
         });
 }
 
-export function processLocation(location: any): Place {
+export function processLocation(location: any, includeStreetAddress: boolean): Place {
     var place: Place = new Place();
     place.type = location.entityType;
     place.name = location.name;
@@ -27,7 +27,9 @@ export function processLocation(location: any): Place {
         place.locality = location.address.locality;
         place.postalCode = location.address.postalCode;
         place.region = location.address.adminDistrict;
-        place.streetAddress = location.address.addressLine;
+        if (includeStreetAddress) {
+            place.streetAddress = location.address.addressLine;
+        }
     }
 
     if (location.point && location.point.coordinates && location.point.coordinates.length == 2) {

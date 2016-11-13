@@ -18,7 +18,7 @@ function createDialog() {
             if (match) {
                 var currentNumber = Number(match[0]);
                 if (currentNumber > 0 && currentNumber <= session.dialogData.locations.length) {
-                    var place = common.processLocation(session.dialogData.locations[currentNumber - 1]);
+                    var place = common.processLocation(session.dialogData.locations[currentNumber - 1], true);
                     session.endDialogWithResult({ response: { place: place } })
                     return;
                 }

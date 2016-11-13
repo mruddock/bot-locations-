@@ -16,7 +16,7 @@ function createBaseDialog(options) {
     });
 }
 exports.createBaseDialog = createBaseDialog;
-function processLocation(location) {
+function processLocation(location, includeStreetAddress) {
     var place = new place_1.Place();
     place.type = location.entityType;
     place.name = location.name;
@@ -26,7 +26,9 @@ function processLocation(location) {
         place.locality = location.address.locality;
         place.postalCode = location.address.postalCode;
         place.region = location.address.adminDistrict;
-        place.streetAddress = location.address.addressLine;
+        if (includeStreetAddress) {
+            place.streetAddress = location.address.addressLine;
+        }
     }
     if (location.point && location.point.coordinates && location.point.coordinates.length == 2) {
         place.geo = new place_1.Geo();

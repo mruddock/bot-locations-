@@ -26,12 +26,13 @@ bot.dialog("/", [
         var options = {
             prompt: "Hi, where would you like me to ship to your widget?",
             useNativeControl: true,
+            reverseGeocode: true,
             requiredFields:
-            locationDialog.LocationRequiredFields.streetAddress |
-            locationDialog.LocationRequiredFields.locality |
-            locationDialog.LocationRequiredFields.region |
-            locationDialog.LocationRequiredFields.country |
-            locationDialog.LocationRequiredFields.postalCode
+                locationDialog.LocationRequiredFields.streetAddress |
+                locationDialog.LocationRequiredFields.locality |
+                locationDialog.LocationRequiredFields.region |
+                locationDialog.LocationRequiredFields.country |
+                locationDialog.LocationRequiredFields.postalCode
         };
 
         locationDialog.getLocation(session, options);

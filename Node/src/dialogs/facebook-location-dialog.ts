@@ -1,6 +1,7 @@
 import * as common from '../common';
 import { Session, IDialogResult, Library, AttachmentLayout, HeroCard, CardImage, Message } from 'botbuilder';
 import { Place } from '../Place';
+import * as locationService from '../services/bing-geospatial-service';
 
 export function register(library: Library): void {
     library.dialog('facebook-location-dialog', createDialog());
@@ -10,7 +11,26 @@ export function register(library: Library): void {
 function createDialog() {
     return [
         (session: Session, args: any) => {
+            session.dialogData.args = args;
             session.beginDialog('facebook-location-resolve-dialog', { prompt: args.prompt });
+        },
+        (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
+            if (session.dialogData.args.reverseGeocode && results.response && results.response.place) {
+                locationService.getLocationByPoint(results.response.place.geo.latitude, results.response.place.geo.longitude)
+                    .then(locations => {
+                        var place: Place;
+                        if (locations.length) {
+                            place = common.processLocation(locations[0], false);
+                        } else {
+                            place = results.response.place;
+                        }
+
+                        session.endDialogWithResult({response: {place: place}});
+                    });
+            }
+            else {
+                next(results);
+            }
         }
     ];
 }

@@ -15,7 +15,7 @@ function createDialog() {
         .onDefault((session) => {
             var message = parseBoolean(session.message.text);
             if (typeof message == 'boolean') {
-                var place = message == true ? common.processLocation(session.dialogData.locations[0]) : null;
+                var place = message == true ? common.processLocation(session.dialogData.locations[0], true) : null;
                 session.endDialogWithResult({ response: { place: place } })
                 return;
             }
