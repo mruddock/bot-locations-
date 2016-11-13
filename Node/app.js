@@ -25,6 +25,7 @@ bot.dialog("/", [
     function (session) {
         var options = {
             prompt: "Hi, where would you like me to ship to your widget?",
+            useNativeControl: true,
             requiredFields:
             locationDialog.LocationRequiredFields.streetAddress |
             locationDialog.LocationRequiredFields.locality |
@@ -38,7 +39,7 @@ bot.dialog("/", [
     function (session, results) {
         if (results.response) {
             var place = results.response;
-            session.send(place.streetAddress + ", " + place.locality + ", " + place.region + ", " + place.country + " (" + place.postalCode + ")");
+            session.send("OK, I will ship it to " + place.streetAddress + ", " + place.locality + ", " + place.region + ", " + place.country + " (" + place.postalCode + ")");
         }
         else {
             session.send("OK, I won't be shipping it");

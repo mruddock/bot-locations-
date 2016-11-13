@@ -35,13 +35,13 @@ function createDialog() {
             }
         })
         .onDefault((session) => {
-            if (!session.message.text) {
-                return;
-            }
-
             var index = session.dialogData.index;
 
             if (index >= 0) {
+                if (!session.message.text) {
+                    return;
+                }
+
                 session.dialogData.place[fields[index].name] = session.message.text;
             }
 

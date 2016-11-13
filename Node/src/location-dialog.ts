@@ -2,7 +2,8 @@ import * as path from 'path';
 import { Library, Session, UniversalBot, IDialogResult } from 'botbuilder';
 import * as common from './common';
 import { Place } from './place';
-import * as locationPrompt from './dialogs/default-location-dialog';
+import * as defaultLocationDialog from './dialogs/default-location-dialog';
+import * as facebookLocationDialog from './dialogs/facebook-location-dialog'
 import * as requiredFieldsDialog from './dialogs/required-fields-dialog';
 
 export interface ILocationPromptOptions {
@@ -21,7 +22,8 @@ exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields
 var lib = new Library('botbuilder-location');
 
 requiredFieldsDialog.register(lib);
-locationPrompt.register(lib);
+defaultLocationDialog.register(lib);
+facebookLocationDialog.register(lib);
 lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
 lib.localePath(path.join(__dirname, 'locale/'))
 
@@ -39,9 +41,14 @@ exports.getLocation = function (session: Session, options: ILocationPromptOption
 
 function getLocationPickerPrompt() {
     return [
-        (session: Session, args: any) => {
+        (session: Session, args: ILocationPromptOptions) => {
             session.dialogData.args = args;
-            session.beginDialog('default-location-dialog', args);
+            if (args.useNativeControl && session.message.address.channelId == 'facebook') {
+                session.beginDialog('facebook-location-dialog', args);
+            }
+            else {
+                session.beginDialog('default-location-dialog', args);
+            }
         },
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
             if (results.response && results.response.place) {

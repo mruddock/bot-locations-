@@ -1,18 +1,14 @@
 "use strict";
 var path = require('path');
 var botbuilder_1 = require('botbuilder');
-var locationPrompt = require('./dialogs/default-location-dialog');
+var defaultLocationDialog = require('./dialogs/default-location-dialog');
+var facebookLocationDialog = require('./dialogs/facebook-location-dialog');
 var requiredFieldsDialog = require('./dialogs/required-fields-dialog');
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
-(function (LocationOptions) {
-    LocationOptions[LocationOptions["none"] = 0] = "none";
-    LocationOptions[LocationOptions["useNativeControl"] = 1] = "useNativeControl";
-    LocationOptions[LocationOptions["reverseGeocode"] = 2] = "reverseGeocode";
-})(exports.LocationOptions || (exports.LocationOptions = {}));
-var LocationOptions = exports.LocationOptions;
 var lib = new botbuilder_1.Library('botbuilder-location');
 requiredFieldsDialog.register(lib);
-locationPrompt.register(lib);
+defaultLocationDialog.register(lib);
+facebookLocationDialog.register(lib);
 lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
 lib.localePath(path.join(__dirname, 'locale/'));
 exports.create = function (bot) {
@@ -25,7 +21,12 @@ function getLocationPickerPrompt() {
     return [
         function (session, args) {
             session.dialogData.args = args;
-            session.beginDialog('default-location-dialog', args);
+            if (args.useNativeControl && session.message.address.channelId == 'facebook') {
+                session.beginDialog('facebook-location-dialog', args);
+            }
+            else {
+                session.beginDialog('default-location-dialog', args);
+            }
         },
         function (session, results, next) {
             if (results.response && results.response.place) {

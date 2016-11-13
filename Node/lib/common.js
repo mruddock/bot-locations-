@@ -36,3 +36,11 @@ function processLocation(location) {
     return place;
 }
 exports.processLocation = processLocation;
+function buildPlaceFromGeo(latitude, longitude) {
+    var place = new place_1.Place();
+    place.geo = new place_1.Geo();
+    place.geo.latitude = latitude;
+    place.geo.longitude = longitude;
+    return place;
+}
+exports.buildPlaceFromGeo = buildPlaceFromGeo;
