@@ -22,7 +22,7 @@ function createDialog() {
             }
 
             session.send(Strings.InvalidLocationResponse);
-        })
+        });
 }
 
 function parseBoolean(input: string) {

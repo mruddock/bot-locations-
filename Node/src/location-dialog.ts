@@ -53,7 +53,10 @@ function getLocationPickerPrompt() {
         },
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
             if (results.response && results.response.place) {
-                session.beginDialog('required-fields-dialog', { place: results.response.place, requiredFields: session.dialogData.args.requiredFields })
+                session.beginDialog('required-fields-dialog', {
+                    place: results.response.place,
+                    requiredFields: session.dialogData.args.requiredFields
+                })
             } else {
                 next(results);
             }

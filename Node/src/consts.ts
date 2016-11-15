@@ -2,7 +2,7 @@
 export const LibraryName = "botbuilder-location";
 
 export const Strings = {
-    AskForCountry: LibraryName + ":AskForCountry",
+    "AskForCountry": LibraryName + ":AskForCountry",
     "AskForLocality": LibraryName + ":AskForLocality",
     "AskForPostalCode": LibraryName + ":AskForPostalCode",
     "AskForRegion": LibraryName + ":AskForRegion",
