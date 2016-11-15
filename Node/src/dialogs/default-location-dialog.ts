@@ -1,4 +1,5 @@
 import * as common from '../common';
+import { Strings } from '../consts';
 import { Session, IDialogResult, Library, AttachmentLayout, HeroCard, CardImage, Message } from 'botbuilder';
 import { Place } from '../Place';
 import * as locationService from '../services/bing-geospatial-service';
@@ -46,7 +47,7 @@ function createLocationResolveDialog() {
             locationService.getLocationByQuery(session.message.text)
                 .then(locations => {
                     if (locations.length == 0) {
-                        session.send("LocationNotFound");
+                        session.send(Strings.LocationNotFound);
                         return;
                     }
 

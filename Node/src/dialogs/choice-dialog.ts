@@ -1,5 +1,6 @@
 import { Library } from 'botbuilder';
 import * as common from '../common';
+import { Strings } from '../consts';
 
 export function register(library: Library): void {
     library.dialog('choice-dialog', createDialog());
@@ -10,7 +11,7 @@ function createDialog() {
         .onBegin((session, args) => {
             session.dialogData.locations = args.locations;
 
-            session.send("MultipleResultsFound");
+            session.send(Strings.MultipleResultsFound);
         })
         .onDefault((session) => {
             var numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
@@ -24,6 +25,6 @@ function createDialog() {
                 }
             }
 
-            session.send("InvalidLocationResponse");
+            session.send(Strings.InvalidLocationResponse);
         });
 }

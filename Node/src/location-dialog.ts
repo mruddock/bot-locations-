@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { Library, Session, UniversalBot, IDialogResult } from 'botbuilder';
 import * as common from './common';
+import * as consts from './consts';
 import { Place } from './place';
 import * as defaultLocationDialog from './dialogs/default-location-dialog';
 import * as facebookLocationDialog from './dialogs/facebook-location-dialog'
@@ -19,7 +20,7 @@ exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields
 // Library creation
 //=========================================================
 
-var lib = new Library('botbuilder-location');
+var lib = new Library(consts.LibraryName);
 
 requiredFieldsDialog.register(lib);
 defaultLocationDialog.register(lib);
@@ -36,7 +37,7 @@ exports.create = function (bot: UniversalBot) {
 //=========================================================
 
 exports.getLocation = function (session: Session, options: ILocationPromptOptions) {
-    session.beginDialog('botbuilder-location:locationPickerPrompt', options);
+    session.beginDialog(consts.LibraryName + ':locationPickerPrompt', options);
 };
 
 function getLocationPickerPrompt() {

@@ -1,5 +1,6 @@
 "use strict";
 var common = require('../common');
+var consts_1 = require('../consts');
 function register(library) {
     library.dialog('choice-dialog', createDialog());
 }
@@ -8,7 +9,7 @@ function createDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.dialogData.locations = args.locations;
-        session.send("MultipleResultsFound");
+        session.send(consts_1.Strings.MultipleResultsFound);
     })
         .onDefault(function (session) {
         var numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
@@ -21,6 +22,6 @@ function createDialog() {
                 return;
             }
         }
-        session.send("InvalidLocationResponse");
+        session.send(consts_1.Strings.InvalidLocationResponse);
     });
 }

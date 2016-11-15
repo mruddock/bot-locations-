@@ -1,5 +1,6 @@
 "use strict";
 var common = require('../common');
+var consts_1 = require('../consts');
 var botbuilder_1 = require('botbuilder');
 (function (LocationRequiredFields) {
     LocationRequiredFields[LocationRequiredFields["none"] = 0] = "none";
@@ -15,11 +16,11 @@ function register(library) {
 }
 exports.register = register;
 var fields = [
-    { name: "streetAddress", prompt: "AskForStreetAddress", flag: LocationRequiredFields.streetAddress },
-    { name: "locality", prompt: "AskForLocality", flag: LocationRequiredFields.locality },
-    { name: "region", prompt: "AskForRegion", flag: LocationRequiredFields.region },
-    { name: "country", prompt: "AskForCountry", flag: LocationRequiredFields.country },
-    { name: "postalCode", prompt: "AskForPostalCode", flag: LocationRequiredFields.postalCode },
+    { name: "streetAddress", prompt: consts_1.Strings.AskForStreetAddress, flag: LocationRequiredFields.streetAddress },
+    { name: "locality", prompt: consts_1.Strings.AskForLocality, flag: LocationRequiredFields.locality },
+    { name: "region", prompt: consts_1.Strings.AskForRegion, flag: LocationRequiredFields.region },
+    { name: "country", prompt: consts_1.Strings.AskForCountry, flag: LocationRequiredFields.country },
+    { name: "postalCode", prompt: consts_1.Strings.AskForPostalCode, flag: LocationRequiredFields.postalCode },
 ];
 function createDialog() {
     return common.createBaseDialog({ recognizeMode: botbuilder_1.RecognizeMode.onBegin })

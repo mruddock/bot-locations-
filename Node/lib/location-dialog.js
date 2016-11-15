@@ -1,11 +1,12 @@
 "use strict";
 var path = require('path');
 var botbuilder_1 = require('botbuilder');
+var consts = require('./consts');
 var defaultLocationDialog = require('./dialogs/default-location-dialog');
 var facebookLocationDialog = require('./dialogs/facebook-location-dialog');
 var requiredFieldsDialog = require('./dialogs/required-fields-dialog');
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
-var lib = new botbuilder_1.Library('botbuilder-location');
+var lib = new botbuilder_1.Library(consts.LibraryName);
 requiredFieldsDialog.register(lib);
 defaultLocationDialog.register(lib);
 facebookLocationDialog.register(lib);
@@ -15,7 +16,7 @@ exports.create = function (bot) {
     bot.library(lib);
 };
 exports.getLocation = function (session, options) {
-    session.beginDialog('botbuilder-location:locationPickerPrompt', options);
+    session.beginDialog(consts.LibraryName + ':locationPickerPrompt', options);
 };
 function getLocationPickerPrompt() {
     return [

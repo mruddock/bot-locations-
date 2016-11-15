@@ -1,5 +1,6 @@
 "use strict";
 var common = require('../common');
+var consts_1 = require('../consts');
 function register(library) {
     library.dialog('confirm-dialog', createDialog());
 }
@@ -8,7 +9,7 @@ function createDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.dialogData.locations = args.locations;
-        session.send("SingleResultFound");
+        session.send(consts_1.Strings.SingleResultFound);
     })
         .onDefault(function (session) {
         var message = parseBoolean(session.message.text);
@@ -17,7 +18,7 @@ function createDialog() {
             session.endDialogWithResult({ response: { place: place } });
             return;
         }
-        session.send("InvalidLocationResponse");
+        session.send(consts_1.Strings.InvalidLocationResponse);
     });
 }
 function parseBoolean(input) {

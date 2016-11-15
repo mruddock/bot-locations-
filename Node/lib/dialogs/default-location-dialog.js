@@ -1,5 +1,6 @@
 "use strict";
 var common = require('../common');
+var consts_1 = require('../consts');
 var botbuilder_1 = require('botbuilder');
 var locationService = require('../services/bing-geospatial-service');
 var confirmDialog = require('./confirm-dialog');
@@ -42,7 +43,7 @@ function createLocationResolveDialog() {
         locationService.getLocationByQuery(session.message.text)
             .then(function (locations) {
             if (locations.length == 0) {
-                session.send("LocationNotFound");
+                session.send(consts_1.Strings.LocationNotFound);
                 return;
             }
             var locationCount = Math.min(MAX_CARD_COUNT, locations.length);

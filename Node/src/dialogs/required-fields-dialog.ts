@@ -1,4 +1,5 @@
 import * as common from '../common';
+import { Strings } from '../consts';
 import { Session, RecognizeMode, Library } from 'botbuilder';
 
 export enum LocationRequiredFields {
@@ -15,11 +16,11 @@ export function register(library: Library): void {
 }
 
 const fields: Array<any> = [
-    { name: "streetAddress", prompt: "AskForStreetAddress", flag: LocationRequiredFields.streetAddress },
-    { name: "locality", prompt: "AskForLocality", flag: LocationRequiredFields.locality },
-    { name: "region", prompt: "AskForRegion", flag: LocationRequiredFields.region },
-    { name: "country", prompt: "AskForCountry", flag: LocationRequiredFields.country },
-    { name: "postalCode", prompt: "AskForPostalCode", flag: LocationRequiredFields.postalCode },
+    { name: "streetAddress", prompt: Strings.AskForStreetAddress, flag: LocationRequiredFields.streetAddress },
+    { name: "locality", prompt: Strings.AskForLocality, flag: LocationRequiredFields.locality },
+    { name: "region", prompt: Strings.AskForRegion, flag: LocationRequiredFields.region },
+    { name: "country", prompt: Strings.AskForCountry, flag: LocationRequiredFields.country },
+    { name: "postalCode", prompt: Strings.AskForPostalCode, flag: LocationRequiredFields.postalCode },
 ];
 
 function createDialog() {
