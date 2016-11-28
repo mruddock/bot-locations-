@@ -12,6 +12,7 @@
     [Serializable]
     class RichLocationRetrieverDialog : LocationDialogBase<LocationDialogResponse>
     {
+        private const int MaxLocationCount = 5;
         private readonly string prompt;
         private readonly bool supportsKeyboard;
         private readonly List<Location> locations = new List<Location>();
@@ -76,7 +77,7 @@
             }
             else
             {
-                this.locations.AddRange(foundLocations);
+                this.locations.AddRange(foundLocations.Take(MaxLocationCount));
 
                 var locationsCardReply = context.MakeMessage();
                 locationsCardReply.Attachments = AddressCard.CreateLocationsCard(this.locations);
