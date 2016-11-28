@@ -116,15 +116,13 @@
         /// <param name="prompt">The prompt posted to the user when dialog starts.</param>
         /// <param name="options">The location options used to customize the experience.</param>
         /// <param name="requiredFields">The location required fields.</param>
-        /// <param name="resourceAssembly">The resource assembly. If not specified, the default resources will be used.</param>
-        /// <param name="resourceName">Name of the resource. If not specified, the default resources will be used.</param>
+        /// <param name="resourceManager">The location resource manager.</param>
         public LocationDialog(
             string channelId,
             string prompt,
             LocationOptions options = LocationOptions.None,
             LocationRequiredFields requiredFields = LocationRequiredFields.None,
-            Assembly resourceAssembly = null,
-            string resourceName = null) : base(resourceAssembly, resourceName)
+            LocationResourceManager resourceManager = null) : base(resourceManager)
         {
             this.prompt = prompt;
             this.channelId = channelId;

@@ -33,24 +33,14 @@
         /// The resource manager.
         /// </value>
         internal LocationResourceManager ResourceManager => this.resourceManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocationDialogBase{T}" /> class.
-        /// </summary>
-        /// <param name="resourceAssembly">The resource assembly.</param>
-        /// <param name="resourceName">Name of the resource.</param>
-        internal LocationDialogBase(Assembly resourceAssembly, string resourceName)
-        {
-            this.resourceManager = new LocationResourceManager(resourceAssembly, resourceName);
-        }
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationDialogBase{T}" /> class.
         /// </summary>
         /// <param name="resourceManager">The resource manager.</param>
         internal LocationDialogBase(LocationResourceManager resourceManager)
         {
-            SetField.NotNull(out this.resourceManager, nameof(resourceManager), resourceManager);
+            this.resourceManager = resourceManager ?? new LocationResourceManager();
         }
 
         /// <summary>
