@@ -42,14 +42,16 @@
                 this.channelId = channelId;
             }
 
-            public Task StartAsync(IDialogContext context)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+            public async Task StartAsync(IDialogContext context)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             {
                 context.Wait(this.MessageReceivedAsync);
-
-                return Task.FromResult(0);
             }
 
-            private Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+            private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             {
                 var options = LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode;
 
@@ -62,8 +64,6 @@
                 var locationDialog = new LocationDialog(this.channelId, prompt, options, requiredFields);
 
                 context.Call(locationDialog, this.ResumeAfterLocationDialogAsync);
-
-                return Task.FromResult(0);
             }
 
             private async Task ResumeAfterLocationDialogAsync(IDialogContext context, IAwaitable<Place> result)

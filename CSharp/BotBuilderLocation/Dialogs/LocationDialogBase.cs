@@ -65,6 +65,7 @@
             }
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         /// <summary>
         /// Implements the dialog specific logic that needs to run on new messages.
         /// If the message is special command, it gets handled by <see cref="MessageReceivedAsync"/>
@@ -73,9 +74,9 @@
         /// <param name="context">The context.</param>
         /// <param name="result">The result.</param>
         /// <returns></returns>
-        protected virtual Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+        protected virtual async Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -92,15 +93,16 @@
             }
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         /// <summary>
         /// Implements child class specific logic when a child dialog returns context.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="response">The response.</param>
         /// <returns>The asynchronous task.</returns>
-        internal virtual Task ResumeAfterChildDialogInternalAsync(IDialogContext context, IAwaitable<LocationDialogResponse> response)
+        internal virtual async Task ResumeAfterChildDialogInternalAsync(IDialogContext context, IAwaitable<LocationDialogResponse> response)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            return Task.FromResult(0);
         }
 
         /// <summary>

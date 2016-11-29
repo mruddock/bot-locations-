@@ -130,12 +130,14 @@
             this.requiredFields = requiredFields;
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         /// <summary>
         /// Starts the dialog.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The asynchronous task</returns>
-        public override Task StartAsync(IDialogContext context)
+        public override async Task StartAsync(IDialogContext context)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             this.requiredDialogCalled = false;
 
@@ -146,8 +148,6 @@
                 this.ResourceManager);
 
             context.Call(dialog, this.ResumeAfterChildDialogAsync);
-
-            return Task.FromResult(0);
         }
 
         /// <summary>
