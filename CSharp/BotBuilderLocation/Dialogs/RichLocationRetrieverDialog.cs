@@ -17,21 +17,25 @@
         private readonly bool supportsKeyboard;
         private readonly List<Location> locations = new List<Location>();
         private readonly IGeoSpatialService geoSpatialService;
+        private readonly string apiKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationDialog"/> class.
         /// </summary>
         /// <param name="geoSpatialService">The Geo-Special Service</param>
+        /// <param name="apiKey">The geo spatial service API key.</param>
         /// <param name="prompt">The prompt posted to the user when dialog starts.</param>
         /// <param name="supportsKeyboard">Indicates whether channel supports keyboard buttons or not.</param>
         /// <param name="resourceManager">The resource manager.</param>
         public RichLocationRetrieverDialog(
             IGeoSpatialService geoSpatialService,
+            string apiKey,
             string prompt,
             bool supportsKeyboard,
             LocationResourceManager resourceManager) : base(resourceManager)
         {
             SetField.NotNull(out this.geoSpatialService, nameof(geoSpatialService), geoSpatialService);
+            SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
             this.prompt = prompt;
             this.supportsKeyboard = supportsKeyboard;
         }
@@ -66,7 +70,7 @@
         /// <returns>The asynchronous task.</returns>
         private async Task TryResolveAddressAsync(IDialogContext context, IMessageActivity message)
         {
-            var locationSet = await this.geoSpatialService.GetLocationsByQueryAsync(message.Text);
+            var locationSet = await this.geoSpatialService.GetLocationsByQueryAsync(this.apiKey, message.Text);
             var foundLocations = locationSet?.Locations;
 
             if (foundLocations == null || foundLocations.Count == 0)
@@ -80,7 +84,7 @@
                 this.locations.AddRange(foundLocations.Take(MaxLocationCount));
 
                 var locationsCardReply = context.MakeMessage();
-                locationsCardReply.Attachments = LocationCard.CreateLocationHeroCard(this.locations);
+                locationsCardReply.Attachments = LocationCard.CreateLocationHeroCard(this.apiKey, this.locations);
                 locationsCardReply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                 await context.PostAsync(locationsCardReply);
 

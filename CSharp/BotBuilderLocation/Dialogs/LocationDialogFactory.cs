@@ -7,6 +7,7 @@
     internal static class LocationDialogFactory
     {
         internal static IDialog<LocationDialogResponse> CreateLocationRetrieverDialog(
+            string apiKey,
             string channelId,
             string prompt,
             bool useNativeControl,
@@ -20,7 +21,8 @@
             }
 
             return new RichLocationRetrieverDialog(
-                geoSpatialService: new BingGeoSpatialService(), 
+                geoSpatialService: new BingGeoSpatialService(),
+                apiKey: apiKey,
                 prompt: prompt,
                 supportsKeyboard: isFacebookChannel,
                 resourceManager: resourceManager);

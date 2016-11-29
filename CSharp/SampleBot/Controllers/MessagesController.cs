@@ -4,6 +4,7 @@
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using System.Web.Configuration;
     using System.Web.Http;
     using Microsoft.Bot.Builder.Dialogs;
     using Microsoft.Bot.Builder.Location;
@@ -53,6 +54,7 @@
             private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             {
+                var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
                 var options = LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode;
 
                 var requiredFields = LocationRequiredFields.StreetAddress | LocationRequiredFields.Locality |
@@ -61,7 +63,7 @@
 
                 var prompt = "Hi, where would you like me to ship to your widget?";
 
-                var locationDialog = new LocationDialog(this.channelId, prompt, options, requiredFields);
+                var locationDialog = new LocationDialog(apiKey, this.channelId, prompt, options, requiredFields);
 
                 context.Call(locationDialog, this.ResumeAfterLocationDialogAsync);
             }

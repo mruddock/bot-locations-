@@ -14,9 +14,10 @@
         /// <summary>
         /// Creates locations hero cards (carousel).
         /// </summary>
+        /// <param name="apiKey">The geo spatial API key.</param>
         /// <param name="locations">List of the locations.</param>
         /// <returns>The locations card as attachments.</returns>
-        public static List<Attachment> CreateLocationHeroCard(IList<Location> locations)
+        public static List<Attachment> CreateLocationHeroCard(string apiKey, IList<Location> locations)
         {
             var attachments = new List<Attachment>();
 
@@ -35,7 +36,7 @@
                 {
                     var image =
                         new CardImage(
-                            url: new BingGeoSpatialService().GetLocationMapImageUrl(location, i));
+                            url: new BingGeoSpatialService().GetLocationMapImageUrl(apiKey, location, i));
 
                     heroCard.Images = new[] { image };
                 }

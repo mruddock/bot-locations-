@@ -14,7 +14,7 @@
         public async Task If_Help_Command_Post_Help_Message()
         {
             // Arrange
-            var dialog = new LocationDialog("facebook", string.Empty, LocationOptions.UseNativeControl);
+            var dialog = new LocationDialog(string.Empty, "facebook", string.Empty, LocationOptions.UseNativeControl);
 
             var context = new Mock<IDialogContext>(MockBehavior.Loose);
             context.Setup(c => c.MakeMessage()).Returns(() => new Activity());
@@ -31,7 +31,7 @@
         {
             // Arrange
             string prompt = "Where do you want to ship your widget?";
-            var dialog = new LocationDialog("facebook", prompt, LocationOptions.None);
+            var dialog = new LocationDialog(string.Empty, "facebook", prompt, LocationOptions.None);
 
             var context = new Mock<IDialogContext>(MockBehavior.Loose);
             context.Setup(c => c.MakeMessage()).Returns(() => new Activity());
@@ -47,7 +47,7 @@
         public async Task If_Cancel_Command_Call_Context_Done()
         {
             // Arrange
-            var dialog = new LocationDialog("facebook", string.Empty, LocationOptions.UseNativeControl);
+            var dialog = new LocationDialog(string.Empty, "facebook", string.Empty, LocationOptions.UseNativeControl);
 
             var context = new Mock<IDialogContext>(MockBehavior.Loose);
             context.Setup(c => c.MakeMessage()).Returns(() => new Activity());

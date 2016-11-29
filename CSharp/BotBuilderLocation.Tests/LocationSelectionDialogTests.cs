@@ -15,7 +15,7 @@
         public async Task If_FacebookChannel_And_NativeControlOption_Call_FacebookLocationDialog()
         {
             // Arrange
-            var dialog = new LocationDialog("facebook", string.Empty, LocationOptions.UseNativeControl);
+            var dialog = new LocationDialog(string.Empty, "facebook", string.Empty, LocationOptions.UseNativeControl);
             var context = new Mock<IDialogContext>(MockBehavior.Loose);
 
             // Act
@@ -29,7 +29,7 @@
         public async Task If_FacebookChannel_And_NotNativeControlOption_Do_Not_Call_FacebookLocationDialog()
         {
             // Arrange
-            var dialog = new LocationDialog("facebook", string.Empty, LocationOptions.None);
+            var dialog = new LocationDialog(string.Empty, "facebook", string.Empty, LocationOptions.None);
             var context = new Mock<IDialogContext>(MockBehavior.Loose);
 
             context
@@ -52,7 +52,7 @@
         {
             // Arrange
             string prompt = "Where do you want to ship your widget?";
-            var dialog = new LocationDialog("facebook", prompt, LocationOptions.None);
+            var dialog = new LocationDialog(string.Empty, "facebook", prompt, LocationOptions.None);
             var context = new Mock<IDialogContext>(MockBehavior.Loose);
 
             context

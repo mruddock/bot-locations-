@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Bot.Builder.Location
+﻿using Microsoft.Bot.Builder.Internals.Fibers;
+
+namespace Microsoft.Bot.Builder.Location
 {
     using System;
     using System.Linq;
@@ -98,6 +100,7 @@
         private readonly string channelId;
         private readonly LocationOptions options;
         private readonly LocationRequiredFields requiredFields;
+        private readonly string apiKey;
         private bool requiredDialogCalled;
 
         /// <summary>
@@ -112,20 +115,23 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationDialog"/> class.
         /// </summary>
+        /// <param name="apiKey">The geo spatial API key.</param>
         /// <param name="channelId">The channel identifier.</param>
         /// <param name="prompt">The prompt posted to the user when dialog starts.</param>
         /// <param name="options">The location options used to customize the experience.</param>
         /// <param name="requiredFields">The location required fields.</param>
         /// <param name="resourceManager">The location resource manager.</param>
         public LocationDialog(
+            string apiKey,
             string channelId,
             string prompt,
             LocationOptions options = LocationOptions.None,
             LocationRequiredFields requiredFields = LocationRequiredFields.None,
             LocationResourceManager resourceManager = null) : base(resourceManager)
         {
-            this.prompt = prompt;
-            this.channelId = channelId;
+            SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
+            SetField.NotNull(out this.prompt, nameof(prompt), prompt);
+            SetField.NotNull(out this.channelId, nameof(channelId), channelId);
             this.options = options;
             this.requiredFields = requiredFields;
         }
@@ -142,6 +148,7 @@
             this.requiredDialogCalled = false;
 
             var dialog = LocationDialogFactory.CreateLocationRetrieverDialog(
+                this.apiKey,
                 this.channelId,
                 this.prompt,
                 this.options.HasFlag(LocationOptions.UseNativeControl),
@@ -185,7 +192,7 @@
             // then try to reverse geocode it using BingGeoSpatialService.
             if (this.options.HasFlag(LocationOptions.ReverseGeocode) && location != null && location.Address == null && location.Point != null)
             {
-                var results = await new BingGeoSpatialService().GetLocationsByPointAsync(location.Point.Coordinates[0], location.Point.Coordinates[1]);
+                var results = await new BingGeoSpatialService().GetLocationsByPointAsync(this.apiKey, location.Point.Coordinates[0], location.Point.Coordinates[1]);
                 var geocodedLocation = results?.Locations?.FirstOrDefault();
                 if (geocodedLocation?.Address != null)
                 {
