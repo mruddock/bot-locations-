@@ -80,7 +80,7 @@
                 this.locations.AddRange(foundLocations.Take(MaxLocationCount));
 
                 var locationsCardReply = context.MakeMessage();
-                locationsCardReply.Attachments = AddressCard.CreateLocationsCard(this.locations);
+                locationsCardReply.Attachments = LocationCard.CreateLocationHeroCard(this.locations);
                 locationsCardReply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                 await context.PostAsync(locationsCardReply);
 
@@ -152,7 +152,7 @@
             if (this.supportsKeyboard)
             {
                 var keyboardCardReply = context.MakeMessage();
-                keyboardCardReply.Attachments = AddressCard.CreateLocationsKeyboardCard(this.locations, this.ResourceManager.MultipleResultsFound);
+                keyboardCardReply.Attachments = LocationCard.CreateLocationKeyboardCard(this.locations, this.ResourceManager.MultipleResultsFound);
                 keyboardCardReply.AttachmentLayout = AttachmentLayoutTypes.List;
                 await context.PostAsync(keyboardCardReply);
             }
