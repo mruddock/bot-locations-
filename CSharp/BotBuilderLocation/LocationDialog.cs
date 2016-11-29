@@ -100,6 +100,7 @@ namespace Microsoft.Bot.Builder.Location
         private readonly string channelId;
         private readonly LocationOptions options;
         private readonly LocationRequiredFields requiredFields;
+        private readonly IGeoSpatialService geoSpatialService;
         private readonly string apiKey;
         private bool requiredDialogCalled;
 
@@ -121,19 +122,22 @@ namespace Microsoft.Bot.Builder.Location
         /// <param name="options">The location options used to customize the experience.</param>
         /// <param name="requiredFields">The location required fields.</param>
         /// <param name="resourceManager">The location resource manager.</param>
+        /// <param name="geoSpatialService">The geo spatial location service.</param>
         public LocationDialog(
             string apiKey,
             string channelId,
             string prompt,
             LocationOptions options = LocationOptions.None,
             LocationRequiredFields requiredFields = LocationRequiredFields.None,
-            LocationResourceManager resourceManager = null) : base(resourceManager)
+            LocationResourceManager resourceManager = null,
+            IGeoSpatialService geoSpatialService = null) : base(resourceManager)
         {
             SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
             SetField.NotNull(out this.prompt, nameof(prompt), prompt);
             SetField.NotNull(out this.channelId, nameof(channelId), channelId);
             this.options = options;
             this.requiredFields = requiredFields;
+            this.geoSpatialService = geoSpatialService ?? new BingGeoSpatialService();
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -192,7 +196,7 @@ namespace Microsoft.Bot.Builder.Location
             // then try to reverse geocode it using BingGeoSpatialService.
             if (this.options.HasFlag(LocationOptions.ReverseGeocode) && location != null && location.Address == null && location.Point != null)
             {
-                var results = await new BingGeoSpatialService().GetLocationsByPointAsync(this.apiKey, location.Point.Coordinates[0], location.Point.Coordinates[1]);
+                var results = await this.geoSpatialService.GetLocationsByPointAsync(this.apiKey, location.Point.Coordinates[0], location.Point.Coordinates[1]);
                 var geocodedLocation = results?.Locations?.FirstOrDefault();
                 if (geocodedLocation?.Address != null)
                 {

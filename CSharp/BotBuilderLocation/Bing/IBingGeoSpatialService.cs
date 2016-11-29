@@ -2,7 +2,10 @@
 {
     using System.Threading.Tasks;
 
-    internal interface IGeoSpatialService
+    /// <summary>
+    /// Represents the interface the defines how the <see cref="LocationDialog"/> will query for locations.
+    /// </summary>
+    public interface IGeoSpatialService
     {
         /// <summary>
         /// Gets the locations asynchronously.
