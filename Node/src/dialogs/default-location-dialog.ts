@@ -42,12 +42,12 @@ const MAX_CARD_COUNT = 5;
 function createLocationResolveDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
-            session.send(args.prompt);
+            session.send(args.prompt).sendBatch();
         }).onDefault((session) => {
             locationService.getLocationByQuery(session.message.text)
                 .then(locations => {
                     if (locations.length == 0) {
-                        session.send(Strings.LocationNotFound);
+                        session.send(Strings.LocationNotFound).sendBatch();
                         return;
                     }
 
@@ -58,7 +58,7 @@ function createLocationResolveDialog() {
 
                     session.endDialogWithResult({ response: { locations: locations } });
                 });
-        })
+        });
 }
 
 function createLocationsCard(session: Session, locations: any) {

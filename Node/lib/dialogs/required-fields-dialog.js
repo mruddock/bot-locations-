@@ -54,6 +54,9 @@ function createDialog() {
         if (index >= fields.length) {
             session.endDialogWithResult({ response: { place: session.dialogData.place } });
         }
+        else {
+            session.sendBatch();
+        }
     });
 }
 function completeFieldIfMissing(session, field) {

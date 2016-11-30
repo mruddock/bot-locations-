@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Library, Session, UniversalBot, IDialogResult } from 'botbuilder';
+import { Library, Session, IDialogResult } from 'botbuilder';
 import * as common from './common';
 import * as consts from './consts';
 import { Place } from './place';
@@ -28,9 +28,10 @@ facebookLocationDialog.register(lib);
 lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
 lib.localePath(path.join(__dirname, 'locale/'))
 
-exports.create = function (bot: UniversalBot) {
-    bot.library(lib);
+exports.createLibrary = function () {
+    return lib;
 }
+
 
 //=========================================================
 // Location Picker Prompt

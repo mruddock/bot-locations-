@@ -4,7 +4,7 @@ var place_1 = require('./place');
 function createBaseDialog(options) {
     return new botbuilder_1.IntentDialog(options)
         .matches(/help/i, function (session) {
-        session.send("help message");
+        session.send("help message").sendBatch();
     })
         .matches(/^cancel$/i, function (session) {
         session.endDialogWithResult({ response: { cancel: true } });

@@ -12,8 +12,8 @@ defaultLocationDialog.register(lib);
 facebookLocationDialog.register(lib);
 lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
 lib.localePath(path.join(__dirname, 'locale/'));
-exports.create = function (bot) {
-    bot.library(lib);
+exports.createLibrary = function () {
+    return lib;
 };
 exports.getLocation = function (session, options) {
     session.beginDialog(consts.LibraryName + ':locationPickerPrompt', options);
@@ -31,7 +31,10 @@ function getLocationPickerPrompt() {
         },
         function (session, results, next) {
             if (results.response && results.response.place) {
-                session.beginDialog('required-fields-dialog', { place: results.response.place, requiredFields: session.dialogData.args.requiredFields });
+                session.beginDialog('required-fields-dialog', {
+                    place: results.response.place,
+                    requiredFields: session.dialogData.args.requiredFields
+                });
             }
             else {
                 next(results);

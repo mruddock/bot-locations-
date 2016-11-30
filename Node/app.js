@@ -19,7 +19,7 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
-locationDialog.create(bot);
+bot.library(locationDialog.createLibrary());
 
 bot.dialog("/", [
     function (session) {

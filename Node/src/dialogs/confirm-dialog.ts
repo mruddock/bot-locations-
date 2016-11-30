@@ -11,7 +11,7 @@ function createDialog() {
         .onBegin((session, args) => {
             session.dialogData.locations = args.locations;
 
-            session.send(Strings.SingleResultFound);
+            session.send(Strings.SingleResultFound).sendBatch();
         })
         .onDefault((session) => {
             var message = parseBoolean(session.message.text);
@@ -21,7 +21,7 @@ function createDialog() {
                 return;
             }
 
-            session.send(Strings.InvalidLocationResponse);
+            session.send(Strings.InvalidLocationResponse).sendBatch();
         });
 }
 

@@ -37,7 +37,7 @@ function createLocationResolveDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.dialogData.args = args;
-        sendLocationPrompt(session);
+        sendLocationPrompt(session).sendBatch();
     }).onDefault(function (session) {
         var entities = session.message.entities;
         for (var i = 0; i < entities.length; i++) {
@@ -46,7 +46,7 @@ function createLocationResolveDialog() {
                 return;
             }
         }
-        sendLocationPrompt(session);
+        sendLocationPrompt(session).sendBatch();
     });
 }
 function sendLocationPrompt(session) {
@@ -59,5 +59,5 @@ function sendLocationPrompt(session) {
             ]
         }
     });
-    session.send(message);
+    return session.send(message);
 }

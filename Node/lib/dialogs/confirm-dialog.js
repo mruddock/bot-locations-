@@ -9,7 +9,7 @@ function createDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.dialogData.locations = args.locations;
-        session.send(consts_1.Strings.SingleResultFound);
+        session.send(consts_1.Strings.SingleResultFound).sendBatch();
     })
         .onDefault(function (session) {
         var message = parseBoolean(session.message.text);
@@ -18,7 +18,7 @@ function createDialog() {
             session.endDialogWithResult({ response: { place: place } });
             return;
         }
-        session.send(consts_1.Strings.InvalidLocationResponse);
+        session.send(consts_1.Strings.InvalidLocationResponse).sendBatch();
     });
 }
 function parseBoolean(input) {

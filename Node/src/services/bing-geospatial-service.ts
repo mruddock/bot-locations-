@@ -8,7 +8,7 @@ const findImageByPointUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Ro
 const findImageByBBoxUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea=%1$s,%2$s,%3$s,%4$s&mapSize=500,500&pp=%5$s,%6$s;1;%7$s&dpi=1&key=" + apiKey;
 
 export function getLocationByQuery(address: string): Promise<Array<any>> {
-    var url = findLocationByQueryUrl + encodeURIComponent(address)
+    var url = findLocationByQueryUrl + encodeURIComponent(address);
     return getLocation(url);
 }
 
@@ -30,7 +30,7 @@ export function GetLocationMapImageUrl(location: any, index: number) {
             url = sprintf(findImageByPointUrl, point.coordinates[0], point.coordinates[1], index)
         }
 
-        return url
+        return url;
     }
 
     throw location;
@@ -40,7 +40,7 @@ function getLocation(url: string): Promise<Array<any>> {
     const requestData = {
         url: url,
         json: true
-    }
+    };
 
     return rp(requestData)
         .then(body => {

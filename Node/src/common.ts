@@ -4,7 +4,7 @@ import { Place, Geo } from './place';
 export function createBaseDialog(options?: any): IntentDialog {
     return new IntentDialog(options)
         .matches(/help/i, function (session: Session) {
-            session.send("help message");
+            session.send("help message").sendBatch();
         })
         .matches(/^cancel$/i, function (session: Session) {
             session.endDialogWithResult({ response: { cancel: true } });

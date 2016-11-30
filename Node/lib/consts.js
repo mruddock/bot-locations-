@@ -1,7 +1,7 @@
 "use strict";
 exports.LibraryName = "botbuilder-location";
 exports.Strings = {
-    AskForCountry: exports.LibraryName + ":AskForCountry",
+    "AskForCountry": exports.LibraryName + ":AskForCountry",
     "AskForLocality": exports.LibraryName + ":AskForLocality",
     "AskForPostalCode": exports.LibraryName + ":AskForPostalCode",
     "AskForRegion": exports.LibraryName + ":AskForRegion",

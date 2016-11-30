@@ -9,7 +9,7 @@ function createDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.dialogData.locations = args.locations;
-        session.send(consts_1.Strings.MultipleResultsFound);
+        session.send(consts_1.Strings.MultipleResultsFound).sendBatch();
     })
         .onDefault(function (session) {
         var numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
@@ -22,6 +22,6 @@ function createDialog() {
                 return;
             }
         }
-        session.send(consts_1.Strings.InvalidLocationResponse);
+        session.send(consts_1.Strings.InvalidLocationResponse).sendBatch();
     });
 }

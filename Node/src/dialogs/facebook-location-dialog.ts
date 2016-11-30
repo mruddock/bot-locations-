@@ -25,7 +25,7 @@ function createDialog() {
                             place = results.response.place;
                         }
 
-                        session.endDialogWithResult({response: {place: place}});
+                        session.endDialogWithResult({ response: { place: place } });
                     });
             }
             else {
@@ -37,9 +37,9 @@ function createDialog() {
 
 function createLocationResolveDialog() {
     return common.createBaseDialog()
-        .onBegin(function(session, args) {
+        .onBegin(function (session, args) {
             session.dialogData.args = args;
-            sendLocationPrompt(session);
+            sendLocationPrompt(session).sendBatch();
         }).onDefault((session) => {
             var entities = session.message.entities;
             for (var i = 0; i < entities.length; i++) {
@@ -49,11 +49,11 @@ function createLocationResolveDialog() {
                 }
             }
 
-            sendLocationPrompt(session);
+            sendLocationPrompt(session).sendBatch();
         });
 }
 
-function sendLocationPrompt(session: Session) {
+function sendLocationPrompt(session: Session): Session {
     var message = new Message(session).text(session.dialogData.args.prompt).sourceEvent({
         facebook: {
             quick_replies: [
@@ -64,5 +64,5 @@ function sendLocationPrompt(session: Session) {
         }
     });
 
-    session.send(message);
+    return session.send(message);
 }

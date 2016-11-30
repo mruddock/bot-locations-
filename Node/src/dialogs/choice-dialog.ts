@@ -11,7 +11,7 @@ function createDialog() {
         .onBegin((session, args) => {
             session.dialogData.locations = args.locations;
 
-            session.send(Strings.MultipleResultsFound);
+            session.send(Strings.MultipleResultsFound).sendBatch();
         })
         .onDefault((session) => {
             var numberExp = /[+-]?(?:\d+\.?\d*|\d*\.?\d+)/;
@@ -20,11 +20,11 @@ function createDialog() {
                 var currentNumber = Number(match[0]);
                 if (currentNumber > 0 && currentNumber <= session.dialogData.locations.length) {
                     var place = common.processLocation(session.dialogData.locations[currentNumber - 1], true);
-                    session.endDialogWithResult({ response: { place: place } })
+                    session.endDialogWithResult({ response: { place: place } });
                     return;
                 }
             }
 
-            session.send(Strings.InvalidLocationResponse);
+            session.send(Strings.InvalidLocationResponse).sendBatch();
         });
 }

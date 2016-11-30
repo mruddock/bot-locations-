@@ -38,12 +38,12 @@ var MAX_CARD_COUNT = 5;
 function createLocationResolveDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
-        session.send(args.prompt);
+        session.send(args.prompt).sendBatch();
     }).onDefault(function (session) {
         locationService.getLocationByQuery(session.message.text)
             .then(function (locations) {
             if (locations.length == 0) {
-                session.send(consts_1.Strings.LocationNotFound);
+                session.send(consts_1.Strings.LocationNotFound).sendBatch();
                 return;
             }
             var locationCount = Math.min(MAX_CARD_COUNT, locations.length);
