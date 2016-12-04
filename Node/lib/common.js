@@ -6,10 +6,6 @@ function createBaseDialog(options) {
         .matches(/help/i, function (session) {
         session.send("help message").sendBatch();
     })
-        .matches(/^cancel$/i, function (session) {
-        session.endDialogWithResult({ response: { cancel: true } });
-        return;
-    })
         .matches(/^reset$/i, function (session) {
         session.endDialogWithResult({ response: { reset: true } });
         return;

@@ -10,8 +10,11 @@ var lib = new botbuilder_1.Library(consts.LibraryName);
 requiredFieldsDialog.register(lib);
 defaultLocationDialog.register(lib);
 facebookLocationDialog.register(lib);
-lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
 lib.localePath(path.join(__dirname, 'locale/'));
+lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
+    .cancelAction('cancel', null, {
+    matches: /^cancel$/i,
+});
 exports.createLibrary = function () {
     return lib;
 };

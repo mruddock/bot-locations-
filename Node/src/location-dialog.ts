@@ -25,13 +25,16 @@ var lib = new Library(consts.LibraryName);
 requiredFieldsDialog.register(lib);
 defaultLocationDialog.register(lib);
 facebookLocationDialog.register(lib);
-lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
-lib.localePath(path.join(__dirname, 'locale/'))
+lib.localePath(path.join(__dirname, 'locale/'));
 
-exports.createLibrary = function () {
+lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
+    .cancelAction('cancel', null, {
+        matches: /^cancel$/i,
+    });
+
+exports.createLibrary = () => {
     return lib;
 }
-
 
 //=========================================================
 // Location Picker Prompt

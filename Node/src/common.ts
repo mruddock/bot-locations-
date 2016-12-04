@@ -6,10 +6,6 @@ export function createBaseDialog(options?: any): IntentDialog {
         .matches(/help/i, function (session: Session) {
             session.send("help message").sendBatch();
         })
-        .matches(/^cancel$/i, function (session: Session) {
-            session.endDialogWithResult({ response: { cancel: true } });
-            return;
-        })
         .matches(/^reset$/i, function (session: Session) {
             session.endDialogWithResult({ response: { reset: true } });
             return;
