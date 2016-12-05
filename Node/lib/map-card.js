@@ -8,8 +8,9 @@ var botbuilder_1 = require('botbuilder');
 var locationService = require('./services/bing-geospatial-service');
 var MapCard = (function (_super) {
     __extends(MapCard, _super);
-    function MapCard(session) {
+    function MapCard(apiKey, session) {
         _super.call(this, session);
+        this.apiKey = apiKey;
     }
     MapCard.prototype.location = function (location, index) {
         var indexText = "";
@@ -18,7 +19,7 @@ var MapCard = (function (_super) {
         }
         this.text(indexText + location.address.formattedAddress);
         if (location.point) {
-            this.images([botbuilder_1.CardImage.create(null, locationService.GetLocationMapImageUrl(location, index))]);
+            this.images([botbuilder_1.CardImage.create(null, locationService.GetLocationMapImageUrl(this.apiKey, location, index))]);
         }
         return this;
     };

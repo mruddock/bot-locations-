@@ -2,12 +2,12 @@
 var common = require('../common');
 var botbuilder_1 = require('botbuilder');
 var locationService = require('../services/bing-geospatial-service');
-function register(library) {
-    library.dialog('facebook-location-dialog', createDialog());
+function register(library, apiKey) {
+    library.dialog('facebook-location-dialog', createDialog(apiKey));
     library.dialog('facebook-location-resolve-dialog', createLocationResolveDialog());
 }
 exports.register = register;
-function createDialog() {
+function createDialog(apiKey) {
     return [
         function (session, args) {
             session.dialogData.args = args;
@@ -15,7 +15,7 @@ function createDialog() {
         },
         function (session, results, next) {
             if (session.dialogData.args.reverseGeocode && results.response && results.response.place) {
-                locationService.getLocationByPoint(results.response.place.geo.latitude, results.response.place.geo.longitude)
+                locationService.getLocationByPoint(apiKey, results.response.place.geo.latitude, results.response.place.geo.longitude)
                     .then(function (locations) {
                     var place;
                     if (locations.length) {

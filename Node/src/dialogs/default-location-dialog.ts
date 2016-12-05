@@ -7,11 +7,11 @@ import * as locationService from '../services/bing-geospatial-service';
 import * as confirmDialog from './confirm-dialog';
 import * as choiceDialog from './choice-dialog';
 
-export function register(library: Library): void {
+export function register(library: Library, apiKey: string): void {
     confirmDialog.register(library);
     choiceDialog.register(library);
     library.dialog('default-location-dialog', createDialog());
-    library.dialog('location-resolve-dialog', createLocationResolveDialog());
+    library.dialog('location-resolve-dialog', createLocationResolveDialog(apiKey));
 }
 
 function createDialog() {
@@ -40,12 +40,12 @@ function createDialog() {
 // Maximum number of hero cards to be returned in the carousel. If this number is greater than 5, skype throws an exception.
 const MAX_CARD_COUNT = 5;
 
-function createLocationResolveDialog() {
+function createLocationResolveDialog(apiKey: string) {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
             session.send(args.prompt).sendBatch();
         }).onDefault((session) => {
-            locationService.getLocationByQuery(session.message.text)
+            locationService.getLocationByQuery(apiKey, session.message.text)
                 .then(locations => {
                     if (locations.length == 0) {
                         session.send(Strings.LocationNotFound).sendBatch();
@@ -54,7 +54,7 @@ function createLocationResolveDialog() {
 
                     var locationCount = Math.min(MAX_CARD_COUNT, locations.length);
                     locations = locations.slice(0, locationCount);
-                    var reply = createLocationsCard(session, locations);
+                    var reply = createLocationsCard(apiKey, session, locations);
                     session.send(reply);
 
                     session.endDialogWithResult({ response: { locations: locations } });
@@ -62,11 +62,11 @@ function createLocationResolveDialog() {
         });
 }
 
-function createLocationsCard(session: Session, locations: any) {
+function createLocationsCard(apiKey: string, session: Session, locations: any) {
     var cards = new Array();
 
     for (var i = 0; i < locations.length; i++) {
-        cards.push(constructCard(session, locations, i));
+        cards.push(constructCard(apiKey, session, locations, i));
     }
 
     return new Message(session)
@@ -74,9 +74,9 @@ function createLocationsCard(session: Session, locations: any) {
         .attachments(cards);
 }
 
-function constructCard(session: Session, locations: Array<any>, index: number): HeroCard {
+function constructCard(apiKey: string, session: Session, locations: Array<any>, index: number): HeroCard {
     var location = locations[index];
-    var card = new MapCard(session);
+    var card = new MapCard(apiKey, session);
 
     if (locations.length > 1) {
         card.location(location, index);

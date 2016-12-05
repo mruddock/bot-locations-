@@ -6,16 +6,19 @@ var defaultLocationDialog = require('./dialogs/default-location-dialog');
 var facebookLocationDialog = require('./dialogs/facebook-location-dialog');
 var requiredFieldsDialog = require('./dialogs/required-fields-dialog');
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
-var lib = new botbuilder_1.Library(consts.LibraryName);
-requiredFieldsDialog.register(lib);
-defaultLocationDialog.register(lib);
-facebookLocationDialog.register(lib);
-lib.localePath(path.join(__dirname, 'locale/'));
-lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
-    .cancelAction('cancel', null, {
-    matches: /^cancel$/i,
-});
-exports.createLibrary = function () {
+exports.createLibrary = function (apiKey) {
+    if (apiKey === undefined) {
+        throw "'apiKey' parameter missing";
+    }
+    var lib = new botbuilder_1.Library(consts.LibraryName);
+    requiredFieldsDialog.register(lib);
+    defaultLocationDialog.register(lib, apiKey);
+    facebookLocationDialog.register(lib, apiKey);
+    lib.localePath(path.join(__dirname, 'locale/'));
+    lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
+        .cancelAction('cancel', null, {
+        matches: /^cancel$/i,
+    });
     return lib;
 };
 exports.getLocation = function (session, options) {

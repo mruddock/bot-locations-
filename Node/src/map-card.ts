@@ -3,7 +3,7 @@ import { Place, Geo } from './place';
 import * as locationService from './services/bing-geospatial-service';
 
 export class MapCard extends HeroCard {
-    constructor(session?: Session) {
+    constructor(private apiKey: string, session?: Session) {
         super(session);
     }
 
@@ -17,7 +17,7 @@ export class MapCard extends HeroCard {
 
         // Todo: pass this.session as a first parameter. https://github.com/Microsoft/BotBuilder/pull/1790
         if (location.point) {
-            this.images([CardImage.create(null, locationService.GetLocationMapImageUrl(location, index))]);
+            this.images([CardImage.create(null, locationService.GetLocationMapImageUrl(this.apiKey, location, index))]);
         }
         return this;
     }

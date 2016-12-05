@@ -6,11 +6,11 @@ var map_card_1 = require('../map-card');
 var locationService = require('../services/bing-geospatial-service');
 var confirmDialog = require('./confirm-dialog');
 var choiceDialog = require('./choice-dialog');
-function register(library) {
+function register(library, apiKey) {
     confirmDialog.register(library);
     choiceDialog.register(library);
     library.dialog('default-location-dialog', createDialog());
-    library.dialog('location-resolve-dialog', createLocationResolveDialog());
+    library.dialog('location-resolve-dialog', createLocationResolveDialog(apiKey));
 }
 exports.register = register;
 function createDialog() {
@@ -36,12 +36,12 @@ function createDialog() {
     ];
 }
 var MAX_CARD_COUNT = 5;
-function createLocationResolveDialog() {
+function createLocationResolveDialog(apiKey) {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.send(args.prompt).sendBatch();
     }).onDefault(function (session) {
-        locationService.getLocationByQuery(session.message.text)
+        locationService.getLocationByQuery(apiKey, session.message.text)
             .then(function (locations) {
             if (locations.length == 0) {
                 session.send(consts_1.Strings.LocationNotFound).sendBatch();
@@ -49,24 +49,24 @@ function createLocationResolveDialog() {
             }
             var locationCount = Math.min(MAX_CARD_COUNT, locations.length);
             locations = locations.slice(0, locationCount);
-            var reply = createLocationsCard(session, locations);
+            var reply = createLocationsCard(apiKey, session, locations);
             session.send(reply);
             session.endDialogWithResult({ response: { locations: locations } });
         });
     });
 }
-function createLocationsCard(session, locations) {
+function createLocationsCard(apiKey, session, locations) {
     var cards = new Array();
     for (var i = 0; i < locations.length; i++) {
-        cards.push(constructCard(session, locations, i));
+        cards.push(constructCard(apiKey, session, locations, i));
     }
     return new botbuilder_1.Message(session)
         .attachmentLayout(botbuilder_1.AttachmentLayout.carousel)
         .attachments(cards);
 }
-function constructCard(session, locations, index) {
+function constructCard(apiKey, session, locations, index) {
     var location = locations[index];
-    var card = new map_card_1.MapCard(session);
+    var card = new map_card_1.MapCard(apiKey, session);
     if (locations.length > 1) {
         card.location(location, index);
     }

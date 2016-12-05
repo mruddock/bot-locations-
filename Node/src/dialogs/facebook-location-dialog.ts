@@ -3,12 +3,12 @@ import { Session, IDialogResult, Library, AttachmentLayout, HeroCard, CardImage,
 import { Place } from '../Place';
 import * as locationService from '../services/bing-geospatial-service';
 
-export function register(library: Library): void {
-    library.dialog('facebook-location-dialog', createDialog());
+export function register(library: Library, apiKey: string): void {
+    library.dialog('facebook-location-dialog', createDialog(apiKey));
     library.dialog('facebook-location-resolve-dialog', createLocationResolveDialog());
 }
 
-function createDialog() {
+function createDialog(apiKey: string) {
     return [
         (session: Session, args: any) => {
             session.dialogData.args = args;
@@ -16,7 +16,7 @@ function createDialog() {
         },
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
             if (session.dialogData.args.reverseGeocode && results.response && results.response.place) {
-                locationService.getLocationByPoint(results.response.place.geo.latitude, results.response.place.geo.longitude)
+                locationService.getLocationByPoint(apiKey, results.response.place.geo.latitude, results.response.place.geo.longitude)
                     .then(locations => {
                         var place: Place;
                         if (locations.length) {

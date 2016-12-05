@@ -20,19 +20,24 @@ exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields
 // Library creation
 //=========================================================
 
-var lib = new Library(consts.LibraryName);
 
-requiredFieldsDialog.register(lib);
-defaultLocationDialog.register(lib);
-facebookLocationDialog.register(lib);
-lib.localePath(path.join(__dirname, 'locale/'));
+exports.createLibrary = (apiKey: string) => {
+    if(apiKey === undefined) {
+        throw "'apiKey' parameter missing";
+    }
 
-lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
-    .cancelAction('cancel', null, {
-        matches: /^cancel$/i,
-    });
+    var lib = new Library(consts.LibraryName);
 
-exports.createLibrary = () => {
+    requiredFieldsDialog.register(lib);
+    defaultLocationDialog.register(lib, apiKey);
+    facebookLocationDialog.register(lib, apiKey);
+    lib.localePath(path.join(__dirname, 'locale/'));
+
+    lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
+        .cancelAction('cancel', null, {
+            matches: /^cancel$/i,
+        });
+
     return lib;
 }
 

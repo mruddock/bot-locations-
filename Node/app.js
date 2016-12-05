@@ -19,7 +19,7 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
-bot.library(locationDialog.createLibrary());
+bot.library(locationDialog.createLibrary(process.env.BING_MAPS_API_KEY));
 
 bot.dialog("/", [
     function (session) {
