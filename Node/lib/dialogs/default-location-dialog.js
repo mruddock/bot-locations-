@@ -2,6 +2,7 @@
 var common = require('../common');
 var consts_1 = require('../consts');
 var botbuilder_1 = require('botbuilder');
+var map_card_1 = require('../map-card');
 var locationService = require('../services/bing-geospatial-service');
 var confirmDialog = require('./confirm-dialog');
 var choiceDialog = require('./choice-dialog');
@@ -65,12 +66,12 @@ function createLocationsCard(session, locations) {
 }
 function constructCard(session, locations, index) {
     var location = locations[index];
-    var indexText = locations.length > 1 ? (index + 1) + ". " : "";
-    var text = indexText + location.address.formattedAddress;
-    var card = new botbuilder_1.HeroCard(session)
-        .subtitle(text);
-    if (location.point) {
-        card.images([botbuilder_1.CardImage.create(session, locationService.GetLocationMapImageUrl(location, index))]);
+    var card = new map_card_1.MapCard(session);
+    if (locations.length > 1) {
+        card.location(location, index);
+    }
+    else {
+        card.location(location);
     }
     return card;
 }

@@ -2,6 +2,7 @@ import * as common from '../common';
 import { Strings } from '../consts';
 import { Session, IDialogResult, Library, AttachmentLayout, HeroCard, CardImage, Message } from 'botbuilder';
 import { Place } from '../Place';
+import { MapCard } from '../map-card'
 import * as locationService from '../services/bing-geospatial-service';
 import * as confirmDialog from './confirm-dialog';
 import * as choiceDialog from './choice-dialog';
@@ -73,16 +74,15 @@ function createLocationsCard(session: Session, locations: any) {
         .attachments(cards);
 }
 
-function constructCard(session: Session, locations: Array<any>, index: number) {
+function constructCard(session: Session, locations: Array<any>, index: number): HeroCard {
     var location = locations[index];
-    var indexText = locations.length > 1 ? (index + 1) + ". " : "";
-    var text = indexText + location.address.formattedAddress;
-    var card = new HeroCard(session)
-        .subtitle(text);
+    var card = new MapCard(session);
 
-    if (location.point) {
-        card.images([CardImage.create(session, locationService.GetLocationMapImageUrl(location, index))]);
-
+    if (locations.length > 1) {
+        card.location(location, index);
+    }
+    else {
+        card.location(location);
     }
 
     return card;
