@@ -4,7 +4,6 @@ namespace Microsoft.Bot.Builder.Location
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Bing;
     using Builder.Dialogs;
@@ -27,8 +26,9 @@ namespace Microsoft.Bot.Builder.Location
     /// <description>
     /// Calling <see cref="LocationDialog"/> with default parameters
     /// <code>
+    /// var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChannelId, prompt);
+    /// var locationDialog = new LocationDialog(apiKey, message.ChannelId, prompt);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -37,8 +37,9 @@ namespace Microsoft.Bot.Builder.Location
     /// <description>
     /// Using channel's native location widget if available (e.g. Facebook) 
     /// <code>
+    /// var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.UseNativeControl);
+    /// var locationDialog = new LocationDialog(apiKey, message.ChannelId, prompt, LocationOptions.UseNativeControl);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -50,8 +51,9 @@ namespace Microsoft.Bot.Builder.Location
     ///  automatically fill-in address fields.
     /// For more info see <see cref="LocationOptions.ReverseGeocode"/>
     /// <code>
+    /// var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode);
+    /// var locationDialog = new LocationDialog(apiKey, message.ChannelId, prompt, LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -61,8 +63,9 @@ namespace Microsoft.Bot.Builder.Location
     /// Specifying required fields to have the dialog prompt the user for if missing from address. 
     /// For more info see <see cref="LocationRequiredFields"/>
     /// <code>
+    /// var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
+    /// var locationDialog = new LocationDialog(apiKey, message.ChannelId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
     /// context.Call(locationDialog, (dialogContext, result) => {...});
     /// </code>
     /// </description>
@@ -71,8 +74,9 @@ namespace Microsoft.Bot.Builder.Location
     /// <description>
     /// Example on how to handle the returned place
     /// <code>
+    /// var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
     /// var prompt = "Hi, where would you like me to ship to your widget?";
-    /// var locationDialog = new LocationDialog(message.ChannelId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
+    /// var locationDialog = new LocationDialog(apiKey, message.ChannelId, prompt, LocationOptions.None, LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode);
     /// context.Call(locationDialog, (context, result) => {
     ///     Place place = await result;
     ///     if (place != null)
@@ -122,22 +126,42 @@ namespace Microsoft.Bot.Builder.Location
         /// <param name="options">The location options used to customize the experience.</param>
         /// <param name="requiredFields">The location required fields.</param>
         /// <param name="resourceManager">The location resource manager.</param>
-        /// <param name="geoSpatialService">The geo spatial location service.</param>
         public LocationDialog(
             string apiKey,
             string channelId,
             string prompt,
             LocationOptions options = LocationOptions.None,
             LocationRequiredFields requiredFields = LocationRequiredFields.None,
-            LocationResourceManager resourceManager = null,
-            IGeoSpatialService geoSpatialService = null) : base(resourceManager)
+            LocationResourceManager resourceManager = null)
+            : this(apiKey, channelId, prompt, new BingGeoSpatialService(), options, requiredFields, resourceManager)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationDialog"/> class.
+        /// </summary>
+        /// <param name="apiKey">The geo spatial API key.</param>
+        /// <param name="channelId">The channel identifier.</param>
+        /// <param name="prompt">The prompt posted to the user when dialog starts.</param>
+        /// <param name="geoSpatialService">The geo spatial location service.</param>
+        /// <param name="options">The location options used to customize the experience.</param>
+        /// <param name="requiredFields">The location required fields.</param>
+        /// <param name="resourceManager">The location resource manager.</param>
+        internal LocationDialog(
+            string apiKey,
+            string channelId,
+            string prompt,
+            IGeoSpatialService geoSpatialService,
+            LocationOptions options = LocationOptions.None,
+            LocationRequiredFields requiredFields = LocationRequiredFields.None,
+            LocationResourceManager resourceManager = null) : base(resourceManager)
         {
             SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
             SetField.NotNull(out this.prompt, nameof(prompt), prompt);
             SetField.NotNull(out this.channelId, nameof(channelId), channelId);
+            SetField.NotNull(out this.geoSpatialService, nameof(geoSpatialService), geoSpatialService);
             this.options = options;
             this.requiredFields = requiredFields;
-            this.geoSpatialService = geoSpatialService ?? new BingGeoSpatialService();
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously

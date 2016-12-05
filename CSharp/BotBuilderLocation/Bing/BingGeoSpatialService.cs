@@ -1,12 +1,10 @@
 ﻿namespace Microsoft.Bot.Builder.Location.Bing
 {
     using System;
-    using System.Configuration;
     using System.Globalization;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using System.Web.Configuration;
     using Newtonsoft.Json;
 
     [Serializable]
@@ -19,23 +17,37 @@
 
         public async Task<LocationSet> GetLocationsByQueryAsync(string apiKey, string address)
         {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new ArgumentNullException(nameof(apiKey));
+            }
+
             if (string.IsNullOrEmpty(address))
             {
                 throw new ArgumentNullException(nameof(address));
             }
 
-            return await this.GetLocationsAsync(apiKey, FindByQueryApiUrl + Uri.EscapeDataString(address) + "&key=" + apiKey);
+            return await this.GetLocationsAsync(FindByQueryApiUrl + Uri.EscapeDataString(address) + "&key=" + apiKey);
         }
 
         public async Task<LocationSet> GetLocationsByPointAsync(string apiKey, double latitude, double longitude)
         {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new ArgumentNullException(nameof(apiKey));
+            }
+
             return await this.GetLocationsAsync(
-                apiKey,
                 string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude) + "&key=" + apiKey);
         }
 
         public string GetLocationMapImageUrl(string apiKey, Location location, int? index = null)
         {
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                throw new ArgumentNullException(nameof(apiKey));
+            }
+
             if (location == null)
             {
                 throw new ArgumentNullException(nameof(location));
@@ -45,11 +57,6 @@
             if (point == null)
             {
                 throw new ArgumentNullException(nameof(point));
-            }
-
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ConfigurationErrorsException("BingMapsApiKey is missing in Web.config");
             }
 
             if (location.BoundaryBox != null && location.BoundaryBox.Count >= 4)
@@ -70,14 +77,8 @@
             }
         }
 
-        private async Task<LocationSet> GetLocationsAsync(string apiKey, string url)
+        private async Task<LocationSet> GetLocationsAsync(string url)
         {
-
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ConfigurationErrorsException("BingMapsApiKey is missing in Web.config");
-            }
-
             using (var client = new HttpClient())
             {
                 var response = await client.GetStringAsync(url);
