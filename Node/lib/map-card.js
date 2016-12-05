@@ -11,15 +11,16 @@ var MapCard = (function (_super) {
     function MapCard(apiKey, session) {
         _super.call(this, session);
         this.apiKey = apiKey;
+        this.session = session;
     }
     MapCard.prototype.location = function (location, index) {
         var indexText = "";
         if (index !== undefined) {
-            indexText = (index + 1) + ". ";
+            indexText = index + ". ";
         }
-        this.text(indexText + location.address.formattedAddress);
+        this.subtitle(indexText + location.address.formattedAddress);
         if (location.point) {
-            this.images([botbuilder_1.CardImage.create(null, locationService.GetLocationMapImageUrl(this.apiKey, location, index))]);
+            this.images([botbuilder_1.CardImage.create(this.session, locationService.GetLocationMapImageUrl(this.apiKey, location, index))]);
         }
         return this;
     };

@@ -68,7 +68,7 @@ function constructCard(apiKey, session, locations, index) {
     var location = locations[index];
     var card = new map_card_1.MapCard(apiKey, session);
     if (locations.length > 1) {
-        card.location(location, index);
+        card.location(location, index + 1);
     }
     else {
         card.location(location);

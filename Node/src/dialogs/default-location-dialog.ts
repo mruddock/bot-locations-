@@ -79,7 +79,7 @@ function constructCard(apiKey: string, session: Session, locations: Array<any>, 
     var card = new MapCard(apiKey, session);
 
     if (locations.length > 1) {
-        card.location(location, index);
+        card.location(location, index + 1);
     }
     else {
         card.location(location);
