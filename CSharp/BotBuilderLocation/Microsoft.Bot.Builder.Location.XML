@@ -427,14 +427,14 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForStreetAddress"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Cancel">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelCommand">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Cancel"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelCommand"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Help">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.HelpCommand">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Help"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.HelpCommand"/> resource string.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.HelpMessage">
@@ -447,6 +447,11 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.InvalidLocationResponse"/> resource string.
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.InvalidLocationResponseFacebook">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.InvalidLocationResponseFacebook"/> resource string.
+            </summary>
+        </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.LocationNotFound">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.LocationNotFound"/> resource string.
@@ -457,9 +462,19 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.MultipleResultsFound"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Reset">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ResetCommand">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Reset"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ResetCommand"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ResetPrompt">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ResetPrompt"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelPrompt">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelPrompt"/> resource string.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.SelectLocation">
@@ -472,19 +487,54 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.SingleResultFound"/> resource string.
             </summary>
         </member>
-        <member name="T:Microsoft.Bot.Builder.Location.PlaceExtensions">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffix">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffix"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffixFacebook">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffixFacebook"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Confirmation">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Confirmation"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationAsk">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationAsk"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AddressSeparator">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AddressSeparator"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.OtherComand">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.OtherComand"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse"/> resource string.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.Location.Extensions">
             <summary>
             Extensions for <see cref="T:Microsoft.Bot.Connector.Place"/>
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.PlaceExtensions.GetPostalAddress(Microsoft.Bot.Connector.Place)">
+        <member name="M:Microsoft.Bot.Builder.Location.Extensions.GetPostalAddress(Microsoft.Bot.Connector.Place)">
             <summary>
             Gets the postal address.
             </summary>
             <param name="place">The place.</param>
             <returns>The <see cref="T:Microsoft.Bot.Builder.Location.PostalAddress"/> if available, null otherwise.</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.PlaceExtensions.GetGeoCoordinates(Microsoft.Bot.Connector.Place)">
+        <member name="M:Microsoft.Bot.Builder.Location.Extensions.GetGeoCoordinates(Microsoft.Bot.Connector.Place)">
             <summary>
             Gets the geo coordinates.
             </summary>
@@ -728,37 +778,62 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AddressSeparator">
+            <summary>
+              Looks up a localized string similar to , .
+            </summary>
+        </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForCountry">
             <summary>
-              Looks up a localized string similar to I also need the country:.
+              Looks up a localized string similar to OK {0}. Please also provide the country..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForLocality">
             <summary>
-              Looks up a localized string similar to I also need the locality:.
+              Looks up a localized string similar to OK {0}. Please also provide the locality..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForPostalCode">
             <summary>
-              Looks up a localized string similar to I also need the postal code:.
+              Looks up a localized string similar to OK {0}. Please also provide the postal code..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForRegion">
             <summary>
-              Looks up a localized string similar to I also need the region:.
+              Looks up a localized string similar to OK {0}. Please also provide the region..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForStreetAddress">
             <summary>
-              Looks up a localized string similar to I also need the address line:.
+              Looks up a localized string similar to OK {0}. Please also provide the street address..
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Cancel">
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.CancelCommand">
             <summary>
               Looks up a localized string similar to cancel.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Help">
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.CancelPrompt">
+            <summary>
+              Looks up a localized string similar to OK, cancelled..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Confirmation">
+            <summary>
+              Looks up a localized string similar to OK, I will ship to {0}..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.ConfirmationAsk">
+            <summary>
+              Looks up a localized string similar to OK, I will ship to {0}. Is that correct? Enter &apos;yes&apos; or &apos;no&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.ConfirmationInvalidResponse">
+            <summary>
+              Looks up a localized string similar to I didn&apos;t understand. Enter &apos;yes&apos; or &apos;no&apos;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.HelpCommand">
             <summary>
               Looks up a localized string similar to help.
             </summary>
@@ -770,7 +845,12 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.InvalidLocationResponse">
             <summary>
-              Looks up a localized string similar to Didn&apos;t get that. Choose a location or cancel..
+              Looks up a localized string similar to Type or say a number to choose the address, or enter &apos;cancel&apos; to exit..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.InvalidLocationResponseFacebook">
+            <summary>
+              Looks up a localized string similar to Tap on Send Location to proceed; type or say cancel to exit..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.LocationNotFound">
@@ -780,12 +860,22 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.MultipleResultsFound">
             <summary>
-              Looks up a localized string similar to I found the above results, select one:.
+              Looks up a localized string similar to I found these results. Type or say a number to choose the address, or enter &apos;other&apos; to select another address..
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Reset">
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.OtherComand">
+            <summary>
+              Looks up a localized string similar to other.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.ResetCommand">
             <summary>
               Looks up a localized string similar to reset.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.ResetPrompt">
+            <summary>
+              Looks up a localized string similar to OK, let&apos;s start over..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.SelectLocation">
@@ -795,7 +885,17 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.SingleResultFound">
             <summary>
-              Looks up a localized string similar to I found the above result, should I use it?.
+              Looks up a localized string similar to I found this result. Is this the correct address?.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.TitleSuffix">
+            <summary>
+              Looks up a localized string similar to  Type or say an address..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.TitleSuffixFacebook">
+            <summary>
+              Looks up a localized string similar to  Tap &apos;Send Location&apos; to choose an address..
             </summary>
         </member>
     </members>
