@@ -35,7 +35,7 @@ export function GetLocationMapImageUrl(apiKey: string, location: any, index: num
         return url;
     }
 
-    throw location;
+    throw "Invalid Location Format: " + location;
 }
 
 function getLocation(url: string): Promise<Array<any>> {

@@ -29,7 +29,7 @@ function GetLocationMapImageUrl(apiKey, location, index) {
         url = addKeyToUrl(url, apiKey);
         return url;
     }
-    throw location;
+    throw "Invalid Location Format: " + location;
 }
 exports.GetLocationMapImageUrl = GetLocationMapImageUrl;
 function getLocation(url) {

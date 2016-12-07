@@ -58,7 +58,8 @@ function createLocationResolveDialog(apiKey: string) {
                     session.send(reply);
 
                     session.endDialogWithResult({ response: { locations: locations } });
-                });
+                })
+                .catch(error => session.error(error));
         });
 }
 
