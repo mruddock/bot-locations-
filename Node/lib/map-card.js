@@ -20,7 +20,14 @@ var MapCard = (function (_super) {
         }
         this.subtitle(indexText + location.address.formattedAddress);
         if (location.point) {
-            this.images([botbuilder_1.CardImage.create(this.session, locationService.GetLocationMapImageUrl(this.apiKey, location, index))]);
+            var locationUrl;
+            try {
+                locationUrl = locationService.GetLocationMapImageUrl(this.apiKey, location, index);
+                this.images([botbuilder_1.CardImage.create(this.session, locationUrl)]);
+            }
+            catch (e) {
+                this.session.error(e);
+            }
         }
         return this;
     };

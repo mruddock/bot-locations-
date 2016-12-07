@@ -17,8 +17,15 @@ export class MapCard extends HeroCard {
         this.subtitle(indexText + location.address.formattedAddress)
 
         if (location.point) {
-            this.images([CardImage.create(this.session, locationService.GetLocationMapImageUrl(this.apiKey, location, index))]);
+            var locationUrl: string;
+            try {
+                locationUrl = locationService.GetLocationMapImageUrl(this.apiKey, location, index);
+                this.images([CardImage.create(this.session, locationUrl)]);
+            } catch (e) {
+                this.session.error(e);
+            }
         }
+
         return this;
     }
 }

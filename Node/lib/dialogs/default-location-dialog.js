@@ -52,7 +52,8 @@ function createLocationResolveDialog(apiKey) {
             var reply = createLocationsCard(apiKey, session, locations);
             session.send(reply);
             session.endDialogWithResult({ response: { locations: locations } });
-        });
+        })
+            .catch(function (error) { return session.error(error); });
     });
 }
 function createLocationsCard(apiKey, session, locations) {

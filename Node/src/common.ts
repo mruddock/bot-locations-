@@ -3,7 +3,7 @@ import { Place, Geo } from './place';
 
 export function createBaseDialog(options?: any): IntentDialog {
     return new IntentDialog(options)
-        .matches(/help/i, function (session: Session) {
+        .matches(/^help$/i, function (session: Session) {
             session.send("help message").sendBatch();
         })
         .matches(/^reset$/i, function (session: Session) {

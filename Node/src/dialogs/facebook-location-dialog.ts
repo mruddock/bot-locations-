@@ -26,7 +26,8 @@ function createDialog(apiKey: string) {
                         }
 
                         session.endDialogWithResult({ response: { place: place } });
-                    });
+                    })
+                    .catch(error => session.error(error));;
             }
             else {
                 next(results);

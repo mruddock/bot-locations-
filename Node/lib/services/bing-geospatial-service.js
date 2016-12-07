@@ -1,10 +1,11 @@
 "use strict";
 var rp = require('request-promise');
 var sprintf_js_1 = require('sprintf-js');
-var findLocationByQueryUrl = "https://dev.virtualearth.net/REST/v1/Locations?";
-var findLocationByPointUrl = "https://dev.virtualearth.net/REST/v1/Locations/%1$s,%2$s?";
-var findImageByPointUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/%1$s,%2$s/15?mapSize=500,500&pp=%1$s,%2$s;1;%3$s&dpi=1";
-var findImageByBBoxUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea=%1$s,%2$s,%3$s,%4$s&mapSize=500,500&pp=%5$s,%6$s;1;%7$s&dpi=1";
+var formAugmentation = "&form=BTCTRL";
+var findLocationByQueryUrl = "https://dev.virtualearth.net/REST/v1/Locations?" + formAugmentation;
+var findLocationByPointUrl = "https://dev.virtualearth.net/REST/v1/Locations/%1$s,%2$s?" + formAugmentation;
+var findImageByPointUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/%1$s,%2$s/15?mapSize=500,500&pp=%1$s,%2$s;1;%3$s&dpi=1" + formAugmentation;
+var findImageByBBoxUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea=%1$s,%2$s,%3$s,%4$s&mapSize=500,500&pp=%5$s,%6$s;1;%7$s&dpi=1" + formAugmentation;
 function getLocationByQuery(apiKey, address) {
     var url = addKeyToUrl(findLocationByQueryUrl, apiKey) + "&q=" + encodeURIComponent(address);
     return getLocation(url);
@@ -29,7 +30,7 @@ function GetLocationMapImageUrl(apiKey, location, index) {
         url = addKeyToUrl(url, apiKey);
         return url;
     }
-    throw location;
+    throw "Invalid Location Format: " + location;
 }
 exports.GetLocationMapImageUrl = GetLocationMapImageUrl;
 function getLocation(url) {
