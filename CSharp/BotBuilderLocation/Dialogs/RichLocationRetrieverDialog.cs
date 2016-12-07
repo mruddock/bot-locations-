@@ -27,7 +27,7 @@
         /// <param name="prompt">The prompt posted to the user when dialog starts.</param>
         /// <param name="supportsKeyboard">Indicates whether channel supports keyboard buttons or not.</param>
         /// <param name="resourceManager">The resource manager.</param>
-        public RichLocationRetrieverDialog(
+        internal RichLocationRetrieverDialog(
             IGeoSpatialService geoSpatialService,
             string apiKey,
             string prompt,
