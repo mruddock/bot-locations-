@@ -7,8 +7,8 @@ var botbuilder_1 = require('botbuilder');
     LocationRequiredFields[LocationRequiredFields["streetAddress"] = 1] = "streetAddress";
     LocationRequiredFields[LocationRequiredFields["locality"] = 2] = "locality";
     LocationRequiredFields[LocationRequiredFields["region"] = 4] = "region";
-    LocationRequiredFields[LocationRequiredFields["country"] = 8] = "country";
-    LocationRequiredFields[LocationRequiredFields["postalCode"] = 16] = "postalCode";
+    LocationRequiredFields[LocationRequiredFields["postalCode"] = 8] = "postalCode";
+    LocationRequiredFields[LocationRequiredFields["country"] = 16] = "country";
 })(exports.LocationRequiredFields || (exports.LocationRequiredFields = {}));
 var LocationRequiredFields = exports.LocationRequiredFields;
 function register(library) {
@@ -16,11 +16,11 @@ function register(library) {
 }
 exports.register = register;
 var fields = [
-    { name: "streetAddress", prompt: consts_1.Strings.AskForStreetAddress, flag: LocationRequiredFields.streetAddress },
-    { name: "locality", prompt: consts_1.Strings.AskForLocality, flag: LocationRequiredFields.locality },
-    { name: "region", prompt: consts_1.Strings.AskForRegion, flag: LocationRequiredFields.region },
-    { name: "country", prompt: consts_1.Strings.AskForCountry, flag: LocationRequiredFields.country },
-    { name: "postalCode", prompt: consts_1.Strings.AskForPostalCode, flag: LocationRequiredFields.postalCode },
+    { name: "streetAddress", prompt: consts_1.Strings.StreetAddress, flag: LocationRequiredFields.streetAddress },
+    { name: "locality", prompt: consts_1.Strings.Locality, flag: LocationRequiredFields.locality },
+    { name: "region", prompt: consts_1.Strings.Region, flag: LocationRequiredFields.region },
+    { name: "postalCode", prompt: consts_1.Strings.PostalCode, flag: LocationRequiredFields.postalCode },
+    { name: "country", prompt: consts_1.Strings.Country, flag: LocationRequiredFields.country },
 ];
 function createDialog() {
     return common.createBaseDialog({ recognizeMode: botbuilder_1.RecognizeMode.onBegin })
@@ -41,6 +41,7 @@ function createDialog() {
             if (!session.message.text) {
                 return;
             }
+            session.dialogData.lastInput = session.message.text;
             session.dialogData.place[fields[index].name] = session.message.text;
         }
         index++;
@@ -61,7 +62,23 @@ function createDialog() {
 }
 function completeFieldIfMissing(session, field) {
     if ((field.flag & session.dialogData.requiredFieldsFlag) && !session.dialogData.place[field.name]) {
-        session.send(field.prompt);
+        var prefix = "";
+        var prompt = "";
+        if (typeof session.dialogData.lastInput === "undefined") {
+            var formattedAddress = common.getFormattedAddressFromPlace(session.dialogData.place, session.gettext(consts_1.Strings.AddressSeparator));
+            if (formattedAddress) {
+                prefix = session.gettext(consts_1.Strings.AskForPrefix, formattedAddress);
+                prompt = session.gettext(consts_1.Strings.AskForTemplate, session.gettext(field.prompt));
+            }
+            else {
+                prompt = session.gettext(consts_1.Strings.AskForEmptyAddressTemplate, session.gettext(field.prompt));
+            }
+        }
+        else {
+            prefix = session.gettext(consts_1.Strings.AskForPrefix, session.dialogData.lastInput);
+            prompt = session.gettext(consts_1.Strings.AskForTemplate, session.gettext(field.prompt));
+        }
+        session.send(prefix + prompt);
         return true;
     }
     return false;

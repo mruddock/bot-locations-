@@ -1,3 +1,4 @@
+import { Strings } from '../consts';
 import * as common from '../common';
 import { Session, IDialogResult, Library, AttachmentLayout, HeroCard, CardImage, Message } from 'botbuilder';
 import { Place } from '../Place';
@@ -40,7 +41,8 @@ function createLocationResolveDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
             session.dialogData.args = args;
-            sendLocationPrompt(session).sendBatch();
+            var promptSuffix = session.gettext(Strings.TitleSuffixFacebook);
+            sendLocationPrompt(session, session.dialogData.args.prompt + promptSuffix).sendBatch();
         }).onDefault((session) => {
             var entities = session.message.entities;
             for (var i = 0; i < entities.length; i++) {
@@ -49,13 +51,14 @@ function createLocationResolveDialog() {
                     return;
                 }
             }
-
-            sendLocationPrompt(session).sendBatch();
+            
+            var prompt = session.gettext(Strings.InvalidLocationResponseFacebook);
+            sendLocationPrompt(session, prompt).sendBatch();
         });
 }
 
-function sendLocationPrompt(session: Session): Session {
-    var message = new Message(session).text(session.dialogData.args.prompt).sourceEvent({
+function sendLocationPrompt(session: Session, prompt: string): Session {
+    var message = new Message(session).text(prompt).sourceEvent({
         facebook: {
             quick_replies: [
                 {

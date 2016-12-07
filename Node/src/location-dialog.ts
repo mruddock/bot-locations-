@@ -1,7 +1,7 @@
 import * as path from 'path';
-import { Library, Session, IDialogResult } from 'botbuilder';
+import { Library, Session, IDialogResult, Prompts, ListStyle } from 'botbuilder';
 import * as common from './common';
-import * as consts from './consts';
+import { Strings, LibraryName } from './consts';
 import { Place } from './place';
 import * as defaultLocationDialog from './dialogs/default-location-dialog';
 import * as facebookLocationDialog from './dialogs/facebook-location-dialog'
@@ -14,7 +14,8 @@ export interface ILocationPromptOptions {
     reverseGeocode?: boolean
 }
 
-exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields
+exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
+exports.getFormattedAddressFromPlace = common.getFormattedAddressFromPlace;
 
 //=========================================================
 // Library creation
@@ -22,21 +23,18 @@ exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields
 
 
 exports.createLibrary = (apiKey: string) => {
-    if(apiKey === undefined) {
+    if (typeof apiKey === "undefined") {
         throw "'apiKey' parameter missing";
     }
 
-    var lib = new Library(consts.LibraryName);
+    var lib = new Library(LibraryName);
 
     requiredFieldsDialog.register(lib);
     defaultLocationDialog.register(lib, apiKey);
     facebookLocationDialog.register(lib, apiKey);
     lib.localePath(path.join(__dirname, 'locale/'));
 
-    lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
-        .cancelAction('cancel', null, {
-            matches: /^cancel$/i,
-        });
+    lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
 
     return lib;
 }
@@ -46,7 +44,7 @@ exports.createLibrary = (apiKey: string) => {
 //=========================================================
 
 exports.getLocation = function (session: Session, options: ILocationPromptOptions) {
-    session.beginDialog(consts.LibraryName + ':locationPickerPrompt', options);
+    session.beginDialog(LibraryName + ':locationPickerPrompt', options);
 };
 
 function getLocationPickerPrompt() {
@@ -71,10 +69,25 @@ function getLocationPickerPrompt() {
             }
         },
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
-            if (results.response && results.response.reset) {
-                session.replaceDialog('locationPickerPrompt', session.dialogData.args);
+            if (results.response && results.response.place) {
+                var separator = session.gettext(Strings.AddressSeparator);
+                var promptText = session.gettext(Strings.ConfirmationAsk, common.getFormattedAddressFromPlace(results.response.place, separator));
+                session.dialogData.place = results.response.place;
+                Prompts.confirm(session, promptText, { listStyle: ListStyle.none })
             } else {
-                next({ response: results.response.place });
+                next(results);
+            }
+        },
+        (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
+            if (!results.response || results.response.reset) {
+                session.send(Strings.ResetPrompt)
+                session.replaceDialog('locationPickerPrompt', session.dialogData.args);
+            }
+            else {
+                var separator = session.gettext(Strings.AddressSeparator);
+                var promptText = session.gettext(Strings.Confirmation, common.getFormattedAddressFromPlace(session.dialogData.place, separator));
+                session.send(promptText)
+                next({ response: session.dialogData.place });
             }
         }
     ];

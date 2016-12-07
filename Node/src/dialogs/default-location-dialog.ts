@@ -43,7 +43,8 @@ const MAX_CARD_COUNT = 5;
 function createLocationResolveDialog(apiKey: string) {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
-            session.send(args.prompt).sendBatch();
+            var promptSuffix = session.gettext(Strings.TitleSuffix);
+            session.send(args.prompt + promptSuffix).sendBatch();
         }).onDefault((session) => {
             locationService.getLocationByQuery(apiKey, session.message.text)
                 .then(locations => {

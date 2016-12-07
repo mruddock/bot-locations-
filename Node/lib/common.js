@@ -1,8 +1,14 @@
 "use strict";
 var botbuilder_1 = require('botbuilder');
+var consts_1 = require('./consts');
 var place_1 = require('./place');
 function createBaseDialog(options) {
     return new botbuilder_1.IntentDialog(options)
+        .matches(/^cancel$/i, function (session) {
+        session.send(consts_1.Strings.CancelPrompt);
+        session.endDialogWithResult({ response: { cancel: true } });
+        return;
+    })
         .matches(/^help$/i, function (session) {
         session.send("help message").sendBatch();
     })
@@ -42,3 +48,23 @@ function buildPlaceFromGeo(latitude, longitude) {
     return place;
 }
 exports.buildPlaceFromGeo = buildPlaceFromGeo;
+function getFormattedAddressFromPlace(place, separator) {
+    var addressParts = new Array();
+    if (place.streetAddress) {
+        addressParts.push(place.streetAddress);
+    }
+    if (place.locality) {
+        addressParts.push(place.locality);
+    }
+    if (place.region) {
+        addressParts.push(place.region);
+    }
+    if (place.postalCode) {
+        addressParts.push(place.postalCode);
+    }
+    if (place.country) {
+        addressParts.push(place.country);
+    }
+    return addressParts.join(separator);
+}
+exports.getFormattedAddressFromPlace = getFormattedAddressFromPlace;

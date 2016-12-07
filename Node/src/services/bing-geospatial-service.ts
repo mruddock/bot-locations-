@@ -4,8 +4,8 @@ import { sprintf } from 'sprintf-js';
 const formAugmentation = "&form=BTCTRL"
 const findLocationByQueryUrl = "https://dev.virtualearth.net/REST/v1/Locations?" + formAugmentation;
 const findLocationByPointUrl = "https://dev.virtualearth.net/REST/v1/Locations/%1$s,%2$s?" + formAugmentation;
-const findImageByPointUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/%1$s,%2$s/15?mapSize=500,500&pp=%1$s,%2$s;1;%3$s&dpi=1" + formAugmentation;
-const findImageByBBoxUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea=%1$s,%2$s,%3$s,%4$s&mapSize=500,500&pp=%5$s,%6$s;1;%7$s&dpi=1" + formAugmentation;
+const findImageByPointUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/%1$s,%2$s/15?mapSize=500,280&pp=%1$s,%2$s;1;%3$s&dpi=1&logo=always" + formAugmentation;
+const findImageByBBoxUrl = "https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?mapArea=%1$s,%2$s,%3$s,%4$s&mapSize=500,280&pp=%5$s,%6$s;1;%7$s&dpi=1&logo=always" + formAugmentation;
 
 export function getLocationByQuery(apiKey: string, address: string): Promise<Array<any>> {
     var url = addKeyToUrl(findLocationByQueryUrl, apiKey) + "&q=" + encodeURIComponent(address);

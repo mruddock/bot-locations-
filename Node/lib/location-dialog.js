@@ -1,28 +1,27 @@
 "use strict";
 var path = require('path');
 var botbuilder_1 = require('botbuilder');
-var consts = require('./consts');
+var common = require('./common');
+var consts_1 = require('./consts');
 var defaultLocationDialog = require('./dialogs/default-location-dialog');
 var facebookLocationDialog = require('./dialogs/facebook-location-dialog');
 var requiredFieldsDialog = require('./dialogs/required-fields-dialog');
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
+exports.getFormattedAddressFromPlace = common.getFormattedAddressFromPlace;
 exports.createLibrary = function (apiKey) {
-    if (apiKey === undefined) {
+    if (typeof apiKey === "undefined") {
         throw "'apiKey' parameter missing";
     }
-    var lib = new botbuilder_1.Library(consts.LibraryName);
+    var lib = new botbuilder_1.Library(consts_1.LibraryName);
     requiredFieldsDialog.register(lib);
     defaultLocationDialog.register(lib, apiKey);
     facebookLocationDialog.register(lib, apiKey);
     lib.localePath(path.join(__dirname, 'locale/'));
-    lib.dialog('locationPickerPrompt', getLocationPickerPrompt())
-        .cancelAction('cancel', null, {
-        matches: /^cancel$/i,
-    });
+    lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
     return lib;
 };
 exports.getLocation = function (session, options) {
-    session.beginDialog(consts.LibraryName + ':locationPickerPrompt', options);
+    session.beginDialog(consts_1.LibraryName + ':locationPickerPrompt', options);
 };
 function getLocationPickerPrompt() {
     return [
@@ -47,11 +46,26 @@ function getLocationPickerPrompt() {
             }
         },
         function (session, results, next) {
-            if (results.response && results.response.reset) {
+            if (results.response && results.response.place) {
+                var separator = session.gettext(consts_1.Strings.AddressSeparator);
+                var promptText = session.gettext(consts_1.Strings.ConfirmationAsk, common.getFormattedAddressFromPlace(results.response.place, separator));
+                session.dialogData.place = results.response.place;
+                botbuilder_1.Prompts.confirm(session, promptText, { listStyle: botbuilder_1.ListStyle.none });
+            }
+            else {
+                next(results);
+            }
+        },
+        function (session, results, next) {
+            if (!results.response || results.response.reset) {
+                session.send(consts_1.Strings.ResetPrompt);
                 session.replaceDialog('locationPickerPrompt', session.dialogData.args);
             }
             else {
-                next({ response: results.response.place });
+                var separator = session.gettext(consts_1.Strings.AddressSeparator);
+                var promptText = session.gettext(consts_1.Strings.Confirmation, common.getFormattedAddressFromPlace(session.dialogData.place, separator));
+                session.send(promptText);
+                next({ response: session.dialogData.place });
             }
         }
     ];

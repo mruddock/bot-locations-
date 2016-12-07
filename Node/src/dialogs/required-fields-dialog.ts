@@ -7,8 +7,8 @@ export enum LocationRequiredFields {
     streetAddress = 1 << 0,
     locality = 1 << 1,
     region = 1 << 2,
-    country = 1 << 3,
-    postalCode = 1 << 4
+    postalCode = 1 << 3,
+    country = 1 << 4,
 }
 
 export function register(library: Library): void {
@@ -16,11 +16,11 @@ export function register(library: Library): void {
 }
 
 const fields: Array<any> = [
-    { name: "streetAddress", prompt: Strings.AskForStreetAddress, flag: LocationRequiredFields.streetAddress },
-    { name: "locality", prompt: Strings.AskForLocality, flag: LocationRequiredFields.locality },
-    { name: "region", prompt: Strings.AskForRegion, flag: LocationRequiredFields.region },
-    { name: "country", prompt: Strings.AskForCountry, flag: LocationRequiredFields.country },
-    { name: "postalCode", prompt: Strings.AskForPostalCode, flag: LocationRequiredFields.postalCode },
+    { name: "streetAddress", prompt: Strings.StreetAddress, flag: LocationRequiredFields.streetAddress },
+    { name: "locality", prompt: Strings.Locality, flag: LocationRequiredFields.locality },
+    { name: "region", prompt: Strings.Region, flag: LocationRequiredFields.region },
+    { name: "postalCode", prompt: Strings.PostalCode, flag: LocationRequiredFields.postalCode },
+    { name: "country", prompt: Strings.Country, flag: LocationRequiredFields.country },
 ];
 
 function createDialog() {
@@ -43,6 +43,7 @@ function createDialog() {
                     return;
                 }
 
+                session.dialogData.lastInput = session.message.text;
                 session.dialogData.place[fields[index].name] = session.message.text;
             }
 
@@ -68,7 +69,25 @@ function createDialog() {
 
 function completeFieldIfMissing(session: Session, field: any) {
     if ((field.flag & session.dialogData.requiredFieldsFlag) && !session.dialogData.place[field.name]) {
-        session.send(field.prompt);
+
+        var prefix: string = "";
+        var prompt: string = "";
+        if (typeof session.dialogData.lastInput === "undefined") {
+            var formattedAddress: string = common.getFormattedAddressFromPlace(session.dialogData.place, session.gettext(Strings.AddressSeparator));
+            if (formattedAddress) {
+                prefix = session.gettext(Strings.AskForPrefix, formattedAddress);
+                prompt = session.gettext(Strings.AskForTemplate, session.gettext(field.prompt));
+            }
+            else {
+                prompt = session.gettext(Strings.AskForEmptyAddressTemplate, session.gettext(field.prompt));
+            }
+        }
+        else {
+            prefix = session.gettext(Strings.AskForPrefix, session.dialogData.lastInput);
+            prompt = session.gettext(Strings.AskForTemplate, session.gettext(field.prompt));
+        }
+
+        session.send(prefix + prompt);
         return true;
     }
 
