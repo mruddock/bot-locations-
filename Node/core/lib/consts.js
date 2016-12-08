@@ -1,7 +1,6 @@
-
-export const LibraryName = "botbuilder-location";
-
-export const Strings = {
+"use strict";
+exports.LibraryName = "botbuilder-location";
+exports.Strings = {
     "AddressSeparator": exports.LibraryName + ":AddressSeparator",
     "AskForEmptyAddressTemplate": exports.LibraryName + ":AskForEmptyAddressTemplate",
     "AskForPrefix": exports.LibraryName + ":AskForPrefix",
@@ -10,6 +9,7 @@ export const Strings = {
     "Confirmation": exports.LibraryName + ":Confirmation",
     "ConfirmationAsk": exports.LibraryName + ":ConfirmationAsk",
     "Country": exports.LibraryName + ":Country",
+    "DefaultPrompt": exports.LibraryName + ":DefaultPrompt",
     "InvalidLocationResponse": exports.LibraryName + ":InvalidLocationResponse",
     "InvalidLocationResponseFacebook": exports.LibraryName + ":InvalidLocationResponseFacebook",
     "LocationNotFound": exports.LibraryName + ":LocationNotFound",

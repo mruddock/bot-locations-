@@ -21,6 +21,10 @@ exports.createLibrary = function (apiKey) {
     return lib;
 };
 exports.getLocation = function (session, options) {
+    options = options || { prompt: session.gettext(consts_1.Strings.DefaultPrompt) };
+    if (typeof options.prompt == "undefined") {
+        options.prompt = session.gettext(consts_1.Strings.DefaultPrompt);
+    }
     session.beginDialog(consts_1.LibraryName + ':locationPickerPrompt', options);
 };
 function getLocationPickerPrompt() {
