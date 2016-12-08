@@ -7,6 +7,7 @@
     "Confirmation": "Thanks, I will ship to %s.",
     "ConfirmationAsk": "OK, I will ship to %s. Is that correct? Enter 'yes' or 'no'.",
     "Country": "country",
+    "DefaultPrompt": "Where should I ship your order?",
     "InvalidLocationResponse": "Didn't get that. Choose a location or cancel.",
     "InvalidLocationResponseFacebook": "Tap on Send Location to proceed; type or say cancel to exit.",
     "LocationNotFound": "I could not find this address. Please try again.",

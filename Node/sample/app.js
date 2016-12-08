@@ -1,10 +1,9 @@
-
 // This loads the environment variables from the .env file
 require('dotenv-extended').load();
 
 var builder = require('botbuilder');
 var restify = require('restify');
-var locationDialog = require('./lib/location-dialog');
+var locationDialog = require('botbuilder-location');
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -40,7 +39,10 @@ bot.dialog("/", [
     function (session, results) {
         if (results.response) {
             var place = results.response;
-            session.send("Thanks, I will ship to " + locationDialog.getFormattedAddressFromPlace(place, ", "));
+            // To get a formatted address from the location.
+            // session.send("Thanks, I will ship to " + locationDialog.getFormattedAddressFromPlace(place, ", "));
+        
+            session.send("Bye");
         }
     }
 ]);

@@ -44,6 +44,11 @@ exports.createLibrary = (apiKey: string) => {
 //=========================================================
 
 exports.getLocation = function (session: Session, options: ILocationPromptOptions) {
+    options = options || { prompt: session.gettext(Strings.DefaultPrompt) };
+    if (typeof options.prompt == "undefined") {
+        options.prompt = session.gettext(Strings.DefaultPrompt);
+    }
+
     session.beginDialog(LibraryName + ':locationPickerPrompt', options);
 };
 

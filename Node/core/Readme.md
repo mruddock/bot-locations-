@@ -1,6 +1,17 @@
-# locationDialog
+# Microsoft Bot Builder Location Control
 
-This dialog provides a location picker conversational UI (CUI) control, powered by Bing's Geo-spatial API and Places Graph, to make the process of getting the user's location easy and consistent across all messaging channels supported by bot framework. 
+This dialog provides a location control, powered by Bing's Maps REST Services, to make the process of getting the user's location easy and consistent across all messaging channels supported by the bot framework.
+
+## Usage
+Get the BotBuilder and Restify modules using npm.
+
+    npm install --save botbuilder-location
+
+From your bot, use the location control
+        
+    var locationDialog = require('botbuilder-location');
+
+You can refer to [this sample](../sample/app.js) that demonstrates usage.
 
 ## Examples
 
