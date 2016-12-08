@@ -62,14 +62,14 @@ using System.Collections.Generic;
                 addressParts.Add(location.Address.AdminDistrict);
             }
 
-            if (!string.IsNullOrEmpty(location.Address.CountryRegion))
-            {
-                addressParts.Add(location.Address.CountryRegion);
-            }
-
             if (!string.IsNullOrEmpty(location.Address.PostalCode))
             {
                 addressParts.Add(location.Address.PostalCode);
+            }
+
+            if (!string.IsNullOrEmpty(location.Address.CountryRegion))
+            {
+                addressParts.Add(location.Address.CountryRegion);
             }
 
             return string.Join(separator, addressParts);
