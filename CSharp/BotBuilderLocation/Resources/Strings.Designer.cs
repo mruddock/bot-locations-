@@ -115,7 +115,7 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK, I will ship to {0}..
+        ///   Looks up a localized string similar to Thanks, I will ship to {0}..
         /// </summary>
         internal static string Confirmation {
             get {

@@ -74,7 +74,7 @@ namespace BotBuilderLocation.Sample.Controllers
 
                 if (place != null)
                 {
-                    await context.PostAsync("Thank You");
+                    await context.PostAsync("Bye");
                 }
 
                 context.Done<string>(null);
