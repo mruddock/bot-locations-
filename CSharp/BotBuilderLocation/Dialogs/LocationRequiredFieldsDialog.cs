@@ -15,6 +15,7 @@
         private readonly Bing.Location location;
         private readonly LocationRequiredFields requiredFields;
         private string currentFieldName;
+        private string lastInput;
 
         public LocationRequiredFieldsDialog(Bing.Location location, LocationRequiredFields requiredFields, LocationResourceManager resourceManager)
             : base(resourceManager)
@@ -22,6 +23,7 @@
             SetField.NotNull(out this.location, nameof(location), location);
             this.requiredFields = requiredFields;
             this.location.Address = this.location.Address ?? new Bing.Address();
+            this.lastInput = this.location.GetFormattedAddress(this.ResourceManager.AddressSeparator);
         }
 
         public override async Task StartAsync(IDialogContext context)
@@ -31,7 +33,8 @@
 
         protected override async Task MessageReceivedInternalAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            this.location.Address.GetType().GetProperty(this.currentFieldName).SetValue(this.location.Address, (await result).Text);
+            this.lastInput = (await result).Text;
+            this.location.Address.GetType().GetProperty(this.currentFieldName).SetValue(this.location.Address, this.lastInput);
             await this.CompleteMissingFields(context);
         }
 
@@ -59,7 +62,7 @@
             }
 
             this.currentFieldName = name;
-            await context.PostAsync(prompt);
+            await context.PostAsync(string.Format(prompt, this.lastInput));
             context.Wait(this.MessageReceivedAsync);
 
             return true;

@@ -40,14 +40,14 @@
         public virtual string AskForStreetAddress => this.GetResource(nameof(Strings.AskForStreetAddress));
 
         /// <summary>
-        /// The <see cref="Cancel"/> resource string.
+        /// The <see cref="CancelCommand"/> resource string.
         /// </summary>
-        public virtual string Cancel => this.GetResource(nameof(Strings.Cancel));
+        public virtual string CancelCommand => this.GetResource(nameof(Strings.CancelCommand));
 
         /// <summary>
-        /// The <see cref="Help"/> resource string.
+        /// The <see cref="HelpCommand"/> resource string.
         /// </summary>
-        public virtual string Help => this.GetResource(nameof(Strings.Help));
+        public virtual string HelpCommand => this.GetResource(nameof(Strings.HelpCommand));
 
         /// <summary>
         /// The <see cref="HelpMessage"/> resource string.
@@ -60,6 +60,11 @@
         public virtual string InvalidLocationResponse => this.GetResource(nameof(Strings.InvalidLocationResponse));
 
         /// <summary>
+        /// The <see cref="InvalidLocationResponseFacebook"/> resource string.
+        /// </summary>
+        public virtual string InvalidLocationResponseFacebook => this.GetResource(nameof(Strings.InvalidLocationResponseFacebook));
+
+        /// <summary>
         /// The <see cref="LocationNotFound"/> resource string.
         /// </summary>
         public virtual string LocationNotFound => this.GetResource(nameof(Strings.LocationNotFound));
@@ -70,9 +75,19 @@
         public virtual string MultipleResultsFound => this.GetResource(nameof(Strings.MultipleResultsFound));
 
         /// <summary>
-        /// The <see cref="Reset"/> resource string.
+        /// The <see cref="ResetCommand"/> resource string.
         /// </summary>
-        public virtual string Reset => this.GetResource(nameof(Strings.Reset));
+        public virtual string ResetCommand => this.GetResource(nameof(Strings.ResetCommand));
+
+        /// <summary>
+        /// The <see cref="ResetPrompt"/> resource string.
+        /// </summary>
+        public virtual string ResetPrompt => this.GetResource(nameof(Strings.ResetPrompt));
+
+        /// <summary>
+        /// The <see cref="CancelPrompt"/> resource string.
+        /// </summary>
+        public virtual string CancelPrompt => this.GetResource(nameof(Strings.CancelPrompt));
 
         /// <summary>
         /// The <see cref="SelectLocation"/> resource string.
@@ -83,6 +98,41 @@
         /// The <see cref="SingleResultFound"/> resource string.
         /// </summary>
         public virtual string SingleResultFound => this.GetResource(nameof(Strings.SingleResultFound));
+
+        /// <summary>
+        /// The <see cref="TitleSuffix"/> resource string.
+        /// </summary>
+        public virtual string TitleSuffix => this.GetResource(nameof(Strings.TitleSuffix));
+
+        /// <summary>
+        /// The <see cref="TitleSuffixFacebook"/> resource string.
+        /// </summary>
+        public virtual string TitleSuffixFacebook => this.GetResource(nameof(Strings.TitleSuffixFacebook));
+
+        /// <summary>
+        /// The <see cref="Confirmation"/> resource string.
+        /// </summary>
+        public virtual string Confirmation => this.GetResource(nameof(Strings.Confirmation));
+
+        /// <summary>
+        /// The <see cref="ConfirmationAsk"/> resource string.
+        /// </summary>
+        public virtual string ConfirmationAsk => this.GetResource(nameof(Strings.ConfirmationAsk));
+
+        /// <summary>
+        /// The <see cref="AddressSeparator"/> resource string.
+        /// </summary>
+        public virtual string AddressSeparator => this.GetResource(nameof(Strings.AddressSeparator));
+
+        /// <summary>
+        /// The <see cref="OtherComand"/> resource string.
+        /// </summary>
+        public virtual string OtherComand => this.GetResource(nameof(Strings.OtherComand));
+
+        /// <summary>
+        /// The <see cref="ConfirmationInvalidResponse"/> resource string.
+        /// </summary>
+        public virtual string ConfirmationInvalidResponse => this.GetResource(nameof(Strings.ConfirmationInvalidResponse));
 
         internal LocationResourceManager(Assembly resourceAssembly = null, string resourceName = null)
         {
