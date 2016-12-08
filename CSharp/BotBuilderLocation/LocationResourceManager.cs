@@ -15,29 +15,29 @@
         private readonly ResourceManager resourceManager;
 
         /// <summary>
-        /// The <see cref="AskForCountry"/> resource string.
+        /// The <see cref="Country"/> resource string.
         /// </summary>
-        public virtual string AskForCountry => this.GetResource(nameof(Strings.AskForCountry));
+        public virtual string Country => this.GetResource(nameof(Strings.Country));
 
         /// <summary>
-        /// The <see cref="AskForLocality"/> resource string.
+        /// The <see cref="Locality"/> resource string.
         /// </summary>
-        public virtual string AskForLocality => this.GetResource(nameof(Strings.AskForLocality));
+        public virtual string Locality => this.GetResource(nameof(Strings.Locality));
 
         /// <summary>
-        /// The <see cref="AskForPostalCode"/> resource string.
+        /// The <see cref="PostalCode"/> resource string.
         /// </summary>
-        public virtual string AskForPostalCode => this.GetResource(nameof(Strings.AskForPostalCode));
+        public virtual string PostalCode => this.GetResource(nameof(Strings.PostalCode));
 
         /// <summary>
-        /// The <see cref="AskForRegion"/> resource string.
+        /// The <see cref="Region"/> resource string.
         /// </summary>
-        public virtual string AskForRegion => this.GetResource(nameof(Strings.AskForRegion));
+        public virtual string Region => this.GetResource(nameof(Strings.Region));
 
         /// <summary>
-        /// The <see cref="AskForStreetAddress"/> resource string.
+        /// The <see cref="StreetAddress"/> resource string.
         /// </summary>
-        public virtual string AskForStreetAddress => this.GetResource(nameof(Strings.AskForStreetAddress));
+        public virtual string StreetAddress => this.GetResource(nameof(Strings.StreetAddress));
 
         /// <summary>
         /// The <see cref="CancelCommand"/> resource string.
@@ -133,6 +133,21 @@
         /// The <see cref="ConfirmationInvalidResponse"/> resource string.
         /// </summary>
         public virtual string ConfirmationInvalidResponse => this.GetResource(nameof(Strings.ConfirmationInvalidResponse));
+
+        /// <summary>
+        /// The <see cref="AskForPrefix"/> resource string.
+        /// </summary>
+        public virtual string AskForPrefix => this.GetResource(nameof(Strings.AskForPrefix));
+
+        /// <summary>
+        /// The <see cref="AskForTemplate"/> resource string.
+        /// </summary>
+        public virtual string AskForTemplate => this.GetResource(nameof(Strings.AskForTemplate));
+
+        /// <summary>
+        /// The <see cref="AskForEmptyAddressTemplate"/> resource string.
+        /// </summary>
+        public virtual string AskForEmptyAddressTemplate => this.GetResource(nameof(Strings.AskForEmptyAddressTemplate));
 
         internal LocationResourceManager(Assembly resourceAssembly = null, string resourceName = null)
         {
