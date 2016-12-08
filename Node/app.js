@@ -24,15 +24,15 @@ bot.library(locationDialog.createLibrary(process.env.BING_MAPS_API_KEY));
 bot.dialog("/", [
     function (session) {
         var options = {
-            prompt: "Hi, where would you like me to ship to your widget?",
+            prompt: "Where should I ship your order?",
             useNativeControl: true,
             reverseGeocode: true,
             requiredFields:
                 locationDialog.LocationRequiredFields.streetAddress |
                 locationDialog.LocationRequiredFields.locality |
                 locationDialog.LocationRequiredFields.region |
-                locationDialog.LocationRequiredFields.country |
-                locationDialog.LocationRequiredFields.postalCode
+                locationDialog.LocationRequiredFields.postalCode |
+                locationDialog.LocationRequiredFields.country
         };
 
         locationDialog.getLocation(session, options);
@@ -40,10 +40,7 @@ bot.dialog("/", [
     function (session, results) {
         if (results.response) {
             var place = results.response;
-            session.send("OK, I will ship it to " + place.streetAddress + ", " + place.locality + ", " + place.region + ", " + place.country + " (" + place.postalCode + ")");
-        }
-        else {
-            session.send("OK, I won't be shipping it");
+            session.send("Thanks, I will ship to " + locationDialog.getFormattedAddressFromPlace(place, ", "));
         }
     }
 ]);

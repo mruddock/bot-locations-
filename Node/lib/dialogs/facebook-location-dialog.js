@@ -1,4 +1,5 @@
 "use strict";
+var consts_1 = require('../consts');
 var common = require('../common');
 var botbuilder_1 = require('botbuilder');
 var locationService = require('../services/bing-geospatial-service');
@@ -39,7 +40,8 @@ function createLocationResolveDialog() {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
         session.dialogData.args = args;
-        sendLocationPrompt(session).sendBatch();
+        var promptSuffix = session.gettext(consts_1.Strings.TitleSuffixFacebook);
+        sendLocationPrompt(session, session.dialogData.args.prompt + promptSuffix).sendBatch();
     }).onDefault(function (session) {
         var entities = session.message.entities;
         for (var i = 0; i < entities.length; i++) {
@@ -48,11 +50,12 @@ function createLocationResolveDialog() {
                 return;
             }
         }
-        sendLocationPrompt(session).sendBatch();
+        var prompt = session.gettext(consts_1.Strings.InvalidLocationResponseFacebook);
+        sendLocationPrompt(session, prompt).sendBatch();
     });
 }
-function sendLocationPrompt(session) {
-    var message = new botbuilder_1.Message(session).text(session.dialogData.args.prompt).sourceEvent({
+function sendLocationPrompt(session, prompt) {
+    var message = new botbuilder_1.Message(session).text(prompt).sourceEvent({
         facebook: {
             quick_replies: [
                 {

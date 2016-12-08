@@ -57,8 +57,8 @@ bot.dialog("/", [
                 locationDialog.LocationRequiredFields.streetAddress |
                 locationDialog.LocationRequiredFields.locality |
                 locationDialog.LocationRequiredFields.region |
-                locationDialog.LocationRequiredFields.country |
-                locationDialog.LocationRequiredFields.postalCode
+                locationDialog.LocationRequiredFields.postalCode |
+                locationDialog.LocationRequiredFields.country
         });
     },
     function (session, results) {

@@ -1,8 +1,14 @@
 import { Session, IntentDialog } from 'botbuilder';
+import { Strings } from './consts';
 import { Place, Geo } from './place';
 
 export function createBaseDialog(options?: any): IntentDialog {
     return new IntentDialog(options)
+        .matches(/^cancel$/i, function (session: Session) {
+            session.send(Strings.CancelPrompt)
+            session.endDialogWithResult({ response: { cancel: true } });
+            return
+        })
         .matches(/^help$/i, function (session: Session) {
             session.send("help message").sendBatch();
         })
@@ -44,4 +50,30 @@ export function buildPlaceFromGeo(latitude: string, longitude: string) {
     place.geo.longitude = longitude;
 
     return place;
+}
+
+export function getFormattedAddressFromPlace(place: Place, separator: string): string {
+    var addressParts: Array<any> = new Array();
+
+    if (place.streetAddress) {
+        addressParts.push(place.streetAddress);
+    }
+
+    if (place.locality) {
+        addressParts.push(place.locality);
+    }
+
+    if (place.region) {
+        addressParts.push(place.region);
+    }
+
+    if (place.postalCode) {
+        addressParts.push(place.postalCode);
+    }
+
+    if (place.country) {
+        addressParts.push(place.country);
+    }
+    
+    return addressParts.join(separator);
 }
