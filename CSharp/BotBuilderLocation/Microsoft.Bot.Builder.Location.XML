@@ -402,29 +402,29 @@
             some or all the prompt strings.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForCountry">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Country">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForCountry"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Country"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForLocality">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Locality">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForLocality"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Locality"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPostalCode">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.PostalCode">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPostalCode"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.PostalCode"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForRegion">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Region">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForRegion"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Region"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForStreetAddress">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.StreetAddress">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForStreetAddress"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.StreetAddress"/> resource string.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelCommand">
@@ -520,6 +520,21 @@
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPrefix">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPrefix"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForTemplate">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForTemplate"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate"/> resource string.
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.Extensions">
@@ -783,29 +798,19 @@
               Looks up a localized string similar to , .
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForCountry">
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForEmptyAddressTemplate">
             <summary>
-              Looks up a localized string similar to OK {0}. Please also provide the country..
+              Looks up a localized string similar to Please provide the {0}..
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForLocality">
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForPrefix">
             <summary>
-              Looks up a localized string similar to OK {0}. Please also provide the locality..
+              Looks up a localized string similar to OK {0}..
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForPostalCode">
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForTemplate">
             <summary>
-              Looks up a localized string similar to OK {0}. Please also provide the postal code..
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForRegion">
-            <summary>
-              Looks up a localized string similar to OK {0}. Please also provide the region..
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.AskForStreetAddress">
-            <summary>
-              Looks up a localized string similar to OK {0}. Please also provide the street address..
+              Looks up a localized string similar to  Please also provide the {0}..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.CancelCommand">
@@ -833,6 +838,11 @@
               Looks up a localized string similar to I didn&apos;t understand. Enter &apos;yes&apos; or &apos;no&apos;..
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Country">
+            <summary>
+              Looks up a localized string similar to country.
+            </summary>
+        </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.HelpCommand">
             <summary>
               Looks up a localized string similar to help.
@@ -853,9 +863,14 @@
               Looks up a localized string similar to Tap on Send Location to proceed; type or say cancel to exit..
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Locality">
+            <summary>
+              Looks up a localized string similar to city or locality.
+            </summary>
+        </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.LocationNotFound">
             <summary>
-              Looks up a localized string similar to I wasn&apos;t able to find this address. Try again..
+              Looks up a localized string similar to I could not find this address. Please try again..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.MultipleResultsFound">
@@ -866,6 +881,16 @@
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.OtherComand">
             <summary>
               Looks up a localized string similar to other.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.PostalCode">
+            <summary>
+              Looks up a localized string similar to zip or postal code.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.Region">
+            <summary>
+              Looks up a localized string similar to state or region.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.ResetCommand">
@@ -886,6 +911,11 @@
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.SingleResultFound">
             <summary>
               Looks up a localized string similar to I found this result. Is this the correct address?.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.StreetAddress">
+            <summary>
+              Looks up a localized string similar to street address.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.TitleSuffix">

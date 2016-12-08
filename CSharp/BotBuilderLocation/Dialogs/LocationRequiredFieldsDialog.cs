@@ -23,7 +23,6 @@
             SetField.NotNull(out this.location, nameof(location), location);
             this.requiredFields = requiredFields;
             this.location.Address = this.location.Address ?? new Bing.Address();
-            this.lastInput = this.location.GetFormattedAddress(this.ResourceManager.AddressSeparator);
         }
 
         public override async Task StartAsync(IDialogContext context)
@@ -41,11 +40,11 @@
         private async Task CompleteMissingFields(IDialogContext context)
         {
             bool notComplete =
-                await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForStreetAddress, LocationRequiredFields.StreetAddress, "AddressLine", this.location.Address.AddressLine)
-                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForLocality, LocationRequiredFields.Locality, "Locality", this.location.Address.Locality)
-                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForRegion, LocationRequiredFields.Region, "AdminDistrict", this.location.Address.AdminDistrict)
-                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForCountry, LocationRequiredFields.Country, "CountryRegion", this.location.Address.CountryRegion)
-                || await this.CompleteFieldIfMissing(context, this.ResourceManager.AskForPostalCode, LocationRequiredFields.PostalCode, "PostalCode", this.location.Address.PostalCode);
+                await this.CompleteFieldIfMissing(context, this.ResourceManager.StreetAddress, LocationRequiredFields.StreetAddress, "AddressLine", this.location.Address.AddressLine)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.Locality, LocationRequiredFields.Locality, "Locality", this.location.Address.Locality)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.Region, LocationRequiredFields.Region, "AdminDistrict", this.location.Address.AdminDistrict)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.PostalCode, LocationRequiredFields.PostalCode, "PostalCode", this.location.Address.PostalCode)
+                || await this.CompleteFieldIfMissing(context, this.ResourceManager.Country, LocationRequiredFields.Country, "CountryRegion", this.location.Address.CountryRegion);
 
             if (!notComplete)
             {
@@ -61,8 +60,29 @@
                 return false;
             }
 
+            string message;
+
+            if (this.lastInput == null)
+            {
+                string formattedAddress = this.location.GetFormattedAddress(this.ResourceManager.AddressSeparator);
+                if (string.IsNullOrWhiteSpace(formattedAddress))
+                {
+                    message = string.Format(this.ResourceManager.AskForEmptyAddressTemplate, prompt);
+                }
+                else
+                {
+                    message = string.Format(this.ResourceManager.AskForPrefix, formattedAddress) +
+                        string.Format(this.ResourceManager.AskForTemplate, prompt);
+                }
+            }
+            else
+            {
+                message = string.Format(this.ResourceManager.AskForPrefix, this.lastInput) +
+                    string.Format(this.ResourceManager.AskForTemplate, prompt);
+            }
+
             this.currentFieldName = name;
-            await context.PostAsync(string.Format(prompt, this.lastInput));
+            await context.PostAsync(message);
             context.Wait(this.MessageReceivedAsync);
 
             return true;

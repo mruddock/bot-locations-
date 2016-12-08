@@ -70,47 +70,29 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK {0}. Please also provide the country..
+        ///   Looks up a localized string similar to Please provide the {0}..
         /// </summary>
-        internal static string AskForCountry {
+        internal static string AskForEmptyAddressTemplate {
             get {
-                return ResourceManager.GetString("AskForCountry", resourceCulture);
+                return ResourceManager.GetString("AskForEmptyAddressTemplate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK {0}. Please also provide the city or locality..
+        ///   Looks up a localized string similar to OK {0}..
         /// </summary>
-        internal static string AskForLocality {
+        internal static string AskForPrefix {
             get {
-                return ResourceManager.GetString("AskForLocality", resourceCulture);
+                return ResourceManager.GetString("AskForPrefix", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK {0}. Please also provide the zip or postal code..
+        ///   Looks up a localized string similar to  Please also provide the {0}..
         /// </summary>
-        internal static string AskForPostalCode {
+        internal static string AskForTemplate {
             get {
-                return ResourceManager.GetString("AskForPostalCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OK {0}. Please also provide the region..
-        /// </summary>
-        internal static string AskForRegion {
-            get {
-                return ResourceManager.GetString("AskForRegion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OK {0}. Please also provide the street address..
-        /// </summary>
-        internal static string AskForStreetAddress {
-            get {
-                return ResourceManager.GetString("AskForStreetAddress", resourceCulture);
+                return ResourceManager.GetString("AskForTemplate", resourceCulture);
             }
         }
         
@@ -160,6 +142,15 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to country.
+        /// </summary>
+        internal static string Country {
+            get {
+                return ResourceManager.GetString("Country", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to help.
         /// </summary>
         internal static string HelpCommand {
@@ -196,7 +187,16 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I wasn&apos;t able to find this address. Try again..
+        ///   Looks up a localized string similar to city or locality.
+        /// </summary>
+        internal static string Locality {
+            get {
+                return ResourceManager.GetString("Locality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I could not find this address. Please try again..
         /// </summary>
         internal static string LocationNotFound {
             get {
@@ -219,6 +219,24 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         internal static string OtherComand {
             get {
                 return ResourceManager.GetString("OtherComand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to zip or postal code.
+        /// </summary>
+        internal static string PostalCode {
+            get {
+                return ResourceManager.GetString("PostalCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to state or region.
+        /// </summary>
+        internal static string Region {
+            get {
+                return ResourceManager.GetString("Region", resourceCulture);
             }
         }
         
@@ -255,6 +273,15 @@ namespace Microsoft.Bot.Builder.Location.Resources {
         internal static string SingleResultFound {
             get {
                 return ResourceManager.GetString("SingleResultFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to street address.
+        /// </summary>
+        internal static string StreetAddress {
+            get {
+                return ResourceManager.GetString("StreetAddress", resourceCulture);
             }
         }
         
