@@ -1,6 +1,6 @@
 import { Library } from 'botbuilder';
 import * as common from '../common';
-import {Strings} from '../consts';
+import { Strings } from '../consts';
 
 export function register(library: Library): void {
     library.dialog('confirm-dialog', createDialog());
@@ -16,8 +16,16 @@ function createDialog() {
         .onDefault((session) => {
             var message = parseBoolean(session.message.text);
             if (typeof message == 'boolean') {
-                var place = message == true ? common.processLocation(session.dialogData.locations[0], true) : null;
-                session.endDialogWithResult({ response: { place: place } })
+                var result: any;
+                if (message == true) {
+                    var place = common.processLocation(session.dialogData.locations[0], true);
+                    result = { response: { place: place } };
+                }
+                else {
+                    result = { response: { reset: true } }
+                }
+
+                session.endDialogWithResult(result)
                 return;
             }
 

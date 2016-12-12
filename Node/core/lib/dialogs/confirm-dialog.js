@@ -14,8 +14,15 @@ function createDialog() {
         .onDefault(function (session) {
         var message = parseBoolean(session.message.text);
         if (typeof message == 'boolean') {
-            var place = message == true ? common.processLocation(session.dialogData.locations[0], true) : null;
-            session.endDialogWithResult({ response: { place: place } });
+            var result;
+            if (message == true) {
+                var place = common.processLocation(session.dialogData.locations[0], true);
+                result = { response: { place: place } };
+            }
+            else {
+                result = { response: { reset: true } };
+            }
+            session.endDialogWithResult(result);
             return;
         }
         session.send(consts_1.Strings.InvalidLocationResponse).sendBatch();
