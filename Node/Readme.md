@@ -8,12 +8,17 @@ To start using the control, you need to obtain a Bing Maps API subscription key.
 
 ## Code Highlights
 
-### Usage
-Install the BotBuilder and Restify modules using npm.
+### Installation
+Install the botbuilder-location module using npm.
 
     npm install --save botbuilder-location
        
+### Usage
+
+Add the botbuilder-location library to your bot.
+
     var locationDialog = require('botbuilder-location');
+    bot.library(locationDialog.createLibrary("BING_MAPS_API_KEY"));
 
 ### Calling the location control with default parameters
 The example initiates the location control with default parameters, which returns a custom prompt message asking the user to provide an address. 
@@ -67,6 +72,8 @@ The following example shows how you can leverage the location object returned by
 
 ````JavaScript
 locationDialog.create(bot);
+
+bot.library(locationDialog.createLibrary(process.env.BING_MAPS_API_KEY));
 
 bot.dialog("/", [
     function (session) {
