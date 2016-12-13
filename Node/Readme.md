@@ -50,8 +50,6 @@ var options = {
 locationDialog.getLocation(session, options);
 ````
 
-Note: Due to the inheritably lack of accuracy of reverse geo-coders, we only use it to capture: `PostalAddress.Locality, PostalAddress.Region PostalAddress.Country and PostalAddress.PostalCode`.
-
 **Note**: Reverse geocoding is an inherently imprecise operation. For that reason, when the reverse geocode option is selected, the location control will collect only the `locality`, `region`, `country` and `postalCode` fields and ask the user to provide the desired street address manually. 
 
 ### Specifying required fields 
