@@ -3,11 +3,13 @@ var path = require('path');
 var botbuilder_1 = require('botbuilder');
 var common = require('./common');
 var consts_1 = require('./consts');
+var place_1 = require('./place');
 var defaultLocationDialog = require('./dialogs/default-location-dialog');
 var facebookLocationDialog = require('./dialogs/facebook-location-dialog');
 var requiredFieldsDialog = require('./dialogs/required-fields-dialog');
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
 exports.getFormattedAddressFromPlace = common.getFormattedAddressFromPlace;
+exports.Place = place_1.Place;
 exports.createLibrary = function (apiKey) {
     if (typeof apiKey === "undefined") {
         throw "'apiKey' parameter missing";
@@ -25,7 +27,7 @@ exports.getLocation = function (session, options) {
     if (typeof options.prompt == "undefined") {
         options.prompt = session.gettext(consts_1.Strings.DefaultPrompt);
     }
-    session.beginDialog(consts_1.LibraryName + ':locationPickerPrompt', options);
+    return session.beginDialog(consts_1.LibraryName + ':locationPickerPrompt', options);
 };
 function getLocationPickerPrompt() {
     return [
