@@ -16,13 +16,14 @@ export interface ILocationPromptOptions {
 
 exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
 exports.getFormattedAddressFromPlace = common.getFormattedAddressFromPlace;
+exports.Place = Place;
 
 //=========================================================
 // Library creation
 //=========================================================
 
 
-exports.createLibrary = (apiKey: string) => {
+exports.createLibrary = (apiKey: string): Library => {
     if (typeof apiKey === "undefined") {
         throw "'apiKey' parameter missing";
     }
@@ -43,13 +44,13 @@ exports.createLibrary = (apiKey: string) => {
 // Location Picker Prompt
 //=========================================================
 
-exports.getLocation = function (session: Session, options: ILocationPromptOptions) {
+exports.getLocation = function (session: Session, options: ILocationPromptOptions): Session {
     options = options || { prompt: session.gettext(Strings.DefaultPrompt) };
     if (typeof options.prompt == "undefined") {
         options.prompt = session.gettext(Strings.DefaultPrompt);
     }
 
-    session.beginDialog(LibraryName + ':locationPickerPrompt', options);
+    return session.beginDialog(LibraryName + ':locationPickerPrompt', options);
 };
 
 function getLocationPickerPrompt() {
