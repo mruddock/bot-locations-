@@ -128,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="AppSettingsSecrets.config" />
+    <Content Include="AppSettingsSecrets.config" Condition="Exists('AppSettingsSecrets.config')" />
     <None Include="Properties\PublishProfiles\Cui - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
