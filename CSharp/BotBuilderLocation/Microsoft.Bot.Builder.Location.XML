@@ -532,6 +532,11 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate"/> resource string.
             </summary>
         </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationResourceManager.#ctor">
+            <summary>
+            Default constructor. Initializes strings using Microsoft.Bot.Builder.Location assembly resources.
+            </summary>
+        </member>
         <member name="T:Microsoft.Bot.Builder.Location.Extensions">
             <summary>
             Extensions for <see cref="T:Microsoft.Bot.Connector.Place"/>

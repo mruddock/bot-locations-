@@ -144,6 +144,14 @@
         /// </summary>
         public virtual string AskForEmptyAddressTemplate => this.GetResource(nameof(Strings.AskForEmptyAddressTemplate));
 
+        /// <summary>
+        /// Default constructor. Initializes strings using Microsoft.Bot.Builder.Location assembly resources.
+        /// </summary>
+        public LocationResourceManager() :
+            this(null, null)
+        {
+        }
+
         internal LocationResourceManager(Assembly resourceAssembly = null, string resourceName = null)
         {
             if (resourceAssembly == null || resourceName == null)
