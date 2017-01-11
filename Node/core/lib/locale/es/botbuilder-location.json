@@ -1,0 +1,23 @@
+{
+    "AddressSeparator": ", ",
+    "AskForEmptyAddressTemplate": "Indicar la %s.",
+    "AskForPrefix": "OK %s.",
+    "AskForTemplate": " Indicar también el %s.",
+    "CancelPrompt": "OK, cancelado.",
+    "ConfirmationAsk": "OK, se enviará a %s.  ¿Es correcto? Ingrese 'sí' o 'no'.",
+    "Country": "país",
+    "DefaultPrompt": "¿A dónde debería enviar su orden?",
+    "HelpMessage": "Diga o escriba una dirección válida e intentaré encontrarla usando Bing. Puede indicar la dirección completa (número de calle, nombre de calle, ciudad, región, código postal, país) o solo una parte. Si desea cambiar la dirección, diga o escriba 'resetear'. Por último, diga o escriba 'cancelar' para salir sin indicar una dirección.",
+    "InvalidLocationResponse": "No entendí. Elija una ubicación o cancele.",
+    "InvalidLocationResponseFacebook": "Seleccione Enviar Ubicación para continuar; escriba o diga Cancelar para salir.",
+    "LocationNotFound": "No pude encontrar esta dirección. Intente nuevamente.",
+    "Locality": "Ciudad o localidad",
+    "MultipleResultsFound": "Encontré estos resultados. Escriba o diga un número para elegir la dirección, o seleccione 'otro' para elegir otra dirección.",
+    "PostalCode": "código postal",
+    "Region": "estado o región",
+    "ResetPrompt": "OK, volvamos a empezar.",
+    "SingleResultFound": "Encontré este resultado. ¿Esta dirección es correcta?",    
+    "StreetAddress": "dirección",
+    "TitleSuffix": "  Escriba o diga la dirección",
+    "TitleSuffixFacebook": " Seleccione 'Enviar ubicación' para elegir una dirección."
+}   
