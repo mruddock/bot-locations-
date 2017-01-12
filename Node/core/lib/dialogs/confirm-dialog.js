@@ -30,7 +30,7 @@ function createDialog() {
 }
 function parseBoolean(input) {
     input = input.trim();
-    var yesExp = /^(y|yes|yep|sure|ok|true)/i;
+    var yesExp = /^(y|yes|yep|sure|ok|true|si)/i;
     var noExp = /^(n|no|nope|not|false)/i;
     if (yesExp.test(input)) {
         return true;
