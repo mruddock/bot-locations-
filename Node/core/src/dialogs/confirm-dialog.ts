@@ -36,7 +36,7 @@ function createDialog() {
 function parseBoolean(input: string) {
     input = input.trim();
 
-    const yesExp = /^(y|yes|yep|sure|ok|true)/i;
+    const yesExp = /^(y|yes|yep|sure|ok|true|si)/i;
     const noExp = /^(n|no|nope|not|false)/i;
 
     if (yesExp.test(input)) {
