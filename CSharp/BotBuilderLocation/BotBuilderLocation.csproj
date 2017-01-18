@@ -86,7 +86,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LocationCard.cs" />
+    <Compile Include="Dialogs\BranchType.cs" />
+    <Compile Include="Dialogs\ILocationDialogFactory.cs" />
+    <Compile Include="Dialogs\LocationRetrieverDialogBase.cs" />
+    <Compile Include="ILocationCardBuilder.cs" />
+    <Compile Include="LocationCardBuilder.cs" />
     <Compile Include="Dialogs\LocationDialogFactory.cs" />
     <Compile Include="Dialogs\RichLocationRetrieverDialog.cs" />
     <Compile Include="Dialogs\FacebookNativeLocationRetrieverDialog.cs" />

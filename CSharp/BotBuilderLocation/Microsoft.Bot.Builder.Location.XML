@@ -4,35 +4,53 @@
         <name>Microsoft.Bot.Builder.Location</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.Bot.Builder.Location.LocationCard">
+        <member name="T:Microsoft.Bot.Builder.Location.Dialogs.BranchType">
             <summary>
-            A static class for creating location cards.
+            Represents different branch (sub dialog) types that <see cref="T:Microsoft.Bot.Builder.Location.LocationDialog"/> can use to achieve its goal.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationCard.CreateLocationHeroCard(System.String,System.Collections.Generic.IList{Microsoft.Bot.Builder.Location.Bing.Location})">
+        <member name="F:Microsoft.Bot.Builder.Location.Dialogs.BranchType.LocationRetriever">
             <summary>
-            Creates locations hero cards (carousel).
+            The branch dialog type for retrieving a location. 
             </summary>
-            <param name="apiKey">The geo spatial API key.</param>
-            <param name="locations">List of the locations.</param>
-            <returns>The locations card as attachments.</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationCard.CreateLocationKeyboardCard(System.Collections.Generic.IEnumerable{Microsoft.Bot.Builder.Location.Bing.Location},System.String)">
+        <member name="T:Microsoft.Bot.Builder.Location.Dialogs.ILocationDialogFactory">
             <summary>
-            Creates location keyboard cards (buttons).
+            Represents the interface that defines how location (sub)dialogs are created.
             </summary>
-            <param name="locations">The list of locations.</param>
-            <param name="selectText">The card prompt.</param>
-            <returns>The keyboard cards.</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.#ctor(Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService,System.String,System.String,System.Boolean,Microsoft.Bot.Builder.Location.LocationResourceManager)">
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.ILocationDialogFactory.CreateDialog(Microsoft.Bot.Builder.Location.Dialogs.BranchType)">
+            <summary>
+            Given a branch parameter, creates the appropriate corresponding dialog that should run.
+            </summary>
+            <param name="branch">The location dialog branch.</param>
+            <returns>The dialog.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationRetrieverDialogBase.ResumeAfterChildDialogInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Builder.Location.Dialogs.LocationDialogResponse})">
+            <summary>
+            Resumes after required fields dialog returns.
+            </summary>
+            <param name="context">The context.</param>
+            <param name="result">The result.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.LocationRetrieverDialogBase.TryReverseGeocodeAddress(Microsoft.Bot.Builder.Location.Bing.Location)">
+            <summary>
+            Tries to complete missing fields using Bing reverse geo-coder.
+            </summary>
+            <param name="location">The location.</param>
+            <returns>The asynchronous task.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.#ctor(System.String,System.Boolean,Microsoft.Bot.Builder.Location.ILocationCardBuilder,Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService,Microsoft.Bot.Builder.Location.LocationOptions,Microsoft.Bot.Builder.Location.LocationRequiredFields,Microsoft.Bot.Builder.Location.LocationResourceManager)">
             <summary>
             Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationDialog"/> class.
             </summary>
-            <param name="geoSpatialService">The Geo-Special Service</param>
-            <param name="apiKey">The geo spatial service API key.</param>
+            <param name="geoSpatialService">The Geo-Special Service.</param>
+            <param name="cardBuilder">The card builder service.</param>
             <param name="prompt">The prompt posted to the user when dialog starts.</param>
             <param name="supportsKeyboard">Indicates whether channel supports keyboard buttons or not.</param>
+            <param name="options">The location options used to customize the experience.</param>
+            <param name="requiredFields">The location required fields.</param>
             <param name="resourceManager">The resource manager.</param>
         </member>
         <member name="M:Microsoft.Bot.Builder.Location.Dialogs.RichLocationRetrieverDialog.TryResolveAddressAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Connector.IMessageActivity)">
@@ -182,33 +200,58 @@
             Represents a dialog that prompts the user for any missing location fields.
             </summary>
         </member>
+        <member name="T:Microsoft.Bot.Builder.Location.LocationCardBuilder">
+            <summary>
+            A class for creating location cards.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationCardBuilder.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationCardBuilder"/> class.
+            </summary>
+            <param name="apiKey">The geo spatial API key.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationCardBuilder.CreateHeroCards(System.Collections.Generic.IList{Microsoft.Bot.Builder.Location.Bing.Location},System.Boolean)">
+            <summary>
+            Creates locations hero cards.
+            </summary>
+            <param name="locations">List of the locations.</param>
+            <param name="alwaysShowNumericPrefix">Indicates whether a list containing exactly one location should have a '1.' prefix in its label.</param>
+            <returns>The locations card as a list.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.Location.LocationCardBuilder.CreateKeyboardCard(System.String,System.Int32,System.String[])">
+            <summary>
+            Creates a location keyboard card (buttons) with numbers and/or additional labels.
+            </summary>
+            <param name="selectText">The card prompt.</param>
+            <param name="optionCount">The number of options for which buttons should be made.</param>
+            <param name="additionalLabels">Additional buttons labels.</param>
+            <returns>The keyboard card.</returns>
+        </member>
         <member name="T:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService">
             <summary>
             Represents the interface the defines how the <see cref="T:Microsoft.Bot.Builder.Location.LocationDialog"/> will query for locations.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationsByQueryAsync(System.String,System.String)">
+        <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationsByQueryAsync(System.String)">
             <summary>
             Gets the locations asynchronously.
             </summary>
-            <param name="apiKey">The geo spatial service API key.</param>
             <param name="address">The address query.</param>
             <returns>The found locations</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationsByPointAsync(System.String,System.Double,System.Double)">
+        <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationsByPointAsync(System.Double,System.Double)">
             <summary>
             Gets the locations asynchronously.
             </summary>
-            <param name="apiKey">The geo spatial service API key.</param>
             <param name="latitude">The point latitude.</param>
             <param name="longitude">The point longitude.</param>
             <returns>The found locations</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationMapImageUrl(System.String,Microsoft.Bot.Builder.Location.Bing.Location,System.Nullable{System.Int32})">
+        <member name="M:Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService.GetLocationMapImageUrl(Microsoft.Bot.Builder.Location.Bing.Location,System.Nullable{System.Int32})">
             <summary>
             Gets the map image URL.
             </summary>
-            <param name="apiKey">The geo spatial service API key.</param>
             <param name="location">The location.</param>
             <param name="index">The pin point index.</param>
             <returns></returns>
@@ -402,34 +445,49 @@
             some or all the prompt strings.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Country">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AddressSeparator">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Country"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AddressSeparator"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Locality">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Locality"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.PostalCode">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPrefix">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.PostalCode"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPrefix"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Region">
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForTemplate">
             <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Region"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.StreetAddress">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.StreetAddress"/> resource string.
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForTemplate"/> resource string.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelCommand">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelCommand"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelPrompt">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelPrompt"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationAsk">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationAsk"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Country">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Country"/> resource string.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.HelpCommand">
@@ -457,9 +515,29 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.LocationNotFound"/> resource string.
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Locality">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Locality"/> resource string.
+            </summary>
+        </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.MultipleResultsFound">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.MultipleResultsFound"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.OtherComand">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.OtherComand"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.PostalCode">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.PostalCode"/> resource string.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Region">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.Region"/> resource string.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ResetCommand">
@@ -472,11 +550,6 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ResetPrompt"/> resource string.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelPrompt">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.CancelPrompt"/> resource string.
-            </summary>
-        </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.SelectLocation">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.SelectLocation"/> resource string.
@@ -487,6 +560,11 @@
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.SingleResultFound"/> resource string.
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.StreetAddress">
+            <summary>
+            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.StreetAddress"/> resource string.
+            </summary>
+        </member>
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffix">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffix"/> resource string.
@@ -495,41 +573,6 @@
         <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffixFacebook">
             <summary>
             The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.TitleSuffixFacebook"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationAsk">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationAsk"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AddressSeparator">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AddressSeparator"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.OtherComand">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.OtherComand"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.ConfirmationInvalidResponse"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPrefix">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForPrefix"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForTemplate">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForTemplate"/> resource string.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate">
-            <summary>
-            The <see cref="P:Microsoft.Bot.Builder.Location.LocationResourceManager.AskForEmptyAddressTemplate"/> resource string.
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Builder.Location.LocationResourceManager.#ctor">
@@ -622,10 +665,16 @@
             but still want the control to return to you a full address.
             </summary>
             <remarks>
-            Due to the accuracy of reverse geo-coders, we only use it to capture
+            Due to the accuracy limitations of reverse geo-coders, we only use it to capture
             <see cref="P:Microsoft.Bot.Builder.Location.PostalAddress.Locality"/>, <see cref="P:Microsoft.Bot.Builder.Location.PostalAddress.Region"/>,
             <see cref="P:Microsoft.Bot.Builder.Location.PostalAddress.Country"/>, and <see cref="P:Microsoft.Bot.Builder.Location.PostalAddress.PostalCode"/>
             </remarks>
+        </member>
+        <member name="F:Microsoft.Bot.Builder.Location.LocationOptions.SkipFinalConfirmation">
+            <summary>
+            Use this option if you want the location dialog to skip the final 
+            confirmation before returning the location
+            </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.LocationDialog">
             <summary>
@@ -736,16 +785,11 @@
             <param name="requiredFields">The location required fields.</param>
             <param name="resourceManager">The location resource manager.</param>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.#ctor(System.String,System.String,System.String,Microsoft.Bot.Builder.Location.Bing.IGeoSpatialService,Microsoft.Bot.Builder.Location.LocationOptions,Microsoft.Bot.Builder.Location.LocationRequiredFields,Microsoft.Bot.Builder.Location.LocationResourceManager)">
+        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.#ctor(Microsoft.Bot.Builder.Location.Dialogs.ILocationDialogFactory,Microsoft.Bot.Builder.Location.LocationResourceManager)">
             <summary>
             Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationDialog"/> class.
             </summary>
-            <param name="apiKey">The geo spatial API key.</param>
-            <param name="channelId">The channel identifier.</param>
-            <param name="prompt">The prompt posted to the user when dialog starts.</param>
-            <param name="geoSpatialService">The geo spatial location service.</param>
-            <param name="options">The location options used to customize the experience.</param>
-            <param name="requiredFields">The location required fields.</param>
+            <param name="locationDialogFactory">The location dialog factory service.</param>
             <param name="resourceManager">The location resource manager.</param>
         </member>
         <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.StartAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext)">
@@ -761,13 +805,6 @@
             </summary>
             <param name="context">The context.</param>
             <param name="result">The result.</param>
-            <returns>The asynchronous task.</returns>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.TryReverseGeocodeAddress(Microsoft.Bot.Builder.Location.Bing.Location)">
-            <summary>
-            Tries to complete missing fields using Bing reverse geo-coder.
-            </summary>
-            <param name="location">The location.</param>
             <returns>The asynchronous task.</returns>
         </member>
         <member name="M:Microsoft.Bot.Builder.Location.LocationDialog.CreatePlace(Microsoft.Bot.Builder.Location.Bing.Location)">
@@ -845,7 +882,7 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.HelpMessage">
             <summary>
-              Looks up a localized string similar to The help message.
+              Looks up a localized string similar to Say or type a valid address when asked, and I will try to find it using Bing. You can provide the full address information (street no. / name, city, region, postal/zip code, country) or a part of it. If you want to change the address, say or type &apos;reset&apos;. Finally, say or type &apos;cancel&apos; to exit without providing an address..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.InvalidLocationResponse">
