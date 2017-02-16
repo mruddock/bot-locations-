@@ -76,10 +76,15 @@ function getLocationPickerPrompt() {
         },
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
             if (results.response && results.response.place) {
-                var separator = session.gettext(Strings.AddressSeparator);
-                var promptText = session.gettext(Strings.ConfirmationAsk, common.getFormattedAddressFromPlace(results.response.place, separator));
-                session.dialogData.place = results.response.place;
-                Prompts.confirm(session, promptText, { listStyle: ListStyle.none })
+                if (session.dialogData.args.skipConfirmationAsk) {
+                    session.endDialogWithResult({ response: results.response.place });
+                }
+                else {
+                    var separator = session.gettext(Strings.AddressSeparator);
+                    var promptText = session.gettext(Strings.ConfirmationAsk, common.getFormattedAddressFromPlace(results.response.place, separator));
+                    session.dialogData.place = results.response.place;
+                    Prompts.confirm(session, promptText, { listStyle: ListStyle.none })
+                }
             } else {
                 next(results);
             }
