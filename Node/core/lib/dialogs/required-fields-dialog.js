@@ -32,7 +32,7 @@ function createDialog() {
             next();
         }
         else {
-            session.endDialogWithResult({ response: args.place });
+            session.endDialogWithResult({ response: { place: args.place } });
         }
     })
         .onDefault(function (session) {
