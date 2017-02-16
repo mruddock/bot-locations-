@@ -32,7 +32,7 @@ function createDialog() {
                 session.dialogData.requiredFieldsFlag = args.requiredFields;
                 next();
             } else {
-                session.endDialogWithResult({ response: args.place });
+                session.endDialogWithResult({ response: { place: args.place } });
             }
         })
         .onDefault((session) => {
