@@ -10,6 +10,7 @@ import * as requiredFieldsDialog from './dialogs/required-fields-dialog';
 export interface ILocationPromptOptions {
     prompt: string;
     requiredFields?: requiredFieldsDialog.LocationRequiredFields;
+    skipConfirmationAsk?: boolean;
     useNativeControl?: boolean,
     reverseGeocode?: boolean
 }
