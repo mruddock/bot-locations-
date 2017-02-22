@@ -22,6 +22,11 @@ export interface ILocationPromptOptions {
     requiredFields?: LocationRequiredFields;
 
     /**
+     * Use this option if you want the location dialog to skip the final confirmation before returning the location
+     */
+    skipConfirmationAsk?:boolean;
+
+    /**
      * Boolean to indicate if the control will use FB Messenger's location picker GUI dialog. It does not have any effect on other messaging channels.
      */
     useNativeControl?: boolean,

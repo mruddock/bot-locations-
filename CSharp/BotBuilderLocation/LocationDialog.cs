@@ -205,6 +205,12 @@
             }
             else
             {
+                if (this.options.HasFlag(LocationOptions.SkipFinalConfirmation))
+                {
+                    context.Done(CreatePlace(this.selectedLocation));
+                    return;
+                }
+
                 var confirmationAsk = string.Format(
                     this.ResourceManager.ConfirmationAsk,
                     this.selectedLocation.GetFormattedAddress(this.ResourceManager.AddressSeparator));
