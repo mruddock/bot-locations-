@@ -31,6 +31,12 @@
         /// <see cref="PostalAddress.Locality"/>, <see cref="PostalAddress.Region"/>,
         /// <see cref="PostalAddress.Country"/>, and <see cref="PostalAddress.PostalCode"/>
         /// </remarks>
-        ReverseGeocode = 2
+        ReverseGeocode = 2,
+
+        /// <summary>
+        /// Use this option if you want the location dialog to skip the final 
+        /// confirmation before returning the location
+        /// </summary>
+        SkipFinalConfirmation = 8
     }
 }
