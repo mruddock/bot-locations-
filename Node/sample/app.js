@@ -27,6 +27,7 @@ bot.dialog("/", [
             useNativeControl: true,
             reverseGeocode: true,
 			skipFavorites: false,
+			skipConfirmationAsk: true,
             requiredFields:
                 locationDialog.LocationRequiredFields.streetAddress |
                 locationDialog.LocationRequiredFields.locality |

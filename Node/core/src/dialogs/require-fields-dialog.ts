@@ -44,7 +44,7 @@ function createDialog() {
                 }
 
                 session.dialogData.lastInput = session.message.text;
-                session.dialogData.place[fields[index].name] = session.message.text;
+                session.dialogData.place.address[fields[index].name] = session.message.text;
             }
 
             index++;
@@ -60,6 +60,7 @@ function createDialog() {
             session.dialogData.index = index;
 
             if (index >= fields.length) {
+
                 session.endDialogWithResult({ response: { place: session.dialogData.place } });
             } else {
                 session.sendBatch();

@@ -42,7 +42,7 @@ function createDialog() {
                 return;
             }
             session.dialogData.lastInput = session.message.text;
-            session.dialogData.place[fields[index].name] = session.message.text;
+            session.dialogData.place.address[fields[index].name] = session.message.text;
         }
         index++;
         while (index < fields.length) {
