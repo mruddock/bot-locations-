@@ -86,7 +86,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LocationCard.cs" />
+    <Compile Include="Dialogs\AddFavoriteLocationDialog.cs" />
+    <Compile Include="Dialogs\BranchType.cs" />
+    <Compile Include="Dialogs\EditFavoriteLocationDialog.cs" />
+    <Compile Include="Dialogs\FavoriteLocation.cs" />
+    <Compile Include="Dialogs\FavoriteLocationRetrieverDialog.cs" />
+    <Compile Include="Dialogs\ILocationDialogFactory.cs" />
+    <Compile Include="Dialogs\LocationRetrieverDialogBase.cs" />
+    <Compile Include="FavoritesManager.cs" />
+    <Compile Include="IFavoritesManager.cs" />
+    <Compile Include="ILocationCardBuilder.cs" />
+    <Compile Include="LocationCardBuilder.cs" />
     <Compile Include="Dialogs\LocationDialogFactory.cs" />
     <Compile Include="Dialogs\RichLocationRetrieverDialog.cs" />
     <Compile Include="Dialogs\FacebookNativeLocationRetrieverDialog.cs" />

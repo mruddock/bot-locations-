@@ -3,29 +3,86 @@
     using System;
     using Bing;
     using Builder.Dialogs;
+    using Internals.Fibers;
 
-    internal static class LocationDialogFactory
+    [Serializable]
+    internal class LocationDialogFactory : ILocationDialogFactory
     {
-        internal static IDialog<LocationDialogResponse> CreateLocationRetrieverDialog(
+        private readonly string apiKey;
+        private readonly string channelId;
+        private readonly string prompt;
+        private readonly LocationOptions options;
+        private readonly LocationRequiredFields requiredFields;
+        private readonly IGeoSpatialService geoSpatialService;
+        private readonly LocationResourceManager resourceManager;
+
+        internal LocationDialogFactory(
             string apiKey,
             string channelId,
             string prompt,
-            bool useNativeControl,
+            IGeoSpatialService geoSpatialService,
+            LocationOptions options,
+            LocationRequiredFields requiredFields,
             LocationResourceManager resourceManager)
         {
-            bool isFacebookChannel = StringComparer.OrdinalIgnoreCase.Equals(channelId, "facebook");
+            SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
+            SetField.NotNull(out this.channelId, nameof(channelId), channelId);
+            SetField.NotNull(out this.prompt, nameof(prompt), prompt);
+            this.geoSpatialService = geoSpatialService;
+            this.options = options;
+            this.requiredFields = requiredFields;
+            this.resourceManager = resourceManager;
+        }
 
-            if (useNativeControl && isFacebookChannel)
+       public IDialog<LocationDialogResponse> CreateDialog(BranchType branch, Location location = null, string locationName = null)
+        {
+            bool isFacebookChannel = StringComparer.OrdinalIgnoreCase.Equals(this.channelId, "facebook");
+
+            if (branch == BranchType.LocationRetriever)
             {
-                return new FacebookNativeLocationRetrieverDialog(prompt, resourceManager);
-            }
+                if (this.options.HasFlag(LocationOptions.UseNativeControl) && isFacebookChannel)
+                {
+                    return new FacebookNativeLocationRetrieverDialog(
+                        this.prompt,
+                        this.geoSpatialService,
+                        this.options,
+                        this.requiredFields,
+                        this.resourceManager);
+                }
 
-            return new RichLocationRetrieverDialog(
-                geoSpatialService: new BingGeoSpatialService(),
-                apiKey: apiKey,
-                prompt: prompt,
-                supportsKeyboard: isFacebookChannel,
-                resourceManager: resourceManager);
+                return new RichLocationRetrieverDialog(
+                    prompt: this.prompt,
+                    supportsKeyboard: isFacebookChannel,
+                    cardBuilder: new LocationCardBuilder(this.apiKey),
+                    geoSpatialService: new BingGeoSpatialService(this.apiKey),
+                    options: this.options,
+                    requiredFields: this.requiredFields,
+                    resourceManager: this.resourceManager);
+            }
+            else if (branch == BranchType.FavoriteLocationRetriever)
+            {
+                return new FavoriteLocationRetrieverDialog(
+                    isFacebookChannel,
+                    new FavoritesManager(),
+                    this,
+                    new LocationCardBuilder(this.apiKey),
+                    new BingGeoSpatialService(this.apiKey),
+                    this.options,
+                    this.requiredFields,
+                    this.resourceManager);
+            }
+            else if (branch == BranchType.AddToFavorites)
+            {
+                return new AddFavoriteLocationDialog(new FavoritesManager(), location, this.resourceManager);
+            }
+            else if (branch == BranchType.EditFavoriteLocation)
+            {
+                return new EditFavoriteLocationDialog(this, new FavoritesManager(), locationName, location, this.resourceManager);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid branch value.");
+            }
         }
     }
 }

@@ -26,6 +26,8 @@ bot.dialog("/", [
             prompt: "Where should I ship your order?",
             useNativeControl: true,
             reverseGeocode: true,
+			skipFavorites: false,
+			skipConfirmationAsk: true,
             requiredFields:
                 locationDialog.LocationRequiredFields.streetAddress |
                 locationDialog.LocationRequiredFields.locality |
@@ -39,7 +41,13 @@ bot.dialog("/", [
     function (session, results) {
         if (results.response) {
             var place = results.response;
-            session.send("Thanks, I will ship to " + locationDialog.getFormattedAddressFromPlace(place, ", "));
+			var formattedAddress = 
+            session.send("Thanks, I will ship to " + getFormattedAddressFromPlace(place, ", "));
         }
     }
 ]);
+
+function getFormattedAddressFromPlace(place, separator) {
+    var addressParts = [place.streetAddress, place.locality, place.region, place.postalCode, place.country];
+    return addressParts.filter(i => i).join(separator);
+}
