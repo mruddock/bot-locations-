@@ -7,43 +7,55 @@
     using Bing;
     using Builder.Dialogs;
     using Connector;
+    using ConnectorEx;
     using Internals.Fibers;
 
     [Serializable]
-    class RichLocationRetrieverDialog : LocationDialogBase<LocationDialogResponse>
+    class RichLocationRetrieverDialog : LocationRetrieverDialogBase
     {
         private const int MaxLocationCount = 5;
         private readonly string prompt;
+        private readonly bool skipPrompt;
         private readonly bool supportsKeyboard;
         private readonly List<Location> locations = new List<Location>();
-        private readonly IGeoSpatialService geoSpatialService;
-        private readonly string apiKey;
+        private readonly ILocationCardBuilder cardBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationDialog"/> class.
         /// </summary>
-        /// <param name="geoSpatialService">The Geo-Special Service</param>
-        /// <param name="apiKey">The geo spatial service API key.</param>
+        /// <param name="geoSpatialService">The Geo-Special Service.</param>
+        /// <param name="cardBuilder">The card builder service.</param>
         /// <param name="prompt">The prompt posted to the user when dialog starts.</param>
         /// <param name="supportsKeyboard">Indicates whether channel supports keyboard buttons or not.</param>
+        /// <param name="options">The location options used to customize the experience.</param>
+        /// <param name="requiredFields">The location required fields.</param>
         /// <param name="resourceManager">The resource manager.</param>
         internal RichLocationRetrieverDialog(
-            IGeoSpatialService geoSpatialService,
-            string apiKey,
             string prompt,
             bool supportsKeyboard,
-            LocationResourceManager resourceManager) : base(resourceManager)
+            ILocationCardBuilder cardBuilder,
+            IGeoSpatialService geoSpatialService,
+            LocationOptions options,
+            LocationRequiredFields requiredFields,
+            LocationResourceManager resourceManager,
+            bool skipPrompt = false)
+            : base(geoSpatialService, options, requiredFields, resourceManager)
         {
-            SetField.NotNull(out this.geoSpatialService, nameof(geoSpatialService), geoSpatialService);
-            SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
-            this.prompt = prompt;
+            SetField.NotNull(out this.cardBuilder, nameof(cardBuilder), cardBuilder);
+            SetField.NotNull(out this.prompt, nameof(prompt), prompt);
             this.supportsKeyboard = supportsKeyboard;
+            this.skipPrompt = skipPrompt;
         }
 
         public override async Task StartAsync(IDialogContext context)
         {
             this.locations.Clear();
-            await context.PostAsync(this.prompt + this.ResourceManager.TitleSuffix);
+
+            if (!this.skipPrompt)
+            {
+                await context.PostAsync(this.prompt + this.ResourceManager.TitleSuffix);
+            }
+
             context.Wait(this.MessageReceivedAsync);
         }
 
@@ -55,12 +67,13 @@
             {
                 await this.TryResolveAddressAsync(context, message);
             }
-            else if (!this.TryResolveAddressSelectionAsync(context, message))
+            else if (!(await this.TryResolveAddressSelectionAsync(context, message)))
             {
                 await context.PostAsync(this.ResourceManager.InvalidLocationResponse);
                 context.Wait(this.MessageReceivedAsync);
             }
         }
+
         /// <summary>
         /// Tries to resolve address by passing the test to the Bing Geo-Spatial API
         /// and looking for returned locations.
@@ -70,7 +83,7 @@
         /// <returns>The asynchronous task.</returns>
         private async Task TryResolveAddressAsync(IDialogContext context, IMessageActivity message)
         {
-            var locationSet = await this.geoSpatialService.GetLocationsByQueryAsync(this.apiKey, message.Text);
+            var locationSet = await this.geoSpatialService.GetLocationsByQueryAsync(message.Text);
             var foundLocations = locationSet?.Locations;
 
             if (foundLocations == null || foundLocations.Count == 0)
@@ -84,7 +97,7 @@
                 this.locations.AddRange(foundLocations.Take(MaxLocationCount));
 
                 var locationsCardReply = context.MakeMessage();
-                locationsCardReply.Attachments = LocationCard.CreateLocationHeroCard(this.apiKey, this.locations);
+                locationsCardReply.Attachments = this.cardBuilder.CreateHeroCards(this.locations).Select(C => C.ToAttachment()).ToList();
                 locationsCardReply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
                 await context.PostAsync(locationsCardReply);
 
@@ -105,19 +118,19 @@
         /// <param name="context">The context.</param>
         /// <param name="message">The message.</param>
         /// <returns>The asynchronous task.</returns>
-        private bool TryResolveAddressSelectionAsync(IDialogContext context, IMessageActivity message)
+        private async Task<bool> TryResolveAddressSelectionAsync(IDialogContext context, IMessageActivity message)
         {
             int value;
             if (int.TryParse(message.Text, out value) && value > 0 && value <= this.locations.Count)
             {
-                context.Done(new LocationDialogResponse(this.locations[value - 1]));
+                await this.ProcessRetrievedLocation(context, this.locations[value - 1]);
                 return true;
             }
 
             if (StringComparer.OrdinalIgnoreCase.Equals(message.Text, this.ResourceManager.OtherComand))
             {
                 // Return new empty location to be filled by the required fields dialog.
-                context.Done(new LocationDialogResponse(new Location()));
+                await this.ProcessRetrievedLocation(context, new Location());
                 return true;
             }
 
@@ -140,7 +153,7 @@
                     {
                         if (await answer)
                         {
-                            dialogContext.Done(new LocationDialogResponse(this.locations.First()));
+                            await this.ProcessRetrievedLocation(dialogContext, this.locations.First());
                         }
                         else
                         {
@@ -162,8 +175,9 @@
         {
             if (this.supportsKeyboard)
             {
+                var keyboardCard = this.cardBuilder.CreateKeyboardCard(this.ResourceManager.MultipleResultsFound, this.locations.Count);
                 var keyboardCardReply = context.MakeMessage();
-                keyboardCardReply.Attachments = LocationCard.CreateLocationKeyboardCard(this.locations, this.ResourceManager.MultipleResultsFound);
+                keyboardCardReply.Attachments = new List<Attachment> { keyboardCard.ToAttachment() };
                 keyboardCardReply.AttachmentLayout = AttachmentLayoutTypes.List;
                 await context.PostAsync(keyboardCardReply);
             }

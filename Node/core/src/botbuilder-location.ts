@@ -1,22 +1,26 @@
 import * as path from 'path';
-import { Library, Session, IDialogResult, Prompts, ListStyle } from 'botbuilder';
+import { AttachmentLayout, IDialogResult, IPromptOptions, CardAction, HeroCard, Library, ListStyle, Message, Prompts, Session} from 'botbuilder';
 import * as common from './common';
 import { Strings, LibraryName } from './consts';
 import { Place } from './place';
-import * as defaultLocationDialog from './dialogs/default-location-dialog';
-import * as facebookLocationDialog from './dialogs/facebook-location-dialog'
-import * as requiredFieldsDialog from './dialogs/required-fields-dialog';
+import { FavoritesManager } from './services/favorites-manager';
+import * as addFavoriteLocationDialog from './dialogs/add-favorite-location-dialog';
+import * as confirmDialog from './dialogs/confirm-dialog';
+import * as retrieveLocationDialog from './dialogs/retrieve-location-dialog'
+import * as requireFieldsDialog from './dialogs/require-fields-dialog';
+import * as retrieveFavoriteLocationDialog from './dialogs/retrieve-favorite-location-dialog'
 
 export interface ILocationPromptOptions {
     prompt: string;
-    requiredFields?: requiredFieldsDialog.LocationRequiredFields;
+    requiredFields?: requireFieldsDialog.LocationRequiredFields;
     skipConfirmationAsk?: boolean;
     useNativeControl?: boolean,
-    reverseGeocode?: boolean
+    reverseGeocode?: boolean,
+    skipFavorites?: boolean
 }
 
-exports.LocationRequiredFields = requiredFieldsDialog.LocationRequiredFields;
-exports.getFormattedAddressFromPlace = common.getFormattedAddressFromPlace;
+exports.LocationRequiredFields = requireFieldsDialog.LocationRequiredFields;
+exports.getFormattedAddressFromLocation = common.getFormattedAddressFromLocation;
 exports.Place = Place;
 
 //=========================================================
@@ -30,13 +34,15 @@ exports.createLibrary = (apiKey: string): Library => {
     }
 
     var lib = new Library(LibraryName);
-
-    requiredFieldsDialog.register(lib);
-    defaultLocationDialog.register(lib, apiKey);
-    facebookLocationDialog.register(lib, apiKey);
+    retrieveFavoriteLocationDialog.register(lib, apiKey);
+    retrieveLocationDialog.register(lib, apiKey);
+    requireFieldsDialog.register(lib);
+    addFavoriteLocationDialog.register(lib);
+    confirmDialog.register(lib);
     lib.localePath(path.join(__dirname, 'locale/'));
 
     lib.dialog('locationPickerPrompt', getLocationPickerPrompt());
+    lib.dialog('start-hero-card-dialog', createDialogStartHeroCard());
 
     return lib;
 }
@@ -56,48 +62,96 @@ exports.getLocation = function (session: Session, options: ILocationPromptOption
 
 function getLocationPickerPrompt() {
     return [
-        (session: Session, args: ILocationPromptOptions) => {
+        // handle different ways of retrieving a location (favorite, other, etc)
+        (session: Session, args: ILocationPromptOptions, next: (results?: IDialogResult<any>) => void) => {
             session.dialogData.args = args;
-            if (args.useNativeControl && session.message.address.channelId == 'facebook') {
-                session.beginDialog('facebook-location-dialog', args);
+
+            if (!args.skipFavorites && (new  FavoritesManager(session.userData)).getFavorites().length > 0) {
+                session.beginDialog('start-hero-card-dialog');
             }
             else {
-                session.beginDialog('default-location-dialog', args);
+                next();
             }
         },
+        // retrieve location
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
-            if (results.response && results.response.place) {
-                session.beginDialog('required-fields-dialog', {
-                    place: results.response.place,
-                    requiredFields: session.dialogData.args.requiredFields
-                })
-            } else {
-                next(results);
+            if (results && results.response && results.response.entity === session.gettext(Strings.FavoriteLocations)) {
+                session.beginDialog('retrieve-favorite-location-dialog', session.dialogData.args);
+            }
+            else {
+                session.beginDialog('retrieve-location-dialog', session.dialogData.args);
             }
         },
+         // make final confirmation
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
             if (results.response && results.response.place) {
+                session.dialogData.place =  results.response.place;
                 if (session.dialogData.args.skipConfirmationAsk) {
-                    session.endDialogWithResult({ response: results.response.place });
+                    next({ response: { confirmed: true }});
                 }
                 else {
                     var separator = session.gettext(Strings.AddressSeparator);
-                    var promptText = session.gettext(Strings.ConfirmationAsk, common.getFormattedAddressFromPlace(results.response.place, separator));
-                    session.dialogData.place = results.response.place;
-                    Prompts.confirm(session, promptText, { listStyle: ListStyle.none })
+                    var promptText = session.gettext(Strings.ConfirmationAsk, common.getFormattedAddressFromLocation(results.response.place, separator));
+                    session.beginDialog('confirm-dialog' , { confirmationPrompt: promptText });
                 }
-            } else {
+            }
+            else {
                 next(results);
             }
         },
+        // offer add to favorites, if applicable
         (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
-            if (!results.response || results.response.reset) {
-                session.send(Strings.ResetPrompt)
+            session.dialogData.confirmed =  results.response.confirmed;
+            if(results.response && results.response.confirmed && !session.dialogData.args.skipFavorites) {
+                session.beginDialog('add-favorite-location-dialog', { place : session.dialogData.place });
+            }
+            else {
+                 next(results);
+            }
+        },
+        (session: Session, results: IDialogResult<any>, next: (results?: IDialogResult<any>) => void) => {
+            if (results.response && results.response.cancel) {
+                session.endDialogWithResult(null);
+            }
+            else if ( !session.dialogData.confirmed || (results.response && results.response.reset)) {
+                session.send(Strings.ResetPrompt);
                 session.replaceDialog('locationPickerPrompt', session.dialogData.args);
             }
             else {
-                next({ response: session.dialogData.place });
+                next({ response: common.processLocation(session.dialogData.place) });
             }
         }
     ];
+}
+
+function createDialogStartHeroCard() {
+    return common.createBaseDialog()
+        .onBegin(function (session, args) {
+            const possibleBranches = [ session.gettext(Strings.FavoriteLocations), session.gettext(Strings.OtherLocation) ];
+            let buttons = new Array();
+            for (let i =0; i < possibleBranches.length; i++) {
+                var button = new CardAction(session);
+                button.type("imBack");
+                button.value(possibleBranches[i]);       
+                button.title(possibleBranches[i]);       
+                buttons.push(button);
+            }
+
+            var card = new HeroCard();
+            card.buttons(buttons);
+            card.subtitle(session.gettext(Strings.DialogStartBranchAsk));
+
+            var attachments = new Array();
+            attachments.push(card.toAttachment());
+          
+            session.send( new Message(session).attachmentLayout(AttachmentLayout.carousel).attachments(attachments)).sendBatch();
+        }).onDefault((session) => {
+            const text: string = session.message.text;
+            if (text === session.gettext(Strings.OtherLocation) || text === session.gettext(Strings.FavoriteLocations)) {
+                session.endDialogWithResult({ response: { entity: text } });
+            }
+            else {
+               session.send(session.gettext(Strings.InvalidStartBranchResponse)).sendBatch();
+            }
+        });
 }

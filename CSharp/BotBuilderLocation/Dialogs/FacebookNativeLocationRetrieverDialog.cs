@@ -12,15 +12,19 @@ namespace Microsoft.Bot.Builder.Location.Dialogs
     using ConnectorEx;
 
     [Serializable]
-    internal class FacebookNativeLocationRetrieverDialog : LocationDialogBase<LocationDialogResponse>
+    internal class FacebookNativeLocationRetrieverDialog : LocationRetrieverDialogBase
     {
         private readonly string prompt;
 
-        public FacebookNativeLocationRetrieverDialog(string prompt, LocationResourceManager resourceManager)
-            : base(resourceManager)
+        public FacebookNativeLocationRetrieverDialog(
+            string prompt,
+            IGeoSpatialService geoSpatialService,
+            LocationOptions options,
+            LocationRequiredFields requiredFields,
+            LocationResourceManager resourceManager)
+            : base(geoSpatialService, options, requiredFields, resourceManager)
         {
             SetField.NotNull(out this.prompt, nameof(prompt), prompt);
-            this.prompt = prompt;
         }
 
         public override async Task StartAsync(IDialogContext context)
@@ -36,7 +40,7 @@ namespace Microsoft.Bot.Builder.Location.Dialogs
 
             if (place != null && place.Geo != null && place.Geo.latitude != null && place.Geo.longitude != null)
             {
-                var location = new Bing.Location
+                var location = new Location
                 {
                     Point = new GeocodePoint
                     {
@@ -47,8 +51,8 @@ namespace Microsoft.Bot.Builder.Location.Dialogs
                                 }
                     }
                 };
-
-                context.Done(new LocationDialogResponse(location));
+                
+                await this.ProcessRetrievedLocation(context, location);
             }
             else
             {

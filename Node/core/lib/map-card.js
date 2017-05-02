@@ -13,12 +13,20 @@ var MapCard = (function (_super) {
         _this.apiKey = apiKey;
         return _this;
     }
-    MapCard.prototype.location = function (location, index) {
-        var indexText = "";
+    MapCard.prototype.location = function (location, index, locationName) {
+        var prefixText = "";
         if (index !== undefined) {
-            indexText = index + ". ";
+            prefixText = index + ". ";
         }
-        this.subtitle(indexText + location.address.formattedAddress);
+        if (locationName !== undefined) {
+            prefixText += locationName + ": ";
+        }
+        if (location.address && location.address.formattedAddress) {
+            this.subtitle(prefixText + location.address.formattedAddress);
+        }
+        else {
+            this.subtitle(prefixText);
+        }
         if (location.point) {
             var locationUrl;
             try {
