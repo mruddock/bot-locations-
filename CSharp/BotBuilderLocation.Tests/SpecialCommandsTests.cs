@@ -2,8 +2,8 @@
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using Connector;
     using Builder.Dialogs;
+    using Connector;
     using Moq;
     using VisualStudio.TestTools.UnitTesting;
 
@@ -16,14 +16,14 @@
             // Arrange
             var dialog = new LocationDialog(string.Empty, "facebook", string.Empty, LocationOptions.UseNativeControl);
 
-            var context = new Mock<IDialogContext>(MockBehavior.Loose);
-            context.Setup(c => c.MakeMessage()).Returns(() => new Activity());
+            var context = this.GetSetupMockObject();
 
             // Act
             await dialog.MessageReceivedAsync(context.Object, TestHelper.CreateAwaitableMessage("help"));
 
             // Assert
-            context.Verify(c => c.PostAsync(It.Is<IMessageActivity>(a => a.Text == "The help message"), It.IsAny<CancellationToken>()), Times.Once);
+            var locationResourceManager = new LocationResourceManager();
+            context.Verify(c => c.PostAsync(It.Is<IMessageActivity>(a => a.Text == locationResourceManager.HelpMessage), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [TestMethod]
@@ -33,14 +33,14 @@
             string prompt = "Where do you want to ship your widget?";
             var dialog = new LocationDialog(string.Empty, "facebook", prompt, LocationOptions.None);
 
-            var context = new Mock<IDialogContext>(MockBehavior.Loose);
-            context.Setup(c => c.MakeMessage()).Returns(() => new Activity());
+            var context = this.GetSetupMockObject();
 
             // Act
             await dialog.MessageReceivedAsync(context.Object, TestHelper.CreateAwaitableMessage("reset"));
 
             // Assert
-            context.Verify(c => c.PostAsync(It.Is<IMessageActivity>(a => a.Text == prompt), It.IsAny<CancellationToken>()), Times.Once);
+            var locationResourceManager = new LocationResourceManager();
+            context.Verify(c => c.PostAsync(It.Is<IMessageActivity>(a => a.Text == locationResourceManager.ResetPrompt), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [TestMethod]
@@ -49,14 +49,23 @@
             // Arrange
             var dialog = new LocationDialog(string.Empty, "facebook", string.Empty, LocationOptions.UseNativeControl);
 
-            var context = new Mock<IDialogContext>(MockBehavior.Loose);
-            context.Setup(c => c.MakeMessage()).Returns(() => new Activity());
+            var context = this.GetSetupMockObject();
 
             // Act
             await dialog.MessageReceivedAsync(context.Object, TestHelper.CreateAwaitableMessage("cancel"));
 
             // Assert
             context.Verify(c => c.Done(It.Is<Place>(v => v == null)));
+        }
+
+        private Mock<IDialogContext> GetSetupMockObject()
+        {
+            var context = new Mock<IDialogContext>(MockBehavior.Loose);
+
+            context.Setup(c => c.UserData).Returns(new Mock<IBotDataBag>().Object);
+            context.Setup(c => c.MakeMessage()).Returns(() => new Activity());
+
+            return context;
         }
     }
 }
