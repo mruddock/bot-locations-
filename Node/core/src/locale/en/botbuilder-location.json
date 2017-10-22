@@ -1,6 +1,6 @@
 {
     "AddressSeparator": ", ",
-    "AddToFavoritesAsk": "Add this address to your favorite locations? Reply 'yes' or 'no.'",
+    "AddToFavoritesAsk": "Add this address to your favorite locations? Reply 'yes' or 'no'.",
     "AskForEmptyAddressTemplate": "Please provide the %s.",
     "AskForPrefix": "OK %s.",
     "AskForTemplate": " Please also provide the %s.",
@@ -15,7 +15,7 @@
     "DuplicateFavoriteNameResponse": "%s is already listed in your favorites. Please type or say a different name for this address.",
     "EditCommand": "edit",
     "EditFavoritePrompt": "Ok, let’s edit %s. Type or say a new address.",
-    "EnterNewFavoriteLocationName": "Please type or say a friendly name for this address, for example 'Home' or 'Work.'",
+    "EnterNewFavoriteLocationName": "Please type or say a friendly name for this address, for example 'Home' or 'Work'.",
     "FavoriteAddedConfirmation": "Ok I added %s to your favorite locations.",
     "FavoriteDeletedConfirmation": "Ok, I deleted %s from your favorite locations.",
     "FavoriteEdittedConfirmation": "Ok, I updated %s with the new address %s.",
