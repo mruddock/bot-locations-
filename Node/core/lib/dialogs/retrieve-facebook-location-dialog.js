@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var consts_1 = require("../consts");
 var common = require("../common");
 var botbuilder_1 = require("botbuilder");

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var common = require("../common");
 var consts_1 = require("../consts");
 var locationService = require("../services/bing-geospatial-service");
@@ -38,12 +39,15 @@ var MAX_CARD_COUNT = 5;
 function createLocationResolveDialog(apiKey) {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
+        session.dialogData.locationQueryOptions = {
+            countryCode: args.countryCode || null
+        };
         if (!args.skipDialogPrompt) {
             var promptSuffix = session.gettext(consts_1.Strings.TitleSuffix);
             session.send(args.prompt + promptSuffix).sendBatch();
         }
     }).onDefault(function (session) {
-        locationService.getLocationByQuery(apiKey, session.message.text)
+        locationService.getLocationByQuery(apiKey, session.message.text, session.dialogData.locationQueryOptions.countryCode)
             .then(function (locations) {
             if (locations.length == 0) {
                 session.send(consts_1.Strings.LocationNotFound).sendBatch();

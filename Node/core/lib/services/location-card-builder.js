@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var botbuilder_1 = require("botbuilder");
 var map_card_1 = require("../map-card");
 var LocationCardBuilder = (function () {

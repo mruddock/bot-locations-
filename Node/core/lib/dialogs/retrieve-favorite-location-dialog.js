@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var common = require("../common");
 var consts_1 = require("../consts");
 var location_card_builder_1 = require("../services/location-card-builder");
