@@ -16,6 +16,9 @@ var connector = new builder.ChatConnector({
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 var bot = new builder.UniversalBot(connector);
+bot.set('localizerSettings', {
+    defaultLocale: "es"
+});
 server.post('/api/messages', connector.listen());
 
 bot.library(locationDialog.createLibrary(process.env.BING_MAPS_API_KEY));
