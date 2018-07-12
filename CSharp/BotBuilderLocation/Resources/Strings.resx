@@ -121,7 +121,7 @@
     <value>, </value>
   </data>
   <data name="AddToFavoritesAsk" xml:space="preserve">
-    <value>Add this address to your favorite locations? Reply “yes” or “no.”</value>
+    <value>Add this address to your favorite locations? Reply 'yes' or 'no'.</value>
   </data>
   <data name="AskForEmptyAddressTemplate" xml:space="preserve">
     <value>Please provide the {0}.</value>
@@ -214,7 +214,7 @@
     <value>Sorry, please reply “yes” or “no” to add the address to your favorite locations.</value>
   </data>
   <data name="EnterNewFavoriteLocationName" xml:space="preserve">
-    <value>Please type or say a friendly name for this address, for example “Home” or “Work.”</value>
+    <value>Please type or say a friendly name for this address, for example 'Home' or 'Work'.</value>
   </data>
   <data name="FavoriteAddedConfirmation" xml:space="preserve">
     <value>OK, I added {0} to your favorite locations.</value>
