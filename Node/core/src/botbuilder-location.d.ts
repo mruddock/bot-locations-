@@ -1,4 +1,5 @@
 import * as builder from "botbuilder";
+import { RawLocation } from "./rawLocation";
 
 //=============================================================================
 //
@@ -22,6 +23,11 @@ export interface ILocationPromptOptions {
     requiredFields?: LocationRequiredFields;
 
     /**
+     * Use this option if you want the location dialog to skip the final confirmation before returning the location
+     */
+    skipConfirmationAsk?:boolean;
+
+    /**
      * Boolean to indicate if the control will use FB Messenger's location picker GUI dialog. It does not have any effect on other messaging channels.
      */
     useNativeControl?: boolean,
@@ -29,7 +35,12 @@ export interface ILocationPromptOptions {
     /**
      * Boolean to indicate if the control will try to reverse geocode the lat/long coordinates returned by FB Messenger's location picker GUI dialog. It does not have any effect on other messaging channels.
      */
-    reverseGeocode?: boolean
+    reverseGeocode?: boolean,
+
+    /**
+     * Use this option if you do not want the control to offer keeping track of the user's favorite locations.
+     */
+    skipFavorites?: boolean
 }
 
 //=============================================================================
@@ -120,7 +131,7 @@ export function getLocation(session: builder.Session, options: ILocationPromptOp
 
 /**
  * Gets a formatted address string.
- * @param place Place object containing the address.
+ * @param location object containing the address.
  * @param separator The string separating the address parts.  
  */
-export function getFormattedAddressFromPlace(place: Place, separator: string): string;
+export function getFormattedAddressFromLocation(location: RawLocation, separator: string): string;

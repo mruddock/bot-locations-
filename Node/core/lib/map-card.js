@@ -4,21 +4,29 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var botbuilder_1 = require('botbuilder');
-var locationService = require('./services/bing-geospatial-service');
+var botbuilder_1 = require("botbuilder");
+var locationService = require("./services/bing-geospatial-service");
 var MapCard = (function (_super) {
     __extends(MapCard, _super);
     function MapCard(apiKey, session) {
-        _super.call(this, session);
-        this.apiKey = apiKey;
-        this.session = session;
+        var _this = _super.call(this, session) || this;
+        _this.apiKey = apiKey;
+        return _this;
     }
-    MapCard.prototype.location = function (location, index) {
-        var indexText = "";
+    MapCard.prototype.location = function (location, index, locationName) {
+        var prefixText = "";
         if (index !== undefined) {
-            indexText = index + ". ";
+            prefixText = index + ". ";
         }
-        this.subtitle(indexText + location.address.formattedAddress);
+        if (locationName !== undefined) {
+            prefixText += locationName + ": ";
+        }
+        if (location.address && location.address.formattedAddress) {
+            this.subtitle(prefixText + location.address.formattedAddress);
+        }
+        else {
+            this.subtitle(prefixText);
+        }
         if (location.point) {
             var locationUrl;
             try {

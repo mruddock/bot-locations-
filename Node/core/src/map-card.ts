@@ -1,21 +1,31 @@
 import { Session, HeroCard, CardImage } from 'botbuilder';
 import { Place, Geo } from './place';
+import { RawLocation } from './rawLocation'
 import * as locationService from './services/bing-geospatial-service';
 
 export class MapCard extends HeroCard {
     // Todo: remove private session. https://github.com/Microsoft/BotBuilder/pull/1790
-    constructor(private apiKey: string, private session?: Session) {
+    constructor(private apiKey: string, session?: Session) {
         super(session);
     }
 
-    public location(location: any, index?: number): this {
-        var indexText = "";
+    public location(location: RawLocation, index?: number, locationName?: string): this {
+        var prefixText = "";
         if (index !== undefined) {
-            indexText = index + ". ";
+            prefixText = index + ". ";
         }
 
-        this.subtitle(indexText + location.address.formattedAddress)
+         if (locationName !== undefined) {
+            prefixText += locationName + ": ";
+        }
 
+        if (location.address && location.address.formattedAddress) {
+            this.subtitle(prefixText + location.address.formattedAddress);
+        }
+        else {
+            this.subtitle(prefixText);
+        }
+  
         if (location.point) {
             var locationUrl: string;
             try {

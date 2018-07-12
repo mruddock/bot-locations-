@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using Internals.Fibers;
     using Newtonsoft.Json;
 
     [Serializable]
@@ -16,39 +17,31 @@
         private readonly static string ImageUrlByPoint = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?form={FormCode}&mapSize=500,280&pp={{0}},{{1}};1;{{2}}&dpi=1&logo=always";
         private readonly static string ImageUrlByBBox = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?form={FormCode}&mapArea={{0}},{{1}},{{2}},{{3}}&mapSize=500,280&pp={{4}},{{5}};1;{{6}}&dpi=1&logo=always";
 
-        public async Task<LocationSet> GetLocationsByQueryAsync(string apiKey, string address)
-        {
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ArgumentNullException(nameof(apiKey));
-            }
+        private readonly string apiKey;
 
+        internal BingGeoSpatialService(string apiKey)
+        {
+            SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
+        }
+
+        public async Task<LocationSet> GetLocationsByQueryAsync(string address)
+        {
             if (string.IsNullOrEmpty(address))
             {
                 throw new ArgumentNullException(nameof(address));
             }
 
-            return await this.GetLocationsAsync(FindByQueryApiUrl + Uri.EscapeDataString(address) + "&key=" + apiKey);
+            return await this.GetLocationsAsync(FindByQueryApiUrl + Uri.EscapeDataString(address) + "&key=" + this.apiKey);
         }
 
-        public async Task<LocationSet> GetLocationsByPointAsync(string apiKey, double latitude, double longitude)
+        public async Task<LocationSet> GetLocationsByPointAsync(double latitude, double longitude)
         {
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ArgumentNullException(nameof(apiKey));
-            }
-
             return await this.GetLocationsAsync(
-                string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude) + "&key=" + apiKey);
+                string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude) + "&key=" + this.apiKey);
         }
 
-        public string GetLocationMapImageUrl(string apiKey, Location location, int? index = null)
+        public string GetLocationMapImageUrl(Location location, int? index = null)
         {
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                throw new ArgumentNullException(nameof(apiKey));
-            }
-
             if (location == null)
             {
                 throw new ArgumentNullException(nameof(location));
@@ -63,6 +56,7 @@
             if (location.BoundaryBox != null && location.BoundaryBox.Count >= 4)
             {
                 return string.Format(
+                    CultureInfo.InvariantCulture,
                     ImageUrlByBBox,
                     location.BoundaryBox[0],
                     location.BoundaryBox[1],
@@ -70,11 +64,16 @@
                     location.BoundaryBox[3],
                     point.Coordinates[0],
                     point.Coordinates[1], index)
-                    + "&key=" + apiKey;
+                    + "&key=" + this.apiKey;
             }
             else
             {
-                return string.Format(ImageUrlByPoint, point.Coordinates[0], point.Coordinates[1], index) + "&key=" + apiKey;
+                return string.Format(
+                    CultureInfo.InvariantCulture, 
+                    ImageUrlByPoint, 
+                    point.Coordinates[0], 
+                    point.Coordinates[1], 
+                    index) + "&key=" + apiKey;
             }
         }
 

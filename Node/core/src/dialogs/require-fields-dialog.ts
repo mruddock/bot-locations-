@@ -12,27 +12,31 @@ export enum LocationRequiredFields {
 }
 
 export function register(library: Library): void {
-    library.dialog('required-fields-dialog', createDialog());
+    library.dialog('require-fields-dialog', createDialog());
 }
 
 const fields: Array<any> = [
-    { name: "streetAddress", prompt: Strings.StreetAddress, flag: LocationRequiredFields.streetAddress },
+    { name: "addressLine", prompt: Strings.StreetAddress, flag: LocationRequiredFields.streetAddress },
     { name: "locality", prompt: Strings.Locality, flag: LocationRequiredFields.locality },
-    { name: "region", prompt: Strings.Region, flag: LocationRequiredFields.region },
+    { name: "adminDistrict", prompt: Strings.Region, flag: LocationRequiredFields.region },
     { name: "postalCode", prompt: Strings.PostalCode, flag: LocationRequiredFields.postalCode },
-    { name: "country", prompt: Strings.Country, flag: LocationRequiredFields.country },
+    { name: "countryRegion", prompt: Strings.Country, flag: LocationRequiredFields.country },
 ];
 
 function createDialog() {
     return common.createBaseDialog({ recognizeMode: RecognizeMode.onBegin })
         .onBegin((session, args, next) => {
+            if (args.place.address) {
+                args.place.address.formattedAddress = common.getFormattedAddressFromLocation( args.place, session.gettext(Strings.AddressSeparator));
+            }
+        
             if (args.requiredFields) {
                 session.dialogData.place = args.place;
                 session.dialogData.index = -1;
                 session.dialogData.requiredFieldsFlag = args.requiredFields;
                 next();
             } else {
-                session.endDialogWithResult({ response: args.place });
+                session.endDialogWithResult({ response: { place: args.place } });
             }
         })
         .onDefault((session) => {
@@ -44,7 +48,8 @@ function createDialog() {
                 }
 
                 session.dialogData.lastInput = session.message.text;
-                session.dialogData.place[fields[index].name] = session.message.text;
+                session.dialogData.place.address[fields[index].name] = session.message.text;
+                session.dialogData.place.address.formattedAddress = common.getFormattedAddressFromLocation( session.dialogData.place, session.gettext(Strings.AddressSeparator));
             }
 
             index++;
@@ -60,6 +65,7 @@ function createDialog() {
             session.dialogData.index = index;
 
             if (index >= fields.length) {
+
                 session.endDialogWithResult({ response: { place: session.dialogData.place } });
             } else {
                 session.sendBatch();
@@ -68,12 +74,12 @@ function createDialog() {
 }
 
 function completeFieldIfMissing(session: Session, field: any) {
-    if ((field.flag & session.dialogData.requiredFieldsFlag) && !session.dialogData.place[field.name]) {
+    if ((field.flag & session.dialogData.requiredFieldsFlag) && !session.dialogData.place.address[field.name]) {
 
         var prefix: string = "";
         var prompt: string = "";
         if (typeof session.dialogData.lastInput === "undefined") {
-            var formattedAddress: string = common.getFormattedAddressFromPlace(session.dialogData.place, session.gettext(Strings.AddressSeparator));
+            var formattedAddress: string = common.getFormattedAddressFromLocation(session.dialogData.place, session.gettext(Strings.AddressSeparator));
             if (formattedAddress) {
                 prefix = session.gettext(Strings.AskForPrefix, formattedAddress);
                 prompt = session.gettext(Strings.AskForTemplate, session.gettext(field.prompt));
