@@ -8,6 +8,7 @@
     using Connector;
     using ConnectorEx;
     using Internals.Fibers;
+    using Microsoft.Bot.Builder.Location.Azure;
 
     /// <summary>
     /// A class for creating location cards.
@@ -17,6 +18,8 @@
     {
         private readonly string apiKey;
         private readonly LocationResourceManager resourceManager;
+        private readonly bool useAzureMaps = true;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationCardBuilder"/> class.
         /// </summary>
@@ -25,6 +28,11 @@
         {
             SetField.NotNull(out this.apiKey, nameof(apiKey), apiKey);
             SetField.NotNull(out this.resourceManager, nameof(resourceManager), resourceManager);
+
+            if (!string.IsNullOrEmpty(this.apiKey) && this.apiKey.Length > 60)
+            {
+                useAzureMaps = false;
+            }
         }
 
         /// <summary>
@@ -53,9 +61,20 @@
 
                 if (location.Point != null)
                 {
+                    IGeoSpatialService geoService;
+
+                    if (useAzureMaps)
+                    {
+                        geoService = new AzureMapsSpatialService(this.apiKey);
+                    }
+                    else
+                    {
+                        geoService = new BingGeoSpatialService(this.apiKey);
+                    }
+
                     var image =
                         new CardImage(
-                            url: new BingGeoSpatialService(this.apiKey).GetLocationMapImageUrl(location, i));
+                            url: geoService.GetLocationMapImageUrl(location, i));
 
                     heroCard.Images = new[] { image };
                 }

@@ -8,6 +8,7 @@
     using Connector;
     using Dialogs;
     using Internals.Fibers;
+    using Microsoft.Bot.Builder.Location.Azure;
 
     /// <summary>
     /// Represents a dialog that handles retrieving a location from the user.
@@ -130,7 +131,7 @@
             LocationOptions options = LocationOptions.None,
             LocationRequiredFields requiredFields = LocationRequiredFields.None,
             LocationResourceManager resourceManager = null)
-            : this(new LocationDialogFactory(apiKey, channelId, prompt, new BingGeoSpatialService(apiKey), options, requiredFields, resourceManager), new FavoritesManager(), resourceManager)
+            : this(new LocationDialogFactory(apiKey, channelId, prompt, ((!string.IsNullOrEmpty(apiKey) && apiKey.Length <= 60) ? (IGeoSpatialService)new AzureMapsSpatialService(apiKey) : new BingGeoSpatialService(apiKey)), options, requiredFields, resourceManager), new FavoritesManager(), resourceManager)
         {
             this.options = options;
         }

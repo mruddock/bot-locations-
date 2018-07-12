@@ -59,13 +59,13 @@
       <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.3\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.40306.1554, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.4.403061554\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
       <Private>True</Private>
@@ -90,6 +90,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Azure\AzureMapsSpatialService.cs" />
+    <Compile Include="Azure\LatLng.cs" />
+    <Compile Include="Azure\PoiInfo.cs" />
+    <Compile Include="Azure\SearchAddress.cs" />
+    <Compile Include="Azure\SearchResult.cs" />
+    <Compile Include="Azure\SearchResultSet.cs" />
+    <Compile Include="Azure\Viewport.cs" />
     <Compile Include="Dialogs\AddFavoriteLocationDialog.cs" />
     <Compile Include="Dialogs\BranchType.cs" />
     <Compile Include="Dialogs\EditFavoriteLocationDialog.cs" />
@@ -104,7 +111,7 @@
     <Compile Include="Dialogs\LocationDialogFactory.cs" />
     <Compile Include="Dialogs\RichLocationRetrieverDialog.cs" />
     <Compile Include="Dialogs\FacebookNativeLocationRetrieverDialog.cs" />
-    <Compile Include="Bing\IBingGeoSpatialService.cs" />
+    <Compile Include="Bing\IGeoSpatialService.cs" />
     <Compile Include="Dialogs\LocationDialogBase.cs" />
     <Compile Include="Dialogs\LocationDialogResponse.cs" />
     <Compile Include="LocationRequiredFields.cs" />
@@ -136,6 +143,7 @@
     <EmbeddedResource Include="Resources\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

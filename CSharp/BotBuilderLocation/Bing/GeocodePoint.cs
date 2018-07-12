@@ -16,17 +16,17 @@ namespace Microsoft.Bot.Builder.Location.Bing
         [JsonProperty(PropertyName = "coordinates")]
         public List<double> Coordinates { get; set; }
 
-        /// <summary>
-        /// The method that was used to compute the geocode point.
-        /// </summary>
-        [JsonProperty(PropertyName = "calculationMethod")]
-        public string CalculationMethod { get; set; }
+        ///// <summary>
+        ///// The method that was used to compute the geocode point.
+        ///// </summary>
+        //[JsonProperty(PropertyName = "calculationMethod")]
+        //public string CalculationMethod { get; set; }
 
-        /// <summary>
-        /// The best use for the geocode point.
-        /// </summary>
-        [JsonProperty(PropertyName = "usageTypes")]
-        public List<string> UsageTypes { get; set; }
+        ///// <summary>
+        ///// The best use for the geocode point.
+        ///// </summary>
+        //[JsonProperty(PropertyName = "usageTypes")]
+        //public List<string> UsageTypes { get; set; }
 
         /// <summary>
         /// Returns whether point has geo coordinates or not.

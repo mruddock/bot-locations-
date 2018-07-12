@@ -4,6 +4,65 @@
         <name>Microsoft.Bot.Builder.Location</name>
     </assembly>
     <members>
+        <member name="M:Microsoft.Bot.Builder.Location.Azure.AzureMapsSpatialService.CalculateMapView(System.Collections.Generic.List{System.Double},System.Double,System.Double,System.Int32,Microsoft.Bot.Builder.Location.Azure.LatLng@,System.Int32@)">
+            <summary>
+            Calculates the best map view for a bounding box on the map
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.Location.Azure.SearchAddress">
+            <summary>
+            An address.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.StreetNumber">
+            <summary>
+            The street number of an address.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.StreetName">
+             <summary>
+            The name of the street.
+             </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.CountrySubdivisionName">
+            <summary>
+            A string specifying the subdivision name in the country or region for an address.
+            This element is typically treated as the first order administrative subdivision, 
+            but in some cases it is the second, third, or fourth order subdivision in a country, dependency, or region.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.CountrySecondarySubdivision">
+            <summary>
+            A string specifying the subdivision name in the country or region for an address. 
+            This element is used when there is another level of subdivision information for a location, such as the county.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.CountryCodeISO3">
+            <summary>
+            A string specifying the country or region name of an address.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.FreeformAddress">
+            <summary>
+            A string specifying the complete address. This address may not include the country or region.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.MunicipalitySubdivision">
+            <summary>
+            A string specifying the populated place for the address. 
+            This typically refers to a city, but may refer to a suburb or a neighborhood in certain countries.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchAddress.PostalCode">
+            <summary>
+            A string specifying the post code, postal code, or ZIP Code of an address.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.Location.Azure.SearchResultSet.Results">
+            <summary>
+            The location list.
+            </summary>
+        </member>
         <member name="M:Microsoft.Bot.Builder.Location.Dialogs.AddFavoriteLocationDialog.MessageReceivedInternalAsync(Microsoft.Bot.Builder.Dialogs.IDialogContext,Microsoft.Bot.Builder.Dialogs.IAwaitable{Microsoft.Bot.Connector.IMessageActivity})">
             <summary>
             Runs when we expect the user to enter 
@@ -315,7 +374,7 @@
             A class for creating location cards.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.Location.LocationCardBuilder.#ctor(System.String)">
+        <member name="M:Microsoft.Bot.Builder.Location.LocationCardBuilder.#ctor(System.String,Microsoft.Bot.Builder.Location.LocationResourceManager)">
             <summary>
             Initializes a new instance of the <see cref="T:Microsoft.Bot.Builder.Location.LocationCardBuilder"/> class.
             </summary>
@@ -423,16 +482,6 @@
             List of the coordinates.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Bing.GeocodePoint.CalculationMethod">
-            <summary>
-            The method that was used to compute the geocode point.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Bing.GeocodePoint.UsageTypes">
-            <summary>
-            The best use for the geocode point.
-            </summary>
-        </member>
         <member name="P:Microsoft.Bot.Builder.Location.Bing.GeocodePoint.HasCoordinates">
             <summary>
             Returns whether point has geo coordinates or not.
@@ -442,11 +491,6 @@
             <summary>
             Represents the location returned from the Bing Geo Spatial API:
             https://msdn.microsoft.com/en-us/library/ff701725.aspx
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Bing.Location.LocationType">
-            <summary>
-            The location type.
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Bing.Location.BoundaryBox">
@@ -472,12 +516,6 @@
             FormattedAddress, and Landmark fields.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Bing.Location.Confidence">
-            <summary>
-            The level of confidence that the geocoded location result is a match.
-            Use this value with the match code to determine for more complete information about the match.
-            </summary>
-        </member>
         <member name="P:Microsoft.Bot.Builder.Location.Bing.Location.EntityType">
             <summary>
             The classification of the geographic entity returned, such as Address. 
@@ -488,11 +526,6 @@
             <summary>
             A collection of geocoded points that differ in how they were calculated and their suggested use.
             For a description of the points in this collection, see the Geocode Point Fields section below.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Bot.Builder.Location.Bing.Location.MatchCodes">
-            <summary>
-            One or more match code values that represent the geocoding level for each location in the response.
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.Location.Bing.LocationSet">
@@ -1157,7 +1190,7 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.FavoriteEdittedConfirmation">
             <summary>
-              Looks up a localized string similar to Ok, I updated {0} with the new address {show_address}..
+              Looks up a localized string similar to Ok, I updated {0} with the new address {1}..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.FavoriteLocations">
@@ -1177,7 +1210,7 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.InvalidFavoriteLocationSelection">
             <summary>
-              Looks up a localized string similar to Sorry, “UserInput” does not match a favorite location. Type or say a number/name to use a favorite location or type “other” to create a new location. Type or say “edit” or “delete” number/name to change a favorite. Say “cancel” to exit..
+              Looks up a localized string similar to Sorry, &quot;{0}” does not match a favorite location. Type or say a number/name to use a favorite location or type “other” to create a new location. Type or say “edit” or “delete” number/name to change a favorite. Say “cancel” to exit..
             </summary>
         </member>
         <member name="P:Microsoft.Bot.Builder.Location.Resources.Strings.InvalidFavoriteNameResponse">

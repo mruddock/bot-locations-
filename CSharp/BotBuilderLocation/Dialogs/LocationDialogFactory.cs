@@ -4,6 +4,7 @@
     using Bing;
     using Builder.Dialogs;
     using Internals.Fibers;
+    using Microsoft.Bot.Builder.Location.Azure;
 
     [Serializable]
     internal class LocationDialogFactory : ILocationDialogFactory
@@ -15,6 +16,7 @@
         private readonly LocationRequiredFields requiredFields;
         private readonly IGeoSpatialService geoSpatialService;
         private readonly LocationResourceManager resourceManager;
+        private bool useAzureMaps = true;
 
         internal LocationDialogFactory(
             string apiKey,
@@ -32,6 +34,11 @@
             this.options = options;
             this.requiredFields = requiredFields;
             this.resourceManager = resourceManager ?? new LocationResourceManager();
+
+            if(!string.IsNullOrEmpty(this.apiKey) && this.apiKey.Length > 60)
+            {
+                useAzureMaps = false;
+            }
         }
 
        public IDialog<LocationDialogResponse> CreateDialog(BranchType branch, Location location = null, string locationName = null, bool skipDialogPrompt = false)
@@ -50,11 +57,22 @@
                         this.resourceManager);
                 }
 
+                IGeoSpatialService geoService;
+
+                if (useAzureMaps)
+                {
+                    geoService = new AzureMapsSpatialService(this.apiKey);
+                }
+                else
+                {
+                    geoService = new BingGeoSpatialService(this.apiKey);
+                }
+
                 return new RichLocationRetrieverDialog(
                     prompt: this.prompt,
                     supportsKeyboard: isFacebookChannel,
                     cardBuilder: new LocationCardBuilder(this.apiKey, this.resourceManager),
-                    geoSpatialService: new BingGeoSpatialService(this.apiKey),
+                    geoSpatialService: geoService,
                     options: this.options,
                     requiredFields: this.requiredFields,
                     resourceManager: this.resourceManager,
@@ -62,12 +80,21 @@
             }
             else if (branch == BranchType.FavoriteLocationRetriever)
             {
+                IGeoSpatialService geoService;
+
+                if (useAzureMaps) {
+                    geoService = new AzureMapsSpatialService(this.apiKey);
+                }
+                else {
+                    geoService = new BingGeoSpatialService(this.apiKey);
+                }
+
                 return new FavoriteLocationRetrieverDialog(
                     isFacebookChannel,
                     new FavoritesManager(),
                     this,
                     new LocationCardBuilder(this.apiKey, this.resourceManager),
-                    new BingGeoSpatialService(this.apiKey),
+                    geoService,
                     this.options,
                     this.requiredFields,
                     this.resourceManager);

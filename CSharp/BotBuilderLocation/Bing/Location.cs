@@ -11,11 +11,11 @@ namespace Microsoft.Bot.Builder.Location.Bing
     [Serializable]
     public class Location
     {
-        /// <summary>
-        /// The location type.
-        /// </summary>
-        [JsonProperty(PropertyName = "__type")]
-        public string LocationType { get; set; }
+        ///// <summary>
+        ///// The location type.
+        ///// </summary>
+        //[JsonProperty(PropertyName = "__type")]
+        //public string LocationType { get; set; }
 
         /// <summary>
         /// A geographic area that contains the location. A bounding box contains SouthLatitude, 
@@ -44,12 +44,12 @@ namespace Microsoft.Bot.Builder.Location.Bing
         [JsonProperty(PropertyName = "address")]
         public Address Address { get; set; }
 
-        /// <summary>
-        /// The level of confidence that the geocoded location result is a match.
-        /// Use this value with the match code to determine for more complete information about the match.
-        /// </summary>
-        [JsonProperty(PropertyName = "confidence")]
-        public string Confidence { get; set; }
+        ///// <summary>
+        ///// The level of confidence that the geocoded location result is a match.
+        ///// Use this value with the match code to determine for more complete information about the match.
+        ///// </summary>
+        //[JsonProperty(PropertyName = "confidence")]
+        //public string Confidence { get; set; }
 
         /// <summary>
         /// The classification of the geographic entity returned, such as Address. 
@@ -65,10 +65,10 @@ namespace Microsoft.Bot.Builder.Location.Bing
         [JsonProperty(PropertyName = "geocodePoints")]
         public List<GeocodePoint> GeocodePoints { get; set; }
 
-        /// <summary>
-        /// One or more match code values that represent the geocoding level for each location in the response.
-        /// </summary>
-        [JsonProperty(PropertyName = "matchCodes")]
-        public List<string> MatchCodes { get; set; }
+        ///// <summary>
+        ///// One or more match code values that represent the geocoding level for each location in the response.
+        ///// </summary>
+        //[JsonProperty(PropertyName = "matchCodes")]
+        //public List<string> MatchCodes { get; set; }
     }
 }
