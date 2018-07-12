@@ -42,12 +42,16 @@ const MAX_CARD_COUNT = 5;
 function createLocationResolveDialog(apiKey: string) {
     return common.createBaseDialog()
         .onBegin(function (session, args) {
+            session.dialogData.locationQueryOptions = {
+                countryCode: args.countryCode || null
+            };
+
             if (!args.skipDialogPrompt) {
                 var promptSuffix = session.gettext(Strings.TitleSuffix);
                 session.send(args.prompt + promptSuffix).sendBatch();
             }
         }).onDefault((session) => {
-            locationService.getLocationByQuery(apiKey, session.message.text)
+            locationService.getLocationByQuery(apiKey, session.message.text, session.dialogData.locationQueryOptions.countryCode)
                 .then(locations => {
                     if (locations.length == 0) {
                         session.send(Strings.LocationNotFound).sendBatch();

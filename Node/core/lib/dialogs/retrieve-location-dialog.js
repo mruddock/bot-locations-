@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var resolveBingLocationDialog = require("./resolve-bing-location-dialog");
 var retrieveFacebookLocationDialog = require("./retrieve-facebook-location-dialog");
 function register(library, apiKey) {

@@ -16,7 +16,8 @@ export interface ILocationPromptOptions {
     skipConfirmationAsk?: boolean;
     useNativeControl?: boolean,
     reverseGeocode?: boolean,
-    skipFavorites?: boolean
+    skipFavorites?: boolean,
+    countryCode?: string
 }
 
 exports.LocationRequiredFields = requireFieldsDialog.LocationRequiredFields;

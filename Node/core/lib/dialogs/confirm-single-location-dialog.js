@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var consts_1 = require("../consts");
 function register(library) {
     library.dialog('confirm-single-location-dialog', createDialog());
