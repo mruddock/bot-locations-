@@ -12,10 +12,10 @@
     internal sealed class BingGeoSpatialService : IGeoSpatialService
     {
         private static readonly string FormCode = "BTCTRL";
-        private readonly static string FindByQueryApiUrl = $"https://dev.virtualearth.net/REST/v1/Locations?form={FormCode}&q=";
-        private readonly static string FindByPointUrl = $"https://dev.virtualearth.net/REST/v1/Locations/{{0}},{{1}}?form={FormCode}&q=";
-        private readonly static string ImageUrlByPoint = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?form={FormCode}&mapSize=500,280&pp={{0}},{{1}};1;{{2}}&dpi=1&logo=always";
-        private readonly static string ImageUrlByBBox = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?form={FormCode}&mapArea={{0}},{{1}},{{2}},{{3}}&mapSize=500,280&pp={{4}},{{5}};1;{{6}}&dpi=1&logo=always";
+        private readonly static string FindByQueryApiUrl = $"https://dev.virtualearth.net/REST/v1/Locations?form={FormCode}&q={{0}}&key={{1}}";
+        private readonly static string FindByPointUrl = $"https://dev.virtualearth.net/REST/v1/Locations/{{0}},{{1}}?form={FormCode}&key={{2}}";
+        private readonly static string ImageUrlByPoint = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road/{{0}},{{1}}/15?form={FormCode}&mapSize=500,280&pp={{0}},{{1}};1;{{2}}&dpi=1&logo=always&key={{3}}";
+        private readonly static string ImageUrlByBBox = $"https://dev.virtualearth.net/REST/V1/Imagery/Map/Road?form={FormCode}&mapArea={{0}},{{1}},{{2}},{{3}}&mapSize=500,280&pp={{4}},{{5}};1;{{6}}&dpi=1&logo=always&key={{7}}";
 
         private readonly string apiKey;
 
@@ -31,13 +31,13 @@
                 throw new ArgumentNullException(nameof(address));
             }
 
-            return await this.GetLocationsAsync(FindByQueryApiUrl + Uri.EscapeDataString(address) + "&key=" + this.apiKey);
+            return await this.GetLocationsAsync(string.Format(FindByQueryApiUrl, Uri.EscapeDataString(address), this.apiKey));
         }
 
         public async Task<LocationSet> GetLocationsByPointAsync(double latitude, double longitude)
         {
             return await this.GetLocationsAsync(
-                string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude) + "&key=" + this.apiKey);
+                string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude, this.apiKey));
         }
 
         public string GetLocationMapImageUrl(Location location, int? index = null)
@@ -63,8 +63,9 @@
                     location.BoundaryBox[2],
                     location.BoundaryBox[3],
                     point.Coordinates[0],
-                    point.Coordinates[1], index)
-                    + "&key=" + this.apiKey;
+                    point.Coordinates[1], 
+                    index, 
+                    this.apiKey);
             }
             else
             {
@@ -73,7 +74,8 @@
                     ImageUrlByPoint, 
                     point.Coordinates[0], 
                     point.Coordinates[1], 
-                    index) + "&key=" + apiKey;
+                    index, 
+                    apiKey);
             }
         }
 

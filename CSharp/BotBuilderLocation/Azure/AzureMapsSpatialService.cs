@@ -14,9 +14,9 @@ namespace Microsoft.Bot.Builder.Location.Azure
     [Serializable]
     internal sealed class AzureMapsSpatialService : IGeoSpatialService
     {
-        private readonly static string FindByQueryApiUrl = $"https://atlas.microsoft.com/search/address/json?api-version=1.0&query=";
-        private readonly static string FindByPointUrl = $"https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query={{0}},{{1}}";
-        private readonly static string ImageUrlByPoint = $"https://atlas.microsoft.com/map/static/png?api-version=1.0&layer=basic&style=main&zoom={{2}}&center={{1}},{{0}}&width=500&height=280";
+        private readonly static string FindByQueryApiUrl = $"https://atlas.microsoft.com/search/address/json?api-version=1.0&query={{0}}&subscription-key={{1}}";
+        private readonly static string FindByPointUrl = $"https://atlas.microsoft.com/search/address/reverse/json?api-version=1.0&query={{0}},{{1}}&subscription-key={{2}}";
+        private readonly static string ImageUrlByPoint = $"https://atlas.microsoft.com/map/static/png?api-version=1.0&layer=basic&style=main&center={{1}},{{0}}&zoom={{2}}&width=500&height=280&subscription-key={{3}}";
         private readonly static string PinImageBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAcCAYAAACUJBTQAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gcMECoy1DRNWQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAACBElEQVRIx+3WzU4TYRTG8f/bmc5HYTq2UiASYoIhLIwu0Iwbw0W4YuE9eAcudevCeA1uJMStSxMTXzZqFS0ilGJbaEttqc5Mh868LgyEBfiRgKs++5Nfztk8RyilFOccHcDzvHMDpJS/EAD/ztMzBzJLiwCk+A8ZIkNkiAyRITJEzqx+j7fY8fxLW540fxjxu0fC87y/gjJLi0gpT9+k+OiuMNWAbMZGWFn6mQLOxDS9IEJKqf4EHQGNCvVvLRH2exQcm/ZaCXvURStcJmXnxxi9NEO1O+DDRhXNyuCHAQdhn9LyYyGlPPUUh0BUfEXt8zthdGvY3Sp6p0oS9SiMX0RPJaRq9Qob21totok7lmO7ssaB3yGb0YiCFtNCnAgdAW+fYzixcNIR+E20oEl5dYVBr0XUaWAlPvrCrevsNBuE/QFpwyII+qy/f0lat9CyaZQBB52H4vjpDoFxQ4hnTxaZdKaYvbEA7gUIEjq7mxRcl53SG0wnh766ts5oziVOmTgjWQT73PbmCYKAdtImFtCLO8zlhWi2lfI8Dyklvf37QtPg6myB8mqF1y+WCcMITflM5vO4VoJjWOw2v6JH5gTVbgKxTq3VZvCjRXakwZWZaSwzDRrEyiVWcO+aQBYVpilEufyABPj08Qvzczf57ofs7e1hGzb1rU3261tMTU6RStv8BGcD7rXwL3cpAAAAAElFTkSuQmCC";
         private readonly string apiKey;
 
@@ -32,13 +32,13 @@ namespace Microsoft.Bot.Builder.Location.Azure
                 throw new ArgumentNullException(nameof(address));
             }
 
-            return await this.GetLocationsAsync(FindByQueryApiUrl + Uri.EscapeDataString(address) + "&subscription-key=" + this.apiKey);
+            return await this.GetLocationsAsync(string.Format(FindByQueryApiUrl, Uri.EscapeDataString(address), this.apiKey));
         }
 
         public async Task<LocationSet> GetLocationsByPointAsync(double latitude, double longitude)
         {
             return await this.GetLocationsAsync(
-                string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude) + "&subscription-key=" + this.apiKey);
+                string.Format(CultureInfo.InvariantCulture, FindByPointUrl, latitude, longitude, this.apiKey));
         }
 
         public string GetLocationMapImageUrl(Bing.Location location, int? index = null)
@@ -73,7 +73,8 @@ namespace Microsoft.Bot.Builder.Location.Azure
                 ImageUrlByPoint,
                 point.Coordinates[0],
                 point.Coordinates[1],
-                zoom) + "&subscription-key=" + this.apiKey;
+                zoom,
+                this.apiKey);
 
             return GetMapImage(imageUrl, index.ToString());
         }
