@@ -55,12 +55,7 @@
             private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             {
-                var apiKey = WebConfigurationManager.AppSettings["AzureMapsApiKey"];
-
-                if (string.IsNullOrEmpty(apiKey))
-                {
-                    apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
-                }
+                var apiKey = WebConfigurationManager.AppSettings["MapApiKey"];
 
                 var options = LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode;
 
