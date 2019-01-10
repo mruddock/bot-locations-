@@ -10,7 +10,7 @@ Bots often need the user's location to complete a task. For example, a Taxi bot 
 
 The Microsoft location control makes this process easy by abstracting away the tedious coding steps to let the user pick a location and reliably validate it. The control offers the following capabilities: 
 
-- Address look up and validation using the REST services of Azure Maps or Bing Maps depending on which APOI key you use in your bot. 
+- Address look up and validation using the REST services of Azure Maps or Bing Maps depending on which API key you use in your bot. 
 - User location returned as strongly-typed object complying with schema.org.
 - Address disambiguation when more than one address is found.
 - Support for declaring required location fields.
@@ -20,7 +20,7 @@ The Microsoft location control makes this process easy by abstracting away the t
 ## Prerequisites
 To start using the control, you need to obtain an Azure Maps or Bing Maps API subscription key. 
 
-* You can sign up to get a free Azure Maps key with uo to 25,000 transactions a month through Azure. Details are documented [here](https://docs.microsoft.com/en-us/azure/azure-maps/how-to-manage-account-keys).
+* You can sign up to get a free Azure Maps key with up to 25,000 transactions per month through Azure. Details are documented [here](https://docs.microsoft.com/en-us/azure/azure-maps/how-to-manage-account-keys).
 * You can sign up to get a free Bing Maps key with up to 10,000 transactions per month in the [Azure Marketplace](https://azure.microsoft.com/en-us/marketplace/partners/bingmaps/mapapis/).
 
 ## Getting Started
