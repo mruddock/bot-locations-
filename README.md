@@ -20,7 +20,7 @@ The Microsoft location control makes this process easy by abstracting away the t
 ## Prerequisites
 To start using the control, you need to obtain an Azure Maps or Bing Maps API subscription key. 
 
-* You can sign up to get a free Azure Maps key with uo to 25,000 transactions a month through Azure. Details are documented [here](https://docs.microsoft.com/en-us/azure/azure-maps/how-to-manage-account-keys).
+* You can sign up to get a free Azure Maps key with up to 25,000 transactions per month through Azure. Details are documented [here](https://docs.microsoft.com/en-us/azure/azure-maps/how-to-manage-account-keys).
 * You can sign up to get a free Bing Maps key with up to 10,000 transactions per month in the [Azure Marketplace](https://azure.microsoft.com/en-us/marketplace/partners/bingmaps/mapapis/).
 
 ## Getting Started
